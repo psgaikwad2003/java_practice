@@ -9,7 +9,7 @@ public class bubbleSort {
                     int temp = numbers[j];
                     numbers[j] = numbers[j+1];
                     numbers[j+1] = temp;
-                }
+                }7
             }
         }
         System.out.println("The numbers in ascending order are: ");
