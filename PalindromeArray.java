@@ -5,7 +5,7 @@ public class PalindromeArray {
         int[] arr = {1, 2, 3, 2, 1};
 
         boolean isPalindrome = true;
-
+ 
         int start = 0;
         int end = arr.length - 1;
 
