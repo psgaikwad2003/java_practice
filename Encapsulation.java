@@ -10,7 +10,7 @@ class BankAccount{
         }
     }
 
-    public double getBalance(){
+    public double setBalance(){
         return balance;
     }
 }
@@ -20,6 +20,6 @@ public class Encapsulation{
     public static void main(String[] args) {
         BankAccount acc = new BankAccount();
         acc.deposit(5000);
-        System.out.println("Balance: "+acc.getBalance());
+        System.out.println("Balance: "+acc.setBalance());
     }
 }
