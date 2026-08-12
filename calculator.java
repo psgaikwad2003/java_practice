@@ -7,30 +7,31 @@ public class Calculator {
         Scanner sc = new Scanner(System.in);
 
         int choice;
-        int num1;
-        int num2;
+        double num1;
+        double num2;
 
         do {
 
-            System.out.println("\n========== Calculator ==========");
+            System.out.println("\n========== Calculator v2 ==========");
             System.out.println("1. Addition");
             System.out.println("2. Subtraction");
             System.out.println("3. Multiplication");
             System.out.println("4. Division");
             System.out.println("5. Modulus");
-            System.out.println("6. Exit");
-            System.out.println("================================");
+            System.out.println("6. Power (num1 ^ num2)");
+            System.out.println("7. Exit");
+            System.out.println("===================================");
 
             System.out.print("Enter Your Choice : ");
             choice = sc.nextInt();
 
-            if (choice >= 1 && choice <= 5) {
+            if (choice >= 1 && choice <= 6) {
 
                 System.out.print("Enter First Number : ");
-                num1 = sc.nextInt();
+                num1 = sc.nextDouble();
 
                 System.out.print("Enter Second Number : ");
-                num2 = sc.nextInt();
+                num2 = sc.nextDouble();
 
                 switch (choice) {
 
@@ -54,8 +55,7 @@ public class Calculator {
 
                         } else {
 
-                            double result = (double) num1 / num2;
-                            System.out.println("Division = " + result);
+                            System.out.println("Division = " + (num1 / num2));
 
                         }
 
@@ -74,11 +74,15 @@ public class Calculator {
                         }
 
                         break;
+
+                    case 6:
+                        System.out.println("Power = " + Math.pow(num1, num2));
+                        break;
                 }
 
-            } else if (choice == 6) {
+            } else if (choice == 7) {
 
-                System.out.println("Thank You For Using Calculator.");
+                System.out.println("Thank You For Using Calculator v2.");
 
             } else {
 
@@ -86,7 +90,7 @@ public class Calculator {
 
             }
 
-        } while (choice != 6);
+        } while (choice != 7);
 
         sc.close();
 
