@@ -10,11 +10,13 @@ public class demo {
         s2.name = "Prajwal";
         s2.age = 23;
 
-        System.out.println(s1.equals(s1));
+        //System.out.println(s1.equals(s1));
        // System.out.println(s1 == s2);
 
-       Integer i1 = 100;
-        System.out.println(s1.equals(i1));
+        Integer i1 = 100;
+        //System.out.println(s1.equals(i1));
+
+        System.out.println(s1.hashCode() == s2.hashCode());
     }
 }
 
@@ -44,5 +46,12 @@ class student extends Object{
 
         student s = (student)obj;
         return this.name == s.name && this.age == s.age;
+    }
+    @Override
+    public int hashCode() {
+        int result = 17;
+        result = result * 19 + age;
+        result = result * 19 + name.hashCode();
+        return result;
     }
 }
