@@ -10,8 +10,11 @@ public class demo {
         s2.name = "Prajwal";
         s2.age = 23;
 
-        System.out.println(s1.equals(s2));
+        System.out.println(s1.equals(s1));
        // System.out.println(s1 == s2);
+
+       Integer i1 = 100;
+        System.out.println(s1.equals(i1));
     }
 }
 
@@ -30,6 +33,15 @@ class student extends Object{
     }
     @Override
     public boolean equals(Object obj){
+
+        if(obj == null){
+            return false;
+        }
+
+        if(obj.getClass() != this.getClass()){
+            return false;
+        }
+
         student s = (student)obj;
         return this.name == s.name && this.age == s.age;
     }
