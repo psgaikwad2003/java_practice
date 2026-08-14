@@ -1,7 +1,6 @@
-// Commit 2: Defensive Copying for Mutable Fields
-// Problem: if an immutable class holds a mutable object (like List),
-// callers could modify it externally and break immutability.
-// Solution: Use defensive copying in constructor and getter.
+// Commit 3: Builder Pattern for Immutable Class
+// Builder pattern solves the "telescoping constructor" problem.
+// It lets you build a complex immutable object step by step.
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -9,23 +8,20 @@ import java.util.List;
 
 public class immutable {
     public static void main(String[] args) {
-        List<String> subjects = new ArrayList<>();
-        subjects.add("Math");
-        subjects.add("Physics");
-        subjects.add("Chemistry");
 
-        Student student = new Student(21, "Priya", "Computer Science", subjects);
+        // Using Builder to construct immutable Student (clean and readable)
+        Student student = new Student.Builder("Priya", 21)
+                .branch("Computer Science")
+                .addSubject("Math")
+                .addSubject("Physics")
+                .addSubject("Chemistry")
+                .build();
 
-        // Modifying the original list does NOT affect the immutable object
-        subjects.add("Biology"); // This should NOT affect student's subjects
-
-        System.out.println("=== Immutable Student with Defensive Copy ===");
+        System.out.println("=== Immutable Student via Builder Pattern ===");
         System.out.println("Name     : " + student.getName());
         System.out.println("Age      : " + student.getAge());
         System.out.println("Branch   : " + student.getBranch());
         System.out.println("Subjects : " + student.getSubjects());
-        System.out.println("\nExternal list modified, but student subjects unchanged!");
-        System.out.println("Subjects still: " + student.getSubjects());
     }
 }
 
@@ -34,30 +30,49 @@ final class Student {
     private final int age;
     private final String name;
     private final String branch;
-    private final List<String> subjects; // mutable — needs defensive copy
+    private final List<String> subjects;
 
-    public Student(int age, String name, String branch, List<String> subjects) {
-        this.age    = age;
-        this.name   = name;
-        this.branch = branch;
-        // Defensive copy: create a new list so external changes don't affect us
-        this.subjects = new ArrayList<>(subjects);
+    // Private constructor — only accessible via Builder
+    private Student(Builder builder) {
+        this.age      = builder.age;
+        this.name     = builder.name;
+        this.branch   = builder.branch;
+        this.subjects = Collections.unmodifiableList(new ArrayList<>(builder.subjects));
     }
 
-    public int getAge() {
-        return age;
-    }
+    public int getAge()              { return age; }
+    public String getName()          { return name; }
+    public String getBranch()        { return branch; }
+    public List<String> getSubjects(){ return subjects; }
 
-    public String getName() {
-        return name;
-    }
+    // =================== Builder Class ===================
+    public static class Builder {
 
-    public String getBranch() {
-        return branch;
-    }
+        // Required fields
+        private final String name;
+        private final int age;
 
-    // Return an unmodifiable view so caller cannot mutate our internal list
-    public List<String> getSubjects() {
-        return Collections.unmodifiableList(subjects);
+        // Optional fields with defaults
+        private String branch    = "Undeclared";
+        private List<String> subjects = new ArrayList<>();
+
+        public Builder(String name, int age) {
+            this.name = name;
+            this.age  = age;
+        }
+
+        public Builder branch(String branch) {
+            this.branch = branch;
+            return this; // method chaining
+        }
+
+        public Builder addSubject(String subject) {
+            this.subjects.add(subject);
+            return this;
+        }
+
+        public Student build() {
+            return new Student(this);
+        }
     }
 }
