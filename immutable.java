@@ -1,53 +1,72 @@
-// Commit 4: Override equals(), hashCode(), and toString()
-// Immutable objects are often used as keys in Maps or stored in Sets.
-// Overriding these methods is essential for correct behavior.
+// Commit 5: Add Javadoc + "wither" copy methods (functional update pattern)
+// Immutable objects cannot be changed, but we can produce a new copy with one field different.
+// This is called the "wither" (or "with") pattern used in Java records / Kotlin data classes.
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * Demonstrates a fully immutable {@code Student} class following Java best practices:
+ * <ul>
+ *   <li>Declared {@code final} to prevent subclassing</li>
+ *   <li>All fields are {@code private final}</li>
+ *   <li>No setter methods</li>
+ *   <li>Defensive copying for mutable fields ({@code List})</li>
+ *   <li>Builder pattern for flexible object construction</li>
+ *   <li>Correct {@code equals()}, {@code hashCode()}, and {@code toString()}</li>
+ *   <li>"Wither" methods for functional field updates</li>
+ * </ul>
+ */
 public class immutable {
+
     public static void main(String[] args) {
 
-        Student s1 = new Student.Builder("Priya", 21)
+        // Build original student
+        Student original = new Student.Builder("Priya", 21)
                 .branch("Computer Science")
                 .addSubject("Math")
                 .addSubject("Physics")
+                .addSubject("Chemistry")
                 .build();
 
-        Student s2 = new Student.Builder("Priya", 21)
-                .branch("Computer Science")
-                .addSubject("Math")
-                .addSubject("Physics")
-                .build();
+        // Use wither to produce an updated copy — original stays unchanged
+        Student updated = original.withName("Priya Sharma").withAge(22);
 
-        Student s3 = new Student.Builder("Rahul", 22)
-                .branch("Mechanical")
-                .addSubject("Thermodynamics")
-                .build();
+        System.out.println("=== Final Immutable Student Demo ===");
+        System.out.println("Original : " + original);
+        System.out.println("Updated  : " + updated);
 
-        System.out.println("=== equals(), hashCode(), toString() Demo ===");
-        System.out.println("s1: " + s1);
-        System.out.println("s2: " + s2);
-        System.out.println("s3: " + s3);
-
-        System.out.println("\ns1.equals(s2) : " + s1.equals(s2)); // true
-        System.out.println("s1.equals(s3) : " + s1.equals(s3)); // false
-
-        System.out.println("\nhashCode(s1)  : " + s1.hashCode());
-        System.out.println("hashCode(s2)  : " + s2.hashCode()); // same as s1
-        System.out.println("hashCode(s3)  : " + s3.hashCode()); // different
+        System.out.println("\noriginal.equals(updated)  : " + original.equals(updated));  // false
+        System.out.println("original hash : " + original.hashCode());
+        System.out.println("updated  hash : " + updated.hashCode());
     }
 }
 
+/**
+ * An immutable representation of a Student.
+ * Once created, its state cannot be altered.
+ */
 final class Student {
 
+    /** Student's age. */
     private final int age;
+
+    /** Student's full name. */
     private final String name;
+
+    /** Academic branch/department. */
     private final String branch;
+
+    /** List of enrolled subjects — stored as an unmodifiable copy. */
     private final List<String> subjects;
 
+    /**
+     * Private constructor — use {@link Builder} to create instances.
+     *
+     * @param builder the builder containing field values
+     */
     private Student(Builder builder) {
         this.age      = builder.age;
         this.name     = builder.name;
@@ -55,16 +74,54 @@ final class Student {
         this.subjects = Collections.unmodifiableList(new ArrayList<>(builder.subjects));
     }
 
-    public int getAge()              { return age; }
-    public String getName()          { return name; }
-    public String getBranch()        { return branch; }
-    public List<String> getSubjects(){ return subjects; }
+    // =================== Getters ===================
 
-    // ======= equals() =======
+    /** @return student's age */
+    public int getAge()               { return age; }
+
+    /** @return student's name */
+    public String getName()           { return name; }
+
+    /** @return student's branch */
+    public String getBranch()         { return branch; }
+
+    /** @return unmodifiable list of subjects */
+    public List<String> getSubjects() { return subjects; }
+
+    // =================== Wither Methods ===================
+
+    /**
+     * Returns a new {@code Student} with the given name, all other fields unchanged.
+     *
+     * @param newName the new name
+     * @return a new immutable Student
+     */
+    public Student withName(String newName) {
+        return new Builder(newName, this.age)
+                .branch(this.branch)
+                .subjects(this.subjects)
+                .build();
+    }
+
+    /**
+     * Returns a new {@code Student} with the given age, all other fields unchanged.
+     *
+     * @param newAge the new age
+     * @return a new immutable Student
+     */
+    public Student withAge(int newAge) {
+        return new Builder(this.name, newAge)
+                .branch(this.branch)
+                .subjects(this.subjects)
+                .build();
+    }
+
+    // =================== equals / hashCode / toString ===================
+
     @Override
     public boolean equals(Object obj) {
-        if (this == obj) return true;               // same reference
-        if (!(obj instanceof Student)) return false; // type check
+        if (this == obj) return true;
+        if (!(obj instanceof Student)) return false;
         Student other = (Student) obj;
         return age == other.age
             && Objects.equals(name,     other.name)
@@ -72,13 +129,11 @@ final class Student {
             && Objects.equals(subjects, other.subjects);
     }
 
-    // ======= hashCode() =======
     @Override
     public int hashCode() {
         return Objects.hash(age, name, branch, subjects);
     }
 
-    // ======= toString() =======
     @Override
     public String toString() {
         return "Student{name='" + name + "', age=" + age
@@ -86,27 +141,47 @@ final class Student {
     }
 
     // =================== Builder ===================
+
+    /**
+     * Builder for constructing {@link Student} instances fluently.
+     */
     public static class Builder {
+
         private final String name;
         private final int age;
         private String branch = "Undeclared";
         private List<String> subjects = new ArrayList<>();
 
+        /**
+         * Required fields constructor.
+         *
+         * @param name student's name
+         * @param age  student's age
+         */
         public Builder(String name, int age) {
             this.name = name;
             this.age  = age;
         }
 
+        /** Sets the branch. */
         public Builder branch(String branch) {
             this.branch = branch;
             return this;
         }
 
+        /** Adds a single subject. */
         public Builder addSubject(String subject) {
             this.subjects.add(subject);
             return this;
         }
 
+        /** Replaces the full subjects list (defensive copy applied). */
+        public Builder subjects(List<String> subjects) {
+            this.subjects = new ArrayList<>(subjects);
+            return this;
+        }
+
+        /** Builds and returns the immutable {@link Student}. */
         public Student build() {
             return new Student(this);
         }
