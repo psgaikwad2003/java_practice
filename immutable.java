@@ -1,24 +1,9 @@
-// Commit 5: Add Javadoc + "wither" copy methods (functional update pattern)
-// Immutable objects cannot be changed, but we can produce a new copy with one field different.
-// This is called the "wither" (or "with") pattern used in Java records / Kotlin data classes.
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
-/**
- * Demonstrates a fully immutable {@code Student} class following Java best practices:
- * <ul>
- *   <li>Declared {@code final} to prevent subclassing</li>
- *   <li>All fields are {@code private final}</li>
- *   <li>No setter methods</li>
- *   <li>Defensive copying for mutable fields ({@code List})</li>
- *   <li>Builder pattern for flexible object construction</li>
- *   <li>Correct {@code equals()}, {@code hashCode()}, and {@code toString()}</li>
- *   <li>"Wither" methods for functional field updates</li>
- * </ul>
- */
 public class immutable {
 
     public static void main(String[] args) {
@@ -38,7 +23,7 @@ public class immutable {
         System.out.println("Original : " + original);
         System.out.println("Updated  : " + updated);
 
-        System.out.println("\noriginal.equals(updated)  : " + original.equals(updated));  // false
+        System.out.println("\noriginal.equals(updated)  : " + original.equals(updated)); // false
         System.out.println("original hash : " + original.hashCode());
         System.out.println("updated  hash : " + updated.hashCode());
     }
@@ -68,30 +53,39 @@ final class Student {
      * @param builder the builder containing field values
      */
     private Student(Builder builder) {
-        this.age      = builder.age;
-        this.name     = builder.name;
-        this.branch   = builder.branch;
+        this.age = builder.age;
+        this.name = builder.name;
+        this.branch = builder.branch;
         this.subjects = Collections.unmodifiableList(new ArrayList<>(builder.subjects));
     }
 
     // =================== Getters ===================
 
     /** @return student's age */
-    public int getAge()               { return age; }
+    public int getAge() {
+        return age;
+    }
 
     /** @return student's name */
-    public String getName()           { return name; }
+    public String getName() {
+        return name;
+    }
 
     /** @return student's branch */
-    public String getBranch()         { return branch; }
+    public String getBranch() {
+        return branch;
+    }
 
     /** @return unmodifiable list of subjects */
-    public List<String> getSubjects() { return subjects; }
+    public List<String> getSubjects() {
+        return subjects;
+    }
 
     // =================== Wither Methods ===================
 
     /**
-     * Returns a new {@code Student} with the given name, all other fields unchanged.
+     * Returns a new {@code Student} with the given name, all other fields
+     * unchanged.
      *
      * @param newName the new name
      * @return a new immutable Student
@@ -120,13 +114,15 @@ final class Student {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (!(obj instanceof Student)) return false;
+        if (this == obj)
+            return true;
+        if (!(obj instanceof Student))
+            return false;
         Student other = (Student) obj;
         return age == other.age
-            && Objects.equals(name,     other.name)
-            && Objects.equals(branch,   other.branch)
-            && Objects.equals(subjects, other.subjects);
+                && Objects.equals(name, other.name)
+                && Objects.equals(branch, other.branch)
+                && Objects.equals(subjects, other.subjects);
     }
 
     @Override
@@ -137,7 +133,7 @@ final class Student {
     @Override
     public String toString() {
         return "Student{name='" + name + "', age=" + age
-             + ", branch='" + branch + "', subjects=" + subjects + "}";
+                + ", branch='" + branch + "', subjects=" + subjects + "}";
     }
 
     // =================== Builder ===================
@@ -160,7 +156,7 @@ final class Student {
          */
         public Builder(String name, int age) {
             this.name = name;
-            this.age  = age;
+            this.age = age;
         }
 
         /** Sets the branch. */
