@@ -35,11 +35,15 @@ public class binarySearch {
     }
 
     static int binarySearch(int[] arr, int target) {
+        if (arr == null || arr.length == 0) {
+            return -1;
+        }
         int low = 0;
         int high = arr.length - 1;
 
         while (low <= high) {
-            int mid = (low + high) / 2;
+            // Prevent potential integer overflow compared to (low + high) / 2
+            int mid = low + (high - low) / 2;
 
             if (arr[mid] == target) {
                 return mid;
@@ -50,5 +54,22 @@ public class binarySearch {
             }
         }
         return -1; // Not found
+    }
+
+    /**
+     * Recursive Binary Search implementation.
+     */
+    static int binarySearchRecursive(int[] arr, int low, int high, int target) {
+        if (arr == null || low > high) {
+            return -1;
+        }
+        int mid = low + (high - low) / 2;
+        if (arr[mid] == target) {
+            return mid;
+        }
+        if (arr[mid] > target) {
+            return binarySearchRecursive(arr, low, mid - 1, target);
+        }
+        return binarySearchRecursive(arr, mid + 1, high, target);
     }
 }
