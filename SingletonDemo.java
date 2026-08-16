@@ -63,6 +63,34 @@ public class SingletonDemo {
         System.out.println("Enum instance 1 hash: " + enumInstance1.hashCode());
         System.out.println("Enum instance 2 hash: " + enumInstance2.hashCode());
         System.out.println("Are both Enum instances equal? " + (enumInstance1 == enumInstance2));
+
+        System.out.println("\n==================================================");
+        System.out.println(" 4. High Concurrency Stress Test (10 Threads)");
+        System.out.println("==================================================");
+        java.util.concurrent.ExecutorService executor = java.util.concurrent.Executors.newFixedThreadPool(10);
+        java.util.concurrent.CountDownLatch latch = new java.util.concurrent.CountDownLatch(1);
+        java.util.Set<Integer> hashCodes = java.util.Collections.synchronizedSet(new java.util.HashSet<>());
+
+        for (int i = 0; i < 10; i++) {
+            executor.submit(() -> {
+                try {
+                    latch.await();
+                    DoubleCheckedSingleton instance = DoubleCheckedSingleton.getInstance();
+                    hashCodes.add(instance.hashCode());
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
+            });
+        }
+        latch.countDown();
+        executor.shutdown();
+        try {
+            executor.awaitTermination(3, java.util.concurrent.TimeUnit.SECONDS);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+        System.out.println("Unique instance hashCodes collected across 10 threads: " + hashCodes.size());
+        System.out.println("Singleton state: " + (hashCodes.size() == 1 ? "PASSED (Single Instance)" : "FAILED"));
     }
 }
 
