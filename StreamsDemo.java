@@ -65,6 +65,35 @@ public class StreamsDemo {
                 .thenComparing(Employee::getName))
             .collect(Collectors.toList());
         sortedEmployees.forEach(System.out::println);
+
+        System.out.println("\n==================================================");
+        System.out.println(" 6. Partition Employees by Age (> 30)");
+        System.out.println("==================================================");
+        Map<Boolean, List<Employee>> partitionedByAge = employees.stream()
+            .collect(Collectors.partitioningBy(e -> e.getAge() > 30));
+        System.out.println("Senior (> 30): " + partitionedByAge.get(true).size() + " employees");
+        System.out.println("Junior (<= 30): " + partitionedByAge.get(false).size() + " employees");
+
+        System.out.println("\n==================================================");
+        System.out.println(" 7. Salary Summary Statistics");
+        System.out.println("==================================================");
+        DoubleSummaryStatistics stats = employees.stream()
+            .collect(Collectors.summarizingDouble(Employee::getSalary));
+        System.out.println("Total Count: " + stats.getCount());
+        System.out.printf("Min Salary : $%.2f%n", stats.getMin());
+        System.out.printf("Max Salary : $%.2f%n", stats.getMax());
+        System.out.printf("Avg Salary : $%.2f%n", stats.getAverage());
+        System.out.printf("Total Sum  : $%.2f%n", stats.getSum());
+
+        System.out.println("\n==================================================");
+        System.out.println(" 8. Joined Names per Department");
+        System.out.println("==================================================");
+        Map<String, String> deptNamesJoined = employees.stream()
+            .collect(Collectors.groupingBy(
+                Employee::getDepartment,
+                Collectors.mapping(Employee::getName, Collectors.joining(", "))
+            ));
+        deptNamesJoined.forEach((dept, names) -> System.out.println(dept + ": " + names));
     }
 }
 
