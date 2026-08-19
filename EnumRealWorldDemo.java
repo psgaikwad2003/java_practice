@@ -1,17 +1,8 @@
 import java.util.*;
 
-/**
- * Enum Real-World Usage — Role-Based Access Control (RBAC)
- * 
- * This demonstrates how enums are used in REAL production applications:
- * - Role hierarchy with permission inheritance
- * - Type-safe configuration using enums
- * - Enum as a singleton service registry
- * - Building a mini authorization framework
- */
 public class EnumRealWorldDemo {
 
-    // ========== Permission Enum ==========
+
     enum Permission {
         VIEW_DASHBOARD, VIEW_REPORTS,
         CREATE_USER, EDIT_USER, DELETE_USER,
@@ -19,7 +10,7 @@ public class EnumRealWorldDemo {
         MANAGE_SETTINGS, MANAGE_BILLING, FULL_ACCESS
     }
 
-    // ========== Role Enum with Permission Inheritance ==========
+
     enum Role {
         VIEWER(EnumSet.of(Permission.VIEW_DASHBOARD)),
 
@@ -62,7 +53,7 @@ public class EnumRealWorldDemo {
         }
     }
 
-    // ========== Environment Config using Enum ==========
+
     enum Environment {
         DEV("http://localhost:8080", "dev_db", true),
         STAGING("https://staging.app.com", "staging_db", true),
@@ -83,7 +74,7 @@ public class EnumRealWorldDemo {
         public boolean isDebugMode() { return debugMode; }
     }
 
-    // ========== Simple User Class ==========
+
     static class User {
         private final String name;
         private final Role role;
@@ -101,7 +92,7 @@ public class EnumRealWorldDemo {
         }
     }
 
-    // ========== Authorization Check ==========
+
     static void performAction(User user, Permission action, String desc) {
         if (user.canPerform(action)) {
             System.out.printf("  ✓ %s (%s) -> %s: ALLOWED%n",
@@ -152,7 +143,7 @@ public class EnumRealWorldDemo {
                 env, env.getBaseUrl(), env.getDbName(), env.isDebugMode());
         }
 
-        // Simulate selecting environment
+
         Environment current = Environment.STAGING;
         System.out.println("\n  Active Environment: " + current);
         System.out.println("  API Base URL: " + current.getBaseUrl());
