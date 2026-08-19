@@ -1,15 +1,6 @@
-/**
- * Enum Implementing Interfaces Demo (Medium - Level 3)
- * 
- * Topics Covered:
- * - Enum implementing one or more interfaces
- * - Polymorphism with enums (using interface reference)
- * - Enum constants as strategy objects
- * - Comparable behavior with enums (enums implement Comparable by default)
- */
 public class EnumWithInterfaceDemo {
 
-    // Interface for any entity that can be logged
+
     interface Loggable {
         String getLogPrefix();
         default void log(String message) {
@@ -17,18 +8,17 @@ public class EnumWithInterfaceDemo {
         }
     }
 
-    // Interface for anything that can provide a display label
+
     interface Displayable {
         String getDisplayLabel();
     }
 
-    // Enum implementing MULTIPLE interfaces
     enum LogLevel implements Loggable, Displayable {
-        DEBUG("DBG", "Debug", "\u001B[36m"),       // Cyan
-        INFO("INF", "Information", "\u001B[32m"),   // Green
-        WARNING("WRN", "Warning", "\u001B[33m"),    // Yellow
-        ERROR("ERR", "Error", "\u001B[31m"),        // Red
-        FATAL("FTL", "Fatal Error", "\u001B[35m");  // Magenta
+        DEBUG("DBG", "Debug", "\u001B[36m"),
+        INFO("INF", "Information", "\u001B[32m"),
+        WARNING("WRN", "Warning", "\u001B[33m"),
+        ERROR("ERR", "Error", "\u001B[31m"),
+        FATAL("FTL", "Fatal Error", "\u001B[35m");
 
         private final String prefix;
         private final String displayLabel;
@@ -40,30 +30,30 @@ public class EnumWithInterfaceDemo {
             this.colorCode = colorCode;
         }
 
-        // From Loggable interface
+
         @Override
         public String getLogPrefix() {
             return prefix;
         }
 
-        // From Displayable interface
+
         @Override
         public String getDisplayLabel() {
             return displayLabel;
         }
 
-        // Check if this log level is severe enough
+
         public boolean isSevere() {
             return this.ordinal() >= WARNING.ordinal();
         }
 
-        // Get color code for terminal output
+
         public String getColorCode() {
             return colorCode;
         }
     }
 
-    // Interface for payment processing
+
     interface PaymentProcessor {
         boolean processPayment(double amount);
         double getFeePercentage();
@@ -72,7 +62,6 @@ public class EnumWithInterfaceDemo {
         }
     }
 
-    // Enum as a Strategy — each constant IS a strategy implementation
     enum PaymentMethod implements PaymentProcessor {
         CREDIT_CARD {
             @Override
@@ -112,12 +101,10 @@ public class EnumWithInterfaceDemo {
         };
     }
 
-    // Simulated logger that accepts any Loggable
     static void performLogging(Loggable logger, String message) {
         logger.log(message);
     }
 
-    // Simulated payment checkout that accepts any PaymentProcessor
     static void checkout(PaymentProcessor processor, double amount) {
         double fee = processor.calculateFee(amount);
         double total = amount + fee;
@@ -139,7 +126,7 @@ public class EnumWithInterfaceDemo {
         System.out.println("\n==================================================");
         System.out.println(" 2. Polymorphism — Enum as Interface Reference");
         System.out.println("==================================================");
-        // Passing enum constants as Loggable interface references
+
         Loggable logger = LogLevel.INFO;
         logger.log("Application started successfully");
 
