@@ -1,15 +1,6 @@
-/**
- * Enum With Methods Demo (Easy-Medium - Level 2)
- * 
- * Topics Covered:
- * - Enum with fields and constructors
- * - Concrete methods inside enum
- * - Abstract methods — each constant provides its own implementation
- * - Overriding toString()
- */
 public class EnumWithMethodsDemo {
 
-    // Enum with fields and constructor
+
     enum Planet {
         MERCURY(3.303e+23, 2.4397e6),
         VENUS(4.869e+24, 6.0518e6),
@@ -20,24 +11,24 @@ public class EnumWithMethodsDemo {
         URANUS(8.686e+25, 2.5559e7),
         NEPTUNE(1.024e+26, 2.4746e7);
 
-        private final double mass;    // in kilograms
-        private final double radius;  // in meters
+        private final double mass;
+        private final double radius;
 
-        // Enum constructor (always private)
+
         Planet(double mass, double radius) {
             this.mass = mass;
             this.radius = radius;
         }
 
-        // Gravitational constant
+
         private static final double G = 6.67300E-11;
 
-        // Concrete method: surface gravity
+
         public double surfaceGravity() {
             return G * mass / (radius * radius);
         }
 
-        // Concrete method: weight on this planet
+
         public double surfaceWeight(double earthWeight) {
             return earthWeight * surfaceGravity() / EARTH.surfaceGravity();
         }
@@ -48,7 +39,6 @@ public class EnumWithMethodsDemo {
         }
     }
 
-    // Enum with ABSTRACT method — each constant MUST override it
     enum Operation {
         ADD("+") {
             @Override
@@ -80,7 +70,6 @@ public class EnumWithMethodsDemo {
             return symbol;
         }
 
-        // Abstract method — every constant MUST implement this
         public abstract double apply(double a, double b);
 
         @Override
@@ -94,7 +83,7 @@ public class EnumWithMethodsDemo {
         System.out.println("==================================================");
         System.out.println(" 1. Enum with Fields — Planet Surface Weight");
         System.out.println("==================================================");
-        double earthWeight = 75.0; // kg
+        double earthWeight = 75.0;
         System.out.printf("Your weight on Earth: %.2f kg%n%n", earthWeight);
 
         for (Planet planet : Planet.values()) {
@@ -120,7 +109,7 @@ public class EnumWithMethodsDemo {
         System.out.println("Selected operation: " + myOp);
         System.out.println("Result: " + myOp.apply(7, 8));
 
-        // Safe division check
+
         try {
             System.out.println("10 / 0 = " + Operation.DIVIDE.apply(10, 0));
         } catch (ArithmeticException e) {
