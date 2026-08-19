@@ -1,18 +1,7 @@
 import java.util.*;
 
-/**
- * Enum State Machine Demo (Hard - Level 5)
- * 
- * Topics Covered:
- * - Enum-based State Machine pattern
- * - Defining valid transitions between states
- * - Preventing invalid state transitions
- * - Abstract methods for state-specific behavior
- * - Practical: Order processing lifecycle
- */
 public class EnumStateMachineDemo {
 
-    // State Machine Enum — each state knows its valid next states
     enum OrderState {
         PLACED("Order has been placed") {
             @Override
@@ -67,7 +56,7 @@ public class EnumStateMachineDemo {
         CANCELLED("Order cancelled") {
             @Override
             public Set<OrderState> allowedTransitions() {
-                return EnumSet.noneOf(OrderState.class); // terminal state
+                return EnumSet.noneOf(OrderState.class);
             }
             @Override
             public void onEnter(String orderId) {
@@ -77,7 +66,7 @@ public class EnumStateMachineDemo {
         REFUNDED("Payment refunded") {
             @Override
             public Set<OrderState> allowedTransitions() {
-                return EnumSet.noneOf(OrderState.class); // terminal state
+                return EnumSet.noneOf(OrderState.class);
             }
             @Override
             public void onEnter(String orderId) {
@@ -103,13 +92,11 @@ public class EnumStateMachineDemo {
 
         public String getDescription() { return description; }
 
-        // Each state defines its valid transitions
         public abstract Set<OrderState> allowedTransitions();
 
-        // Each state defines entry behavior
         public abstract void onEnter(String orderId);
 
-        // Check if transition is valid
+
         public boolean canTransitionTo(OrderState next) {
             return allowedTransitions().contains(next);
         }
@@ -119,7 +106,6 @@ public class EnumStateMachineDemo {
         }
     }
 
-    // Order class that uses the state machine
     static class Order {
         private final String orderId;
         private OrderState currentState;
@@ -185,8 +171,8 @@ public class EnumStateMachineDemo {
         System.out.println(" 4. Invalid Transitions (Rejected)");
         System.out.println("==================================================");
         Order order3 = new Order("ORD-003");
-        order3.transitionTo(OrderState.SHIPPED);    // Can't skip payment!
-        order3.transitionTo(OrderState.DELIVERED);   // Can't skip everything!
+        order3.transitionTo(OrderState.SHIPPED);
+        order3.transitionTo(OrderState.DELIVERED);
 
         System.out.println("\n==================================================");
         System.out.println(" 5. Return & Refund Path");
