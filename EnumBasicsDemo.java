@@ -1,21 +1,9 @@
-/**
- * Enum Basics Demo (Easy - Level 1)
- * 
- * Topics Covered:
- * - Defining a simple enum
- * - Using values(), valueOf(), name(), ordinal()
- * - Iterating over all enum constants
- * - Comparing enums with == and .equals()
- * - Using enum in if-else and switch
- */
 public class EnumBasicsDemo {
 
-    // Simple enum representing traffic light colors
     enum TrafficLight {
         RED, YELLOW, GREEN
     }
 
-    // Enum representing pizza sizes
     enum PizzaSize {
         SMALL, MEDIUM, LARGE, EXTRA_LARGE
     }
@@ -26,14 +14,14 @@ public class EnumBasicsDemo {
         System.out.println(" 1. Creating and Printing Enum Constants");
         System.out.println("==================================================");
         TrafficLight light = TrafficLight.RED;
-        System.out.println("Current light: " + light);           // RED
-        System.out.println("Name: " + light.name());             // RED
-        System.out.println("Ordinal (index): " + light.ordinal()); // 0
+        System.out.println("Current light: " + light);
+        System.out.println("Name: " + light.name());
+        System.out.println("Ordinal (index): " + light.ordinal());
 
         System.out.println("\n==================================================");
         System.out.println(" 2. Iterating Over All Enum Constants (values())");
         System.out.println("==================================================");
-        // values() returns an array of all enum constants
+
         System.out.println("All Traffic Lights:");
         for (TrafficLight t : TrafficLight.values()) {
             System.out.printf("  %s -> ordinal: %d%n", t.name(), t.ordinal());
@@ -47,7 +35,7 @@ public class EnumBasicsDemo {
         System.out.println("\n==================================================");
         System.out.println(" 3. valueOf() - String to Enum Conversion");
         System.out.println("==================================================");
-        // valueOf() converts a string to an enum constant (case-sensitive)
+
         TrafficLight fromString = TrafficLight.valueOf("GREEN");
         System.out.println("valueOf(\"GREEN\"): " + fromString);
 
@@ -60,16 +48,15 @@ public class EnumBasicsDemo {
         System.out.println("\n==================================================");
         System.out.println(" 4. Comparing Enums (== vs .equals())");
         System.out.println("==================================================");
-        // Both == and .equals() work for enums, but == is preferred (null-safe)
+
         TrafficLight a = TrafficLight.RED;
         TrafficLight b = TrafficLight.RED;
         TrafficLight c = TrafficLight.GREEN;
 
-        System.out.println("RED == RED   : " + (a == b));        // true
-        System.out.println("RED == GREEN : " + (a == c));        // false
-        System.out.println("RED.equals(RED): " + a.equals(b));   // true
-        System.out.println("null == RED  : " + (null == a));     // false (no NPE!)
-        // null.equals(RED) would throw NullPointerException — that's why == is safer
+        System.out.println("RED == RED   : " + (a == b));
+        System.out.println("RED == GREEN : " + (a == c));
+        System.out.println("RED.equals(RED): " + a.equals(b));
+        System.out.println("null == RED  : " + (null == a));
 
         System.out.println("\n==================================================");
         System.out.println(" 5. Enum in Switch Statement");
