@@ -2,15 +2,6 @@ import java.util.EnumSet;
 import java.util.EnumMap;
 import java.util.Map;
 
-/**
- * EnumSet and EnumMap Demo (Medium-Hard - Level 4)
- * 
- * Topics Covered:
- * - EnumSet: high-performance Set backed by bit vector
- * - EnumSet factory methods: of(), allOf(), noneOf(), range(), complementOf()
- * - EnumMap: high-performance Map with enum keys
- * - Practical: Permission system + HTTP status counters
- */
 public class EnumSetMapDemo {
 
     enum Permission { READ, WRITE, EXECUTE, DELETE, ADMIN }
