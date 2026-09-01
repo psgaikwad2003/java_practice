@@ -4,7 +4,7 @@ public class ArrayOutOfBound {
         int [] numbers = {1, 2, 3, 4, 5};
         try{
 
-            System.out.println(numbers[10]); // This will throw ArrayIndexOutOfBoundsException
+            System.out.println(numbers[10]); 
         } catch (ArrayIndexOutOfBoundsException e) {
             System.out.println("Error: Array index is out of bounds.");
         }

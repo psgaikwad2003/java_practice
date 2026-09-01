@@ -25,7 +25,7 @@ public class array {
 
             sum += arr[i];
 
-            // Largest and Second Largest
+            
             if (arr[i] > largest) {
                 secondLargest = largest;
                 largest = arr[i];
@@ -33,7 +33,7 @@ public class array {
                 secondLargest = arr[i];
             }
 
-            // Smallest and Second Smallest
+            
             if (arr[i] < smallest) {
                 secondSmallest = smallest;
                 smallest = arr[i];
@@ -41,14 +41,14 @@ public class array {
                 secondSmallest = arr[i];
             }
 
-            // Even and Odd
+            
             if (arr[i] % 2 == 0) {
                 even++;
             } else {
                 odd++;
             }
 
-            // Positive, Negative and Zero
+            
             if (arr[i] > 0) {
                 positive++;
             } else if (arr[i] < 0) {

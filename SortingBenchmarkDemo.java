@@ -1,12 +1,7 @@
 import java.util.Arrays;
 import java.util.Random;
 
-/**
- * Performance Comparison: Sorting Algorithms Benchmark
- * 
- * Compares O(N^2) algorithms (BubbleSort, SelectionSort, InsertionSort) 
- * against O(N log N) QuickSort on identical random integer arrays.
- */
+
 public class SortingBenchmarkDemo {
 
     public static void main(String[] args) {
@@ -43,7 +38,7 @@ public class SortingBenchmarkDemo {
     }
 
     private static int[] generateRandomArray(int size, int maxVal) {
-        Random rand = new Random(42); // fixed seed for reproducibility
+        Random rand = new Random(42); 
         int[] arr = new int[size];
         for (int i = 0; i < size; i++) {
             arr[i] = rand.nextInt(maxVal);

@@ -3,7 +3,7 @@ public class DecimalToBinary {
         int num = 19;
         System.out.println("Decimal " + num + " to Binary is: " + Integer.toBinaryString(num));
         
-        // Manual way
+        
         int[] binaryNum = new int[1000];
         int n = 19;
         int i = 0;

@@ -8,21 +8,21 @@ public class CollectionsDeepDiveDemo {
     public static void main(String[] args) {
         System.out.println("=== Collections Deep Dive Demo ===\n");
 
-        // 1. ArrayList vs LinkedList performance characteristics
+        
         System.out.println("--- ArrayList Operations ---");
         List<Integer> arrayList = new ArrayList<>();
         for (int i = 1; i <= 10; i++) arrayList.add(i * 10);
         System.out.println("Initial list: " + arrayList);
-        arrayList.add(2, 25);          // insert at index
+        arrayList.add(2, 25);          
         System.out.println("After insert at index 2: " + arrayList);
-        arrayList.remove(Integer.valueOf(60));  // remove by value
+        arrayList.remove(Integer.valueOf(60));  
         System.out.println("After removing 60: " + arrayList);
         Collections.shuffle(arrayList);
         System.out.println("After shuffle: " + arrayList);
         Collections.sort(arrayList);
         System.out.println("After sort: " + arrayList);
 
-        // 2. Stack operations
+        
         System.out.println("\n--- Stack (Deque) ---");
         Deque<String> stack = new ArrayDeque<>();
         stack.push("First");
@@ -32,7 +32,7 @@ public class CollectionsDeepDiveDemo {
         System.out.println("Popped: " + stack.pop());
         System.out.println("Stack now: " + stack);
 
-        // 3. Queue operations
+        
         System.out.println("\n--- Queue (LinkedList) ---");
         Queue<String> queue = new LinkedList<>(Arrays.asList("A", "B", "C", "D"));
         System.out.println("Queue front: " + queue.peek());
@@ -40,7 +40,7 @@ public class CollectionsDeepDiveDemo {
         queue.offer("E");
         System.out.println("Queue now: " + queue);
 
-        // 4. Priority Queue
+        
         System.out.println("\n--- Priority Queue (Min-Heap) ---");
         PriorityQueue<Integer> pq = new PriorityQueue<>();
         pq.addAll(Arrays.asList(30, 10, 50, 20, 40));
@@ -48,14 +48,14 @@ public class CollectionsDeepDiveDemo {
         while (!pq.isEmpty()) System.out.print(pq.poll() + " ");
         System.out.println();
 
-        // Max-heap using reverse order
+        
         PriorityQueue<Integer> maxPQ = new PriorityQueue<>(Collections.reverseOrder());
         maxPQ.addAll(Arrays.asList(30, 10, 50, 20, 40));
         System.out.print("Max-heap poll: ");
         while (!maxPQ.isEmpty()) System.out.print(maxPQ.poll() + " ");
         System.out.println();
 
-        // 5. TreeMap – sorted keys
+        
         System.out.println("\n--- TreeMap (Sorted) ---");
         TreeMap<String, Integer> scores = new TreeMap<>();
         scores.put("Charlie", 88);
@@ -68,7 +68,7 @@ public class CollectionsDeepDiveDemo {
         System.out.println("Head map (before Bob): " + scores.headMap("Bob"));
         System.out.println("Tail map (from Bob): " + scores.tailMap("Bob"));
 
-        // 6. LinkedHashMap – insertion order
+        
         System.out.println("\n--- LinkedHashMap (Insertion Order) ---");
         Map<String, String> capitals = new LinkedHashMap<>();
         capitals.put("India", "New Delhi");
@@ -77,7 +77,7 @@ public class CollectionsDeepDiveDemo {
         capitals.put("Japan", "Tokyo");
         capitals.forEach((k, v) -> System.out.println("  " + k + " -> " + v));
 
-        // 7. HashSet, LinkedHashSet, TreeSet
+        
         System.out.println("\n--- Set Implementations ---");
         Set<String> hashSet = new HashSet<>(Arrays.asList("Banana", "Apple", "Cherry", "Apple", "Date"));
         Set<String> linkedHashSet = new LinkedHashSet<>(Arrays.asList("Banana", "Apple", "Cherry", "Apple", "Date"));
@@ -86,7 +86,7 @@ public class CollectionsDeepDiveDemo {
         System.out.println("LinkedHashSet (insertion): " + linkedHashSet);
         System.out.println("TreeSet (sorted): " + treeSet);
 
-        // 8. Streams on collections with records
+        
         System.out.println("\n--- Stream Operations on Student Records ---");
         List<Student> students = List.of(
             new Student("Alice", 22, "CS", 3.9),

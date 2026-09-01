@@ -1,15 +1,9 @@
-/**
- * Technical Interview Question: Behavioral & Creational Design Patterns
- * 
- * Demonstrates:
- * 1. Factory Pattern for Notification creation.
- * 2. Strategy Pattern for Payment Processing.
- */
+
 public class DesignPatternsDemo {
 
-    // ==================================================
-    // 1. Factory Pattern
-    // ==================================================
+    
+    
+    
     interface Notification {
         void send(String message);
     }
@@ -39,9 +33,9 @@ public class DesignPatternsDemo {
         }
     }
 
-    // ==================================================
-    // 2. Strategy Pattern
-    // ==================================================
+    
+    
+    
     interface PaymentStrategy {
         void pay(double amount);
     }

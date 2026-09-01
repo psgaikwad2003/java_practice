@@ -1,13 +1,6 @@
 import java.io.*;
 
-/**
- * Technical Interview Question: Design Patterns - Thread-Safe Singleton Implementations
- * 
- * Frequently asked in technical interviews:
- * 1. Double-Checked Locking (DCL) with volatile keyword
- * 2. Bill Pugh Singleton (Lazy Initialization Holder Class)
- * 3. Prevention against Reflection and Serialization breakages
- */
+
 public class SingletonDemo {
 
     public static void main(String[] args) {
@@ -94,28 +87,25 @@ public class SingletonDemo {
     }
 }
 
-/**
- * 1. Double-Checked Locking Singleton Implementation
- * Uses `volatile` to prevent instruction reordering.
- */
+
 class DoubleCheckedSingleton implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    // volatile keyword ensures changes made by one thread are visible to all other threads instantly
+    
     private static volatile DoubleCheckedSingleton instance;
 
-    // Private constructor prevents instantiation from outside
+    
     private DoubleCheckedSingleton() {
-        // Guard against instantiation via Reflection API
+        
         if (instance != null) {
             throw new RuntimeException("Use getInstance() method to get the single instance of this class.");
         }
     }
 
     public static DoubleCheckedSingleton getInstance() {
-        if (instance == null) { // First check (no locking overhead)
+        if (instance == null) { 
             synchronized (DoubleCheckedSingleton.class) {
-                if (instance == null) { // Second check (with locking)
+                if (instance == null) { 
                     instance = new DoubleCheckedSingleton();
                 }
             }
@@ -123,22 +113,18 @@ class DoubleCheckedSingleton implements Serializable {
         return instance;
     }
 
-    // Preserve singleton property during deserialization
+    
     protected Object readResolve() {
         return getInstance();
     }
 }
 
-/**
- * 2. Bill Pugh Singleton (Static Inner Helper Class)
- * Best practice when eager loading is not desired.
- * Thread-safe without requiring synchronized keywords.
- */
+
 class BillPughSingleton {
 
     private BillPughSingleton() {}
 
-    // Static inner class is loaded into memory only when getInstance() is called
+    
     private static class SingletonHelper {
         private static final BillPughSingleton INSTANCE = new BillPughSingleton();
     }
@@ -148,11 +134,7 @@ class BillPughSingleton {
     }
 }
 
-/**
- * 3. Enum Singleton
- * Recommended by Joshua Bloch (Effective Java).
- * Prevents reflection and serialization issues out of the box.
- */
+
 enum EnumSingleton {
     INSTANCE;
 

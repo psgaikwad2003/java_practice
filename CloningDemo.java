@@ -1,14 +1,7 @@
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Technical Interview Question: Deep Copy vs Shallow Copy in Java
- * 
- * Demonstrates:
- * 1. Default shallow copy pitfalls with mutable reference fields.
- * 2. Deep copy using copy constructors.
- * 3. Overriding clone() method for defensive copying.
- */
+
 public class CloningDemo {
 
     static class Address implements Cloneable {
@@ -40,21 +33,21 @@ public class CloningDemo {
         Address address;
         List<String> skills;
 
-        // Constructor
+        
         public Person(String name, Address address, List<String> skills) {
             this.name = name;
             this.address = address;
             this.skills = skills;
         }
 
-        // Copy Constructor for Deep Copy
+        
         public Person(Person other) {
             this.name = other.name;
             this.address = other.address != null ? other.address.clone() : null;
             this.skills = other.skills != null ? new ArrayList<>(other.skills) : new ArrayList<>();
         }
 
-        // Shallow Copy clone
+        
         public Person shallowCopy() {
             return new Person(this.name, this.address, this.skills);
         }
@@ -80,7 +73,7 @@ public class CloningDemo {
 
         System.out.println("Original before modification : " + original);
 
-        // Mutate address and skills via shallow copy
+        
         shallow.address.city = "San Francisco";
         shallow.skills.add("Docker");
 

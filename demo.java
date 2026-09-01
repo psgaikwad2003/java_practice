@@ -10,11 +10,11 @@ public class demo {
         s2.name = "Prajwal";
         s2.age = 23;
 
-        //System.out.println(s1.equals(s1));
-       // System.out.println(s1 == s2);
+        
+       
 
         Integer i1 = 100;
-        //System.out.println(s1.equals(i1));
+        
 
         System.out.println(s1.hashCode() == s2.hashCode());
     }

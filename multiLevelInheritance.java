@@ -1,4 +1,4 @@
-// Multi-level Inheritance - extends inheritance.java concept
+
 class Vehicle {
     String brand;
     int speed;
@@ -50,10 +50,10 @@ public class multiLevelInheritance {
 
         ElectricCar tesla = new ElectricCar("Tesla Model 3", 250, 4, 75);
 
-        tesla.start();       // From Vehicle
-        tesla.showSpeed();   // From Vehicle
-        tesla.carInfo();     // From Car
-        tesla.electricInfo(); // From ElectricCar
+        tesla.start();       
+        tesla.showSpeed();   
+        tesla.carInfo();     
+        tesla.electricInfo(); 
 
         System.out.println("=============================================");
     }

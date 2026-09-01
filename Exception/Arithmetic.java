@@ -5,7 +5,7 @@ public class Arithmetic {
         int b = 0;
         
         try {
-            int result = a / b; // This will throw ArithmeticException
+            int result = a / b; 
             System.out.println("Result: " + result);
         } catch (ArithmeticException e) {
             System.out.println("Error: Division by zero is not allowed.");

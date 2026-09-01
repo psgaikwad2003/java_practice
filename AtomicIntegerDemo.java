@@ -6,7 +6,7 @@ public class AtomicIntegerDemo {
     public static void main(String[] args) throws InterruptedException {
         Runnable task = () -> {
             for (int i = 0; i < 1000; i++) {
-                counter.incrementAndGet(); // Thread-safe atomic increment
+                counter.incrementAndGet(); 
             }
         };
 

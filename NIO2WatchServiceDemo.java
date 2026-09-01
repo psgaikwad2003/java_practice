@@ -1,13 +1,11 @@
 import java.nio.file.*;
 import java.util.concurrent.TimeUnit;
 
-/**
- * Demonstrates NIO.2 WatchService to monitor a directory for changes.
- */
+
 public class NIO2WatchServiceDemo {
     public static void main(String[] args) throws Exception {
         WatchService watchService = FileSystems.getDefault().newWatchService();
-        Path path = Paths.get("."); // Watch current directory
+        Path path = Paths.get("."); 
         
         path.register(watchService, 
             StandardWatchEventKinds.ENTRY_CREATE, 
@@ -16,7 +14,7 @@ public class NIO2WatchServiceDemo {
         
         System.out.println("Watching directory for changes for up to 3 seconds...");
         
-        // Using poll to check events without blocking indefinitely
+        
         WatchKey key = watchService.poll(3, TimeUnit.SECONDS);
         
         if (key != null) {

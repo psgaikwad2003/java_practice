@@ -1,13 +1,9 @@
 import java.util.concurrent.Phaser;
 
-/**
- * Demonstrates the usage of Phaser, a more flexible synchronization barrier 
- * compared to CyclicBarrier and CountDownLatch.
- * UPDATED: Added simulated workload for realism.
- */
+
 public class PhaserComplexDemo {
     public static void main(String[] args) {
-        Phaser phaser = new Phaser(1); // Register main thread
+        Phaser phaser = new Phaser(1); 
         System.out.println("Phaser complex demo starting...");
         
         for (int i = 0; i < 3; i++) {

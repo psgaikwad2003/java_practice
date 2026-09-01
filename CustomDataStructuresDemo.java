@@ -1,11 +1,7 @@
 import java.util.EmptyStackException;
 import java.util.NoSuchElementException;
 
-/**
- * Technical Interview Question: Implement Custom Stack and Queue using Linked List
- * 
- * Generic implementations of LIFO (Stack) and FIFO (Queue) without using standard Java Collections.
- */
+
 public class CustomDataStructuresDemo {
 
     static class Node<T> {
@@ -17,9 +13,7 @@ public class CustomDataStructuresDemo {
         }
     }
 
-    /**
-     * Generic Stack (LIFO - Last In First Out)
-     */
+    
     public static class CustomStack<T> {
         private Node<T> top;
         private int size = 0;
@@ -57,9 +51,7 @@ public class CustomDataStructuresDemo {
         }
     }
 
-    /**
-     * Generic Queue (FIFO - First In First Out)
-     */
+    
     public static class CustomQueue<T> {
         private Node<T> head;
         private Node<T> tail;

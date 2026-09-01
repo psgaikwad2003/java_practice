@@ -1,8 +1,8 @@
-// Fibonacci Series - similar pattern to array programs
+
 public class fibonacci {
     public static void main(String[] args) {
 
-        int n = 10; // Number of terms
+        int n = 10; 
 
         System.out.println("Fibonacci Series (first " + n + " terms):");
 
@@ -17,7 +17,7 @@ public class fibonacci {
 
         System.out.println();
 
-        // Check if a number is Fibonacci
+        
         int num = 21;
         if (isPerfectSquare(5 * num * num + 4) || isPerfectSquare(5 * num * num - 4)) {
             System.out.println("\n" + num + " is a Fibonacci number.");

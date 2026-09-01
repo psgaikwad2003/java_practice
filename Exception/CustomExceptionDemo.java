@@ -1,14 +1,6 @@
 package Exception;
 
-/**
- * Technical Interview Question: Custom Exception Hierarchy & Best Practices
- * 
- * Demonstrates:
- * 1. Base custom domain exception (AppException).
- * 2. Specific domain exception (ResourceNotFoundException).
- * 3. Exception chaining (cause preserving root stack trace).
- * 4. Try-with-resources with AutoCloseable implementation.
- */
+
 class AppException extends RuntimeException {
     public AppException(String message) {
         super(message);
@@ -71,7 +63,7 @@ public class CustomExceptionDemo {
 
     private static void fetchUserFromDatabase(int userId) {
         try {
-            // Simulate low-level SQLException or NullPointer
+            
             throw new NullPointerException("Database cursor returned null row");
         } catch (Exception cause) {
             throw new ResourceNotFoundException("User", userId);

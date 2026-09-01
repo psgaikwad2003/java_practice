@@ -10,7 +10,7 @@ public class number_analyzer {
         int original =num;
         int temp=Math.abs(num);
 
-        //Positive/Negative/Zero Check
+        
 
         if(num>0){
             System.out.println(num+" is a positive number.");
@@ -22,7 +22,7 @@ public class number_analyzer {
             System.out.println(num+" is zero.");
         }
 
-        //Even/Odd Check
+        
 
         if(num%==0){
             System.out.println(num+" is an even number.");
@@ -31,7 +31,7 @@ public class number_analyzer {
             System.out.println(num+" is an odd number.");
         }
 
-        //Reverse,Digit Count,Sum
+        
 
         int reverse=0;
         int digitcount=0;
@@ -49,7 +49,7 @@ public class number_analyzer {
         System.out.println("Sum of digits in "+original+" is: "+digitsum);
 
     }
-    //Palindrome Check
+    
     if(original==reverse){
         isPrime=False;
     }else{

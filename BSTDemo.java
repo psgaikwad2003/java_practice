@@ -1,15 +1,7 @@
 import java.util.LinkedList;
 import java.util.Queue;
 
-/**
- * Data Structures & Algorithms: Binary Search Tree (BST) Implementation
- * 
- * Frequently asked in coding interviews:
- * 1. Insert elements according to BST property (left < root < right).
- * 2. Search for a key in O(log N) average time complexity.
- * 3. In-Order, Pre-Order, and Post-Order DFS traversals.
- * 4. Level-Order (BFS) traversal.
- */
+
 public class BSTDemo {
 
     static class TreeNode {
@@ -99,7 +91,7 @@ public class BSTDemo {
         bst.inOrder();
         bst.levelOrder();
 
-        System.out.println("\nSearch 40: " + bst.search(40)); // true
-        System.out.println("Search 90: " + bst.search(90)); // false
+        System.out.println("\nSearch 40: " + bst.search(40)); 
+        System.out.println("Search 90: " + bst.search(90)); 
     }
 }

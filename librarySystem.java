@@ -3,7 +3,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-// Library Management System - extends classObject.java and Encapsulation.java concepts
+
 class Book {
     private final int id;
     private final String title;
@@ -17,13 +17,13 @@ class Book {
         this.isAvailable = true;
     }
 
-    // Getters
+    
     public int getId() { return id; }
     public String getTitle() { return title; }
     public String getAuthor() { return author; }
     public boolean isAvailable() { return isAvailable; }
 
-    // Issue and Return methods
+    
     public boolean issueBook() {
         if (isAvailable) {
             isAvailable = false;
@@ -92,7 +92,7 @@ public class librarySystem {
 
         System.out.println("\n--- Issuing Book ID 101 ---");
         library.findById(101).ifPresent(Book::issueBook);
-        library.findById(101).ifPresent(Book::issueBook); // Try to issue again
+        library.findById(101).ifPresent(Book::issueBook); 
 
         System.out.println("\n--- Returning Book ID 101 ---");
         library.findById(101).ifPresent(Book::returnBook);

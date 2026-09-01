@@ -8,7 +8,7 @@ public class selectionSort {
             System.out.print(numbers[i] + " ");
         }
 
-        // Selection Sort Logic
+        
         for (int i = 0; i < numbers.length - 1; i++) {
             int minIndex = i;
 
@@ -18,7 +18,7 @@ public class selectionSort {
                 }
             }
 
-            // Swap
+            
             int temp = numbers[minIndex];
             numbers[minIndex] = numbers[i];
             numbers[i] = temp;

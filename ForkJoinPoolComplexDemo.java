@@ -1,9 +1,7 @@
 import java.util.concurrent.RecursiveTask;
 import java.util.concurrent.ForkJoinPool;
 
-/**
- * Demonstrates ForkJoinPool for divide-and-conquer parallel processing.
- */
+
 public class ForkJoinPoolComplexDemo extends RecursiveTask<Integer> {
     private final int[] array;
     private final int start;
@@ -29,7 +27,7 @@ public class ForkJoinPoolComplexDemo extends RecursiveTask<Integer> {
             ForkJoinPoolComplexDemo left = new ForkJoinPoolComplexDemo(array, start, mid);
             ForkJoinPoolComplexDemo right = new ForkJoinPoolComplexDemo(array, mid, end);
             
-            // Fork the left task and compute the right task directly
+            
             left.fork();
             int rightResult = right.compute();
             int leftResult = left.join();

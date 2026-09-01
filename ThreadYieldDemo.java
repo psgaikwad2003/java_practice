@@ -3,7 +3,7 @@ public class ThreadYieldDemo {
         Runnable task = () -> {
             for (int i = 0; i < 5; i++) {
                 System.out.println(Thread.currentThread().getName() + " is executing - " + i);
-                // Hint to the scheduler that the current thread is willing to yield its current use of a processor
+                
                 Thread.yield(); 
             }
         };

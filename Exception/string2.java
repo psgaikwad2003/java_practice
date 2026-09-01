@@ -13,7 +13,7 @@ public class string2 {
         }
         System.out.println("Reversed string: " + reverse);
 
-        //palindrome check
+        
 
         if(input.equals(reverse)){
             System.out.println("The string is a palindrome.");
@@ -21,7 +21,7 @@ public class string2 {
             System.out.println("The string is not a palindrome.");
         }
 
-        //Vowels
+        
 
         int vowel = 0, consonant = 0, digit = 0, specialChar = 0;
         for(int i = 0; i < input.length(); i++){

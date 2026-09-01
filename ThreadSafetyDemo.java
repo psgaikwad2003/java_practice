@@ -5,24 +5,24 @@ import java.util.concurrent.atomic.*;
 
 public class ThreadSafetyDemo {
 
-    // 1. Race condition without synchronization
+    
     static int unsafeCounter = 0;
 
     static void incrementUnsafe() {
         unsafeCounter++;
     }
 
-    // 2. Synchronized method
+    
     static int safeCounter = 0;
 
     static synchronized void incrementSafe() {
         safeCounter++;
     }
 
-    // 3. AtomicInteger – lock-free thread safety
+    
     static AtomicInteger atomicCounter = new AtomicInteger(0);
 
-    // 4. Thread-safe bank account using synchronized block
+    
     static class BankAccount {
         private double balance;
         private final String owner;
@@ -56,7 +56,7 @@ public class ThreadSafetyDemo {
         List<String> getLog() { return log; }
     }
 
-    // 5. Deadlock demonstration (safe – uses tryLock pattern to avoid it)
+    
     static class DeadlockSafeTransfer {
         private final ReentrantLock lockA = new ReentrantLock();
         private final ReentrantLock lockB = new ReentrantLock();
@@ -83,14 +83,14 @@ public class ThreadSafetyDemo {
                     }
                 } finally { first.unlock(); }
             }
-            return false; // could not acquire locks, retry logic would go here
+            return false; 
         }
 
         double getAccountA() { return accountA; }
         double getAccountB() { return accountB; }
     }
 
-    // 6. Producer-Consumer with BlockingQueue
+    
     static class MessageProducer implements Runnable {
         private final BlockingQueue<String> queue;
         private final String name;
@@ -140,7 +140,7 @@ public class ThreadSafetyDemo {
     public static void main(String[] args) throws InterruptedException {
         System.out.println("=== Thread Safety Demo ===\n");
 
-        // 1. Race condition
+        
         System.out.println("--- Race Condition Demo ---");
         unsafeCounter = 0;
         safeCounter = 0;
@@ -166,7 +166,7 @@ public class ThreadSafetyDemo {
         System.out.println("  Synchronized:        " + safeCounter);
         System.out.println("  AtomicInteger:       " + atomicCounter.get());
 
-        // 2. Thread-safe bank account
+        
         System.out.println("\n--- Synchronized Bank Account ---");
         BankAccount account = new BankAccount("Alice", 500.0);
         Thread[] bankThreads = new Thread[6];
@@ -181,7 +181,7 @@ public class ThreadSafetyDemo {
         account.getLog().forEach(entry -> System.out.println("  " + entry));
         System.out.printf("  Final balance: %.2f%n", account.getBalance());
 
-        // 3. Deadlock-safe transfer
+        
         System.out.println("\n--- Deadlock-Safe Transfer (tryLock) ---");
         DeadlockSafeTransfer transfer = new DeadlockSafeTransfer();
         Thread t1 = new Thread(() -> {
@@ -195,7 +195,7 @@ public class ThreadSafetyDemo {
         System.out.printf("  Account A: %.2f%n", transfer.getAccountA());
         System.out.printf("  Account B: %.2f%n", transfer.getAccountB());
 
-        // 4. Producer-Consumer with BlockingQueue
+        
         System.out.println("\n--- Producer-Consumer (BlockingQueue) ---");
         BlockingQueue<String> messageQueue = new LinkedBlockingQueue<>(5);
         Thread producerA = new Thread(new MessageProducer(messageQueue, "A"), "ProducerA");
@@ -208,7 +208,7 @@ public class ThreadSafetyDemo {
         producerB.join();
         consumer.join();
 
-        // 5. ConcurrentHashMap vs HashMap
+        
         System.out.println("\n--- ConcurrentHashMap Thread Safety ---");
         ConcurrentHashMap<String, AtomicInteger> wordCount = new ConcurrentHashMap<>();
         String[] wordsToCount = {"java", "thread", "java", "safe", "thread", "java", "concurrent"};

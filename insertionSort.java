@@ -8,7 +8,7 @@ public class insertionSort {
             System.out.print(numbers[i] + " ");
         }
 
-        // Insertion Sort Logic
+        
         for (int i = 1; i < numbers.length; i++) {
             int key = numbers[i];
             int j = i - 1;

@@ -1,7 +1,7 @@
-// Static keyword demo - extends classObject.java concept
+
 class Student {
-    static String collegeName = "ABC College"; // Static variable shared by all objects
-    static int totalStudents = 0;              // Tracks total count
+    static String collegeName = "ABC College"; 
+    static int totalStudents = 0;              
 
     int rollNo;
     String name;
@@ -11,10 +11,10 @@ class Student {
         this.rollNo = rollNo;
         this.name = name;
         this.marks = marks;
-        totalStudents++; // increment on every object creation
+        totalStudents++; 
     }
 
-    // Static method
+    
     static void showCollegeInfo() {
         System.out.println("College Name  : " + collegeName);
         System.out.println("Total Students: " + totalStudents);

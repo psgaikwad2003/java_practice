@@ -28,11 +28,11 @@ public class student_grade_analayzer {
             }
         }
 
-        //calculating average
+        
 
         double average=(double )total/marks.length;
 
-        //result display
+        
 
         System.out.println("Total marks: "+total);
         System.out.println("Average marks: "+average);
@@ -41,7 +41,7 @@ public class student_grade_analayzer {
         System.out.println("Number of students passed: "+pass);
         System.out.println("Number of students failed: "+fail);
 
-        //grade calculation
+        
 
         if (average > =90){
             System.out.println("Grade: A");

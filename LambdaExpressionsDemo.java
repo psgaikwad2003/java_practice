@@ -24,7 +24,7 @@ public class LambdaExpressionsDemo {
     public static void main(String[] args) {
         System.out.println("=== Lambda Expressions Demo ===\n");
 
-        // 1. Basic lambda with custom functional interface
+        
         MathOperation add = (a, b) -> a + b;
         MathOperation multiply = (a, b) -> a * b;
         MathOperation power = (a, b) -> (int) Math.pow(a, b);
@@ -33,7 +33,7 @@ public class LambdaExpressionsDemo {
         printResult("Multiply", 10, 5, multiply);
         printResult("Power", 2, 8, power);
 
-        // 2. Greeting lambda
+        
         Greeting formal = name -> "Good morning, " + name + "!";
         Greeting casual = name -> "Hey, " + name + "!";
         sayHello("Alice", formal);
@@ -41,12 +41,12 @@ public class LambdaExpressionsDemo {
 
         System.out.println();
 
-        // 3. Runnable via lambda
+        
         System.out.println("--- Runnable Lambda ---");
         Runnable task = () -> System.out.println("Task executed on thread: " + Thread.currentThread().getName());
         task.run();
 
-        // 4. Comparator lambda
+        
         System.out.println("\n--- Sorting with Comparator Lambda ---");
         List<String> names = new ArrayList<>(Arrays.asList("Charlie", "Alice", "Eve", "Bob", "Dave"));
         System.out.println("Before: " + names);
@@ -55,7 +55,7 @@ public class LambdaExpressionsDemo {
         names.sort((s1, s2) -> s2.compareToIgnoreCase(s1));
         System.out.println("After (Z-A): " + names);
 
-        // 5. Predicate
+        
         System.out.println("\n--- Predicate Lambda ---");
         Predicate<Integer> isEven = n -> n % 2 == 0;
         Predicate<Integer> isPositive = n -> n > 0;
@@ -69,7 +69,7 @@ public class LambdaExpressionsDemo {
         numbers.stream().filter(isEvenAndPositive).forEach(n -> System.out.print(n + " "));
         System.out.println();
 
-        // 6. Function and BiFunction
+        
         System.out.println("\n--- Function and BiFunction ---");
         Function<String, Integer> strLength = String::length;
         Function<Integer, String> intToStr = num -> "Number: " + num;
@@ -81,14 +81,14 @@ public class LambdaExpressionsDemo {
         BiFunction<String, Integer, String> repeat = (s, n) -> s.repeat(n);
         System.out.println(repeat.apply("Java! ", 3));
 
-        // 7. Method references
+        
         System.out.println("\n--- Method References ---");
         List<String> words = Arrays.asList("lambda", "stream", "java", "functional");
         words.stream()
              .map(String::toUpperCase)
              .forEach(System.out::println);
 
-        // 8. Supplier and Consumer
+        
         System.out.println("\n--- Supplier and Consumer ---");
         Supplier<List<String>> listSupplier = ArrayList::new;
         List<String> freshList = listSupplier.get();

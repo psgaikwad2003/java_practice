@@ -1,4 +1,4 @@
-// String Methods Demo
+
 public class stringMethods {
     public static void main(String[] args) {
 
@@ -19,11 +19,11 @@ public class stringMethods {
         System.out.println("Char At index 1      : " + str.charAt(1));
         System.out.println("Is Empty             : " + str.isEmpty());
 
-        // Reverse a String
+        
         String reversed = new StringBuilder(str).reverse().toString();
         System.out.println("Reversed             : " + reversed);
 
-        // Check Palindrome
+        
         String word = "madam";
         String rev = new StringBuilder(word).reverse().toString();
         System.out.println("\n\"" + word + "\" is palindrome: " + word.equals(rev));

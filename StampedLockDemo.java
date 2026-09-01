@@ -1,9 +1,6 @@
 import java.util.concurrent.locks.StampedLock;
 
-/**
- * Demonstrates the use of StampedLock, providing optimistic read locking 
- * for improved performance over standard ReadWriteLocks.
- */
+
 public class StampedLockDemo {
     private double x, y;
     private final StampedLock sl = new StampedLock();
@@ -19,13 +16,13 @@ public class StampedLockDemo {
     }
 
     public double distanceFromOrigin() {
-        // Optimistic read
+        
         long stamp = sl.tryOptimisticRead();
         double currentX = x, currentY = y;
         
-        // Validate if there was any write lock acquired during the read
+        
         if (!sl.validate(stamp)) {
-            // Fallback to pessimistic read lock
+            
             stamp = sl.readLock();
             try {
                 currentX = x;

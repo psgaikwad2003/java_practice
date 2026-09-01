@@ -1,10 +1,7 @@
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Supermarket Billing System - Refactored with Object-Oriented Principles.
- * Demonstrates encapsulation, list management, tax calculation, and discount strategy.
- */
+
 public class supermarket {
 
     static class CartItem {
@@ -51,17 +48,17 @@ public class supermarket {
         System.out.println("--------------------------------------------");
         System.out.printf("%-20s %24.2f%n", "Subtotal:", subtotal);
 
-        // Tax calculation (5% GST)
+        
         double taxRate = 0.05;
         double taxAmount = subtotal * taxRate;
         System.out.printf("%-20s %24.2f%n", "Tax (5% GST):", taxAmount);
 
         double totalWithTax = subtotal + taxAmount;
 
-        // Tiered Discount logic
+        
         double discount = 0;
         if (subtotal > 500) {
-            discount = subtotal * 0.10; // 10% discount for orders over 500
+            discount = subtotal * 0.10; 
             System.out.printf("%-20s %24.2f%n", "Discount (10%):", discount);
         }
 

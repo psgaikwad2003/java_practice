@@ -1,12 +1,7 @@
 import java.util.*;
 import java.util.stream.Collectors;
 
-/**
- * Technical Interview Question: Java 8 Streams API Demonstration
- * 
- * Frequently asked in company technical rounds to test functional programming,
- * lambda expressions, filtering, mapping, grouping, and custom sorting.
- */
+
 public class StreamsDemo {
 
     public static void main(String[] args) {
@@ -97,9 +92,7 @@ public class StreamsDemo {
     }
 }
 
-/**
- * Model class representing an Employee.
- */
+
 class Employee {
     private final int id;
     private final String name;

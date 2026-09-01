@@ -1,8 +1,8 @@
-// Binary Search - extends linearSearch concept
+
 public class binarySearch {
     public static void main(String[] args) {
 
-        // Array must be sorted for Binary Search
+        
         int[] arr = {2, 5, 8, 12, 16, 23, 38, 56, 72, 91};
         int target = 23;
 
@@ -21,7 +21,7 @@ public class binarySearch {
             System.out.println("Element not found.");
         }
 
-        // Also search for a missing element
+        
         int missing = 50;
         int result2 = binarySearch(arr, missing);
         System.out.println("\nSearching for: " + missing);
@@ -42,7 +42,7 @@ public class binarySearch {
         int high = arr.length - 1;
 
         while (low <= high) {
-            // Prevent potential integer overflow compared to (low + high) / 2
+            
             int mid = low + (high - low) / 2;
 
             if (arr[mid] == target) {
@@ -53,12 +53,10 @@ public class binarySearch {
                 high = mid - 1;
             }
         }
-        return -1; // Not found
+        return -1; 
     }
 
-    /**
-     * Recursive Binary Search implementation.
-     */
+    
     static int binarySearchRecursive(int[] arr, int low, int high, int target) {
         if (arr == null || low > high) {
             return -1;

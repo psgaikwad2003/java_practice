@@ -1,4 +1,4 @@
-// Interface-based Polymorphism - extends Abstraction.java concept
+
 interface Shape {
     double area();
     double perimeter();

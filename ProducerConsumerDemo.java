@@ -1,12 +1,7 @@
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
-/**
- * Concurrency Design Pattern: Producer-Consumer Pattern
- * 
- * Frequently asked in Java multithreading technical interviews.
- * Uses BlockingQueue to handle thread synchronization without explicit wait/notify.
- */
+
 public class ProducerConsumerDemo {
 
     public static void main(String[] args) throws InterruptedException {
@@ -20,7 +15,7 @@ public class ProducerConsumerDemo {
             try {
                 for (int i = 1; i <= 5; i++) {
                     System.out.println("Producer producing message #" + i);
-                    queue.put(i); // blocks if queue is full
+                    queue.put(i); 
                     Thread.sleep(300);
                 }
             } catch (InterruptedException e) {
@@ -31,7 +26,7 @@ public class ProducerConsumerDemo {
         Thread consumerThread = new Thread(() -> {
             try {
                 for (int i = 1; i <= 5; i++) {
-                    int val = queue.take(); // blocks if queue is empty
+                    int val = queue.take(); 
                     System.out.println("   Consumer consumed message #" + val);
                     Thread.sleep(600);
                 }

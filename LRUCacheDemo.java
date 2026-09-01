@@ -1,16 +1,7 @@
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * Technical Interview Question: Design a Least Recently Used (LRU) Cache
- * 
- * Frequently asked in product & tech company interviews (Amazon, Microsoft, Google, Uber).
- * Requirements:
- * 1. get(key) - Get value of key if key exists, else return -1. Time complexity: O(1)
- * 2. put(key, value) - Update or insert key-value pair. If capacity exceeded, evict LRU item. Time complexity: O(1)
- * 
- * Data Structure Choice: HashMap + Doubly Linked List
- */
+
 public class LRUCacheDemo {
 
     public static void main(String[] args) {
@@ -26,24 +17,22 @@ public class LRUCacheDemo {
         cache.put("C", "Cherry");
         cache.displayState();
 
-        System.out.println("\nAccessing key 'A' (get('A')): " + cache.get("A")); // 'A' becomes MRU
+        System.out.println("\nAccessing key 'A' (get('A')): " + cache.get("A")); 
         cache.displayState();
 
         System.out.println("\nPutting key 'D' (put('D', 'Date')) - Capacity full, LRU key 'B' evicted!");
         cache.put("D", "Date");
         cache.displayState();
 
-        System.out.println("\nAccessing key 'B' (evicted key, get('B')): " + cache.get("B")); // null
+        System.out.println("\nAccessing key 'B' (evicted key, get('B')): " + cache.get("B")); 
 
         System.out.println("\nUpdating key 'C' (put('C', 'Cranberry'))");
-        cache.put("C", "Cranberry"); // 'C' updated and becomes MRU
+        cache.put("C", "Cranberry"); 
         cache.displayState();
     }
 }
 
-/**
- * Node class representing an entry in Doubly Linked List with Generic Types.
- */
+
 class Node<K, V> {
     K key;
     V value;
@@ -56,9 +45,7 @@ class Node<K, V> {
     }
 }
 
-/**
- * Custom Generic LRU Cache class.
- */
+
 class LRUCache<K, V> {
 
     private final int capacity;
@@ -70,17 +57,14 @@ class LRUCache<K, V> {
         this.capacity = capacity;
         this.map = new HashMap<>();
 
-        // Dummy head and tail nodes to avoid edge-case checks
+        
         this.head = new Node<>(null, null);
         this.tail = new Node<>(null, null);
         head.next = tail;
         tail.prev = head;
     }
 
-    /**
-     * Retrieves the value associated with the key.
-     * Moves the node to head (Most Recently Used).
-     */
+    
     public V get(K key) {
         if (!map.containsKey(key)) {
             return null;
@@ -91,10 +75,7 @@ class LRUCache<K, V> {
         return node.value;
     }
 
-    /**
-     * Inserts or updates key-value pair.
-     * Evicts Least Recently Used (tail.prev) node if capacity limit exceeded.
-     */
+    
     public void put(K key, V value) {
         if (map.containsKey(key)) {
             Node<K, V> existingNode = map.get(key);
@@ -103,7 +84,7 @@ class LRUCache<K, V> {
             addNodeToHead(existingNode);
         } else {
             if (map.size() >= capacity) {
-                // Evict LRU element (node right before dummy tail)
+                
                 Node<K, V> lruNode = tail.prev;
                 map.remove(lruNode.key);
                 removeNode(lruNode);
@@ -114,17 +95,13 @@ class LRUCache<K, V> {
         }
     }
 
-    /**
-     * Helper to remove node from its current position in doubly linked list.
-     */
+    
     private void removeNode(Node<K, V> node) {
         node.prev.next = node.next;
         node.next.prev = node.prev;
     }
 
-    /**
-     * Helper to insert node right after dummy head (making it Most Recently Used).
-     */
+    
     private void addNodeToHead(Node<K, V> node) {
         node.next = head.next;
         node.prev = head;
@@ -132,9 +109,7 @@ class LRUCache<K, V> {
         head.next = node;
     }
 
-    /**
-     * Helper to display current state of the cache from MRU to LRU.
-     */
+    
     public void displayState() {
         StringBuilder sb = new StringBuilder("Current Cache (MRU -> LRU): [");
         Node<K, V> curr = head.next;

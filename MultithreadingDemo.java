@@ -2,16 +2,7 @@ import java.util.concurrent.*;
 import java.util.concurrent.atomic.*;
 import java.util.concurrent.locks.*;
 
-/**
- * MultithreadingDemo.java
- * Covers core concurrency concepts for interviews:
- *  1. Thread creation (Runnable vs Callable)
- *  2. Race condition: unsafe vs synchronized vs atomic
- *  3. ReentrantLock with tryLock
- *  4. Deadlock demonstration
- *  5. CountDownLatch
- *  6. Semaphore
- */
+
 public class MultithreadingDemo {
 
     private static int unsafeCounter = 0;
@@ -34,7 +25,7 @@ public class MultithreadingDemo {
         demoSemaphore();
     }
 
-    // 1. Thread Creation
+    
     static void demoThreadCreation() throws Exception {
         System.out.println("── 1. Thread Creation ──────────────────");
         Thread t1 = new Thread(() ->
@@ -49,7 +40,7 @@ public class MultithreadingDemo {
         System.out.println();
     }
 
-    // 2. Race Condition
+    
     static void demoRaceCondition() throws InterruptedException {
         System.out.println("── 2. Race Condition ───────────────────");
         int iterations = 100_000;
@@ -88,7 +79,7 @@ public class MultithreadingDemo {
 
     private static synchronized void incrementSync() { syncCounter++; }
 
-    // 3. ReentrantLock with tryLock
+    
     static void demoReentrantLock() throws InterruptedException {
         System.out.println("── 3. ReentrantLock ────────────────────");
         Runnable task = () -> {
@@ -110,7 +101,7 @@ public class MultithreadingDemo {
         System.out.println();
     }
 
-    // 4. Deadlock Demo
+    
     static void demoDeadlock() throws InterruptedException {
         System.out.println("── 4. Deadlock Demo ────────────────────");
         Thread d1 = new Thread(() -> {
@@ -134,7 +125,7 @@ public class MultithreadingDemo {
         System.out.println();
     }
 
-    // 5. CountDownLatch
+    
     static void demoCountDownLatch() throws InterruptedException {
         System.out.println("── 5. CountDownLatch ───────────────────");
         CountDownLatch latch = new CountDownLatch(3);
@@ -151,7 +142,7 @@ public class MultithreadingDemo {
         System.out.println("  All workers finished!\n");
     }
 
-    // 6. Semaphore
+    
     static void demoSemaphore() throws InterruptedException {
         System.out.println("── 6. Semaphore (2 permits) ────────────");
         Semaphore sem = new Semaphore(2);

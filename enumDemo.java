@@ -1,20 +1,14 @@
 import java.util.Optional;
 
-/**
- * Comprehensive Demonstration of Enums in Java.
- * 
- * Enums (Enumerations) define a fixed set of named constants.
- * In Java, enums are full-fledged classes that can contain fields,
- * constructors, methods, and implement interfaces.
- */
+
 public class enumDemo {
 
-    // Simple Enum definition
+    
     public enum Day {
         SUNDAY, MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY
     }
 
-    // Enum with Fields, Constructor, and Custom Methods
+    
     public enum OrderStatus {
         PENDING(1, "Order placed, awaiting payment"),
         PROCESSING(2, "Payment confirmed, preparing item"),
@@ -25,7 +19,7 @@ public class enumDemo {
         private final int statusCode;
         private final String description;
 
-        // Enum constructors are implicitly private
+        
         OrderStatus(int statusCode, String description) {
             this.statusCode = statusCode;
             this.description = description;
@@ -39,12 +33,12 @@ public class enumDemo {
             return description;
         }
 
-        // Custom instance method inside Enum
+        
         public boolean isTerminalState() {
             return this == DELIVERED || this == CANCELLED;
         }
 
-        // Static lookup method by status code
+        
         public static Optional<OrderStatus> fromCode(int code) {
             for (OrderStatus status : values()) {
                 if (status.statusCode == code) {
@@ -91,8 +85,8 @@ public class enumDemo {
         System.out.println("==================================================");
         OrderStatus currentStatus = OrderStatus.SHIPPED;
 
-        System.out.println("Name: " + currentStatus.name());        // SHIPPED
-        System.out.println("Ordinal (Index): " + currentStatus.ordinal()); // 2
+        System.out.println("Name: " + currentStatus.name());        
+        System.out.println("Ordinal (Index): " + currentStatus.ordinal()); 
         System.out.println("ValueOf: " + OrderStatus.valueOf("DELIVERED"));
 
         System.out.println("\n==================================================");
