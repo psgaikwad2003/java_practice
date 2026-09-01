@@ -3,6 +3,7 @@ import java.util.concurrent.Phaser;
 /**
  * Demonstrates the usage of Phaser, a more flexible synchronization barrier 
  * compared to CyclicBarrier and CountDownLatch.
+ * UPDATED: Added simulated workload for realism.
  */
 public class PhaserComplexDemo {
     public static void main(String[] args) {
@@ -13,9 +14,13 @@ public class PhaserComplexDemo {
             phaser.register();
             final int threadId = i;
             new Thread(() -> {
+                System.out.println("Thread " + threadId + " working on phase 0");
+                simulateWork(500);
                 System.out.println("Thread " + threadId + " completing phase 0");
                 phaser.arriveAndAwaitAdvance();
                 
+                System.out.println("Thread " + threadId + " working on phase 1");
+                simulateWork(500);
                 System.out.println("Thread " + threadId + " completing phase 1");
                 phaser.arriveAndDeregister();
             }).start();
@@ -26,7 +31,14 @@ public class PhaserComplexDemo {
         
         System.out.println("Main thread deregistering");
         phaser.arriveAndDeregister();
-        
-        System.out.println("Phaser terminated: " + phaser.isTerminated());
+        System.out.println("Phaser complex demo finished.");
+    }
+    
+    private static void simulateWork(int ms) {
+        try {
+            Thread.sleep(ms);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
     }
 }
