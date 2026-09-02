@@ -17,3 +17,4 @@ public class ArmstrongNumber {
         }
     }
 }
+// Updated for demonstration
