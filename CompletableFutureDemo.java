@@ -23,3 +23,4 @@ public class CompletableFutureDemo {
         System.out.println("Length of string: " + lengthFuture.get());
     }
 }
+// Updated for demonstration
