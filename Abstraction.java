@@ -19,3 +19,4 @@ public class Abstraction {
         c.area();
     }
 }
+// Updated for demonstration
