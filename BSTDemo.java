@@ -95,3 +95,4 @@ public class BSTDemo {
         System.out.println("Search 90: " + bst.search(90)); 
     }
 }
+// Updated for demonstration
