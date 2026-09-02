@@ -15,3 +15,4 @@ public class BinaryToDecimal {
         System.out.println("Binary " + num + " in Decimal is: " + decimalNumber);
     }
 }
+// Updated for demonstration
