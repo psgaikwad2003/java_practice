@@ -22,3 +22,4 @@ public class AtomicIntegerDemo {
         System.out.println("Final Counter Value: " + counter.get());
     }
 }
+// Updated for demonstration
