@@ -120,7 +120,7 @@ javac StreamsDemo.java
 java StreamsDemo
 ```
 
----
+-----
 
 ## 🤝 Contributing
 
