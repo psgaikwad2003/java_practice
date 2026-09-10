@@ -5,6 +5,9 @@ public class ArmstrongNumber {
 
     /**
      * Counts the number of digits in a positive integer.
+     *
+     * @param num the number to count digits for
+     * @return the number of digits (returns 1 for 0)
      */
     public static int countDigits(long num) {
         if (num == 0) return 1;
@@ -21,6 +24,9 @@ public class ArmstrongNumber {
      * Checks if a number is an Armstrong (Narcissistic) number for any N digits.
      * A number is Armstrong if the sum of its own digits each raised to the power
      * of the number of digits equals the number itself.
+     *
+     * @param number the number to check (must be non-negative)
+     * @return true if number is an Armstrong number, false otherwise
      */
     public static boolean isArmstrong(long number) {
         if (number < 0) return false;
@@ -40,6 +46,10 @@ public class ArmstrongNumber {
 
     /**
      * Finds all Armstrong numbers within an inclusive range [start, end].
+     *
+     * @param start the start of the range
+     * @param end   the end of the range
+     * @return a list of Armstrong numbers in [start, end]
      */
     public static List<Long> findArmstrongNumbers(long start, long end) {
         List<Long> list = new ArrayList<>();
@@ -49,6 +59,20 @@ public class ArmstrongNumber {
             }
         }
         return list;
+    }
+
+    /**
+     * Finds the next Armstrong number strictly greater than the given value.
+     *
+     * @param from the starting value (exclusive)
+     * @return the smallest Armstrong number greater than from
+     */
+    public static long nextArmstrong(long from) {
+        long candidate = Math.max(0, from) + 1;
+        while (!isArmstrong(candidate)) {
+            candidate++;
+        }
+        return candidate;
     }
 
     public static void main(String[] args) {
@@ -63,5 +87,11 @@ public class ArmstrongNumber {
         List<Long> found = findArmstrongNumbers(0, 10000);
         System.out.println(found);
         System.out.println("Total found: " + found.size());
+
+        System.out.println("\n=== Next Armstrong Number After... ===");
+        long[] seeds = {0, 9, 100, 400, 1000};
+        for (long seed : seeds) {
+            System.out.printf("Next Armstrong after %5d -> %d%n", seed, nextArmstrong(seed));
+        }
     }
 }
