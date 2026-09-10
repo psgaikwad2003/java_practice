@@ -35,7 +35,10 @@ public class ReadWriteLockCacheDemo {
         }
 
         /**
-         * Writes key-value pair. Exclusive access.
+         * Writes a key-value pair into the cache under exclusive write lock.
+         *
+         * @param key   the cache key
+         * @param value the value to associate with the key
          */
         public void put(K key, V value) {
             writeLock.lock();
@@ -47,7 +50,7 @@ public class ReadWriteLockCacheDemo {
         }
 
         /**
-         * Clears cache with exclusive write lock.
+         * Clears all entries in the cache under an exclusive write lock.
          */
         public void clear() {
             writeLock.lock();
@@ -55,6 +58,36 @@ public class ReadWriteLockCacheDemo {
                 internalMap.clear();
             } finally {
                 writeLock.unlock();
+            }
+        }
+
+        /**
+         * Returns the number of entries currently in the cache.
+         * Uses a shared read lock for concurrent access safety.
+         *
+         * @return the current entry count
+         */
+        public int size() {
+            readLock.lock();
+            try {
+                return internalMap.size();
+            } finally {
+                readLock.unlock();
+            }
+        }
+
+        /**
+         * Checks whether the cache contains a mapping for the given key.
+         *
+         * @param key the key to look up
+         * @return true if the key exists in the cache, false otherwise
+         */
+        public boolean containsKey(K key) {
+            readLock.lock();
+            try {
+                return internalMap.containsKey(key);
+            } finally {
+                readLock.unlock();
             }
         }
 
