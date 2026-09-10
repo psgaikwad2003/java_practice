@@ -2,7 +2,11 @@ public class PalindromeString {
 
     /**
      * Checks if a string is a palindrome using two pointers.
+     * Case-insensitive comparison. Empty strings are considered palindromes.
      * Time Complexity: O(n), Space Complexity: O(1)
+     *
+     * @param str the string to check
+     * @return true if str is a palindrome, false otherwise
      */
     public static boolean isPalindrome(String str) {
         if (str == null) return false;
@@ -22,6 +26,9 @@ public class PalindromeString {
     /**
      * Checks if a phrase is a palindrome, considering only alphanumeric characters and ignoring cases.
      * Classic LeetCode #125 pattern.
+     *
+     * @param s the phrase to check
+     * @return true if the phrase is a palindrome when ignoring non-alphanumeric chars
      */
     public static boolean isPalindromePhrase(String s) {
         if (s == null) return false;
@@ -45,11 +52,28 @@ public class PalindromeString {
         return true;
     }
 
+    /**
+     * Checks if a string is a palindrome using StringBuilder reversal.
+     * Simple but uses O(n) extra space.
+     * Time Complexity: O(n), Space Complexity: O(n)
+     *
+     * @param str the string to check
+     * @return true if the string equals its reverse (case-sensitive)
+     */
+    public static boolean isPalindromeReverse(String str) {
+        if (str == null) return false;
+        String reversed = new StringBuilder(str).reverse().toString();
+        return str.equalsIgnoreCase(reversed);
+    }
+
     public static void main(String[] args) {
         System.out.println("=== Palindrome Word Check (Two-Pointer) ===");
-        String[] words = {"Radar", "Level", "Madam", "Java", "noon", "hello"};
+        String[] words = {"Radar", "Level", "Madam", "Java", "noon", "hello", "", "a"};
         for (String word : words) {
-            System.out.printf("'%s' is palindrome? %s%n", word, isPalindrome(word) ? "YES" : "NO");
+            System.out.printf("'%s' -> Two-Pointer: %-3s | StringBuilder: %s%n",
+                word,
+                isPalindrome(word) ? "YES" : "NO",
+                isPalindromeReverse(word) ? "YES" : "NO");
         }
 
         System.out.println("\n=== Palindrome Phrase Check (Alphanumeric Only) ===");
@@ -65,3 +89,4 @@ public class PalindromeString {
         }
     }
 }
+
