@@ -22,8 +22,14 @@ public class DecoratorPatternDemo {
     // SCENARIO 1: BEVERAGE CUSTOMIZER
     // =========================================================================
 
+    /**
+     * Represents a Beverage with a human-readable description and a price.
+     * Concrete implementations provide base beverages; decorators wrap them to add condiments.
+     */
     public interface Beverage {
+        /** @return a human-readable description of the beverage and its condiments */
         String getDescription();
+        /** @return the total cost of the beverage in USD */
         double cost();
     }
 
@@ -46,6 +52,11 @@ public class DecoratorPatternDemo {
 
         public CondimentDecorator(Beverage beverage) {
             this.beverage = beverage;
+        }
+
+        @Override
+        public String toString() {
+            return String.format("%s [$%.2f]", getDescription(), cost());
         }
     }
 
@@ -79,6 +90,15 @@ public class DecoratorPatternDemo {
         public String getDescription() { return beverage.getDescription() + " + Caramel Drizzle"; }
         @Override
         public double cost() { return beverage.cost() + 0.55; }
+    }
+
+    /** New condiment: Vanilla syrup adds a sweet vanilla flavour. */
+    public static class Vanilla extends CondimentDecorator {
+        public Vanilla(Beverage beverage) { super(beverage); }
+        @Override
+        public String getDescription() { return beverage.getDescription() + " + Vanilla Syrup"; }
+        @Override
+        public double cost() { return beverage.cost() + 0.45; }
     }
 
     // =========================================================================
