@@ -43,8 +43,22 @@ public class TopologicalSortDemo {
         }
 
         /**
+         * Prints the adjacency list representation of the graph to standard output.
+         * Useful for debugging and visualizing the graph structure.
+         */
+        public void printAdjacencyList() {
+            System.out.println("Graph Adjacency List ("+vertices+" vertices):");
+            for (int u = 0; u < vertices; u++) {
+                System.out.print("  " + u + " -> ");
+                System.out.println(adj.get(u).isEmpty() ? "(no outgoing edges)" : adj.get(u));
+            }
+        }
+        /**
          * Kahn's Algorithm (BFS based).
          * Returns topological order, or empty list if a cycle is detected.
+         *
+         * @return a topologically sorted list of vertex indices, or empty list if a cycle exists
+         * @implNote Time Complexity: O(V + E)
          */
         public List<Integer> topologicalSortKahn() {
             int[] inDegree = new int[vertices];
