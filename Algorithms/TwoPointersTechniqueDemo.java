@@ -139,6 +139,28 @@ public class TwoPointersTechniqueDemo {
         return totalWater;
     }
 
+    /**
+     * 5. Remove Duplicates from Sorted Array II (LeetCode #80).
+     * Modifies array in-place so that each unique element appears at most twice.
+     * Time: O(n), Space: O(1).
+     *
+     * @param nums sorted input array
+     * @return the number of valid elements in modified array
+     */
+    public static int removeDuplicatesAllowTwo(int[] nums) {
+        if (nums == null) return 0;
+        if (nums.length <= 2) return nums.length;
+
+        int slow = 2;
+        for (int fast = 2; fast < nums.length; fast++) {
+            if (nums[fast] != nums[slow - 2]) {
+                nums[slow] = nums[fast];
+                slow++;
+            }
+        }
+        return slow;
+    }
+
     public static void main(String[] args) {
         System.out.println("=== Two Pointers Technique Demonstrations ===\n");
 
