@@ -21,6 +21,25 @@ public class FunctionalInterfaceDemo {
         R apply(A a, B b, C c);
     }
 
+    /**
+     * Functional interface allowing checked exceptions, with an uncheck adapter
+     * to seamlessly use exception-throwing lambdas inside Stream pipelines.
+     */
+    @FunctionalInterface
+    interface CheckedFunction<T, R, E extends Throwable> {
+        R apply(T t) throws E;
+
+        static <T, R> Function<T, R> uncheck(CheckedFunction<T, R, ?> function) {
+            return t -> {
+                try {
+                    return function.apply(t);
+                } catch (Throwable e) {
+                    throw new RuntimeException("Checked exception wrapped in RuntimeException: " + e.getMessage(), e);
+                }
+            };
+        }
+    }
+
     
     static class Employee {
         String name;
@@ -49,6 +68,24 @@ public class FunctionalInterfaceDemo {
         demoSupplier();
         demoMethodReferences();
         demoRealWorldPipeline();
+        demoCheckedFunction();
+    }
+
+    static void demoCheckedFunction() {
+        System.out.println("── 8. Checked Exception in Streams ─────");
+        List<String> rawUris = Arrays.asList("https://example.com", "ftp://files.example.org", "invalid uri with spaces");
+
+        CheckedFunction<String, java.net.URI, java.net.URISyntaxException> parser = java.net.URI::new;
+
+        for (String uriStr : rawUris) {
+            try {
+                java.net.URI uri = CheckedFunction.uncheck(parser).apply(uriStr);
+                System.out.println("  Parsed URI: " + uri.getScheme() + "://" + uri.getHost());
+            } catch (RuntimeException re) {
+                System.out.println("  Safely caught wrapped checked exception for '" + uriStr + "': " + re.getCause().getClass().getSimpleName());
+            }
+        }
+        System.out.println();
     }
 
     static void demoCustomInterface() {
