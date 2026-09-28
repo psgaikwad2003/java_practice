@@ -91,14 +91,84 @@ public class TrieDataStructureDemo {
         return true;
     }
 
+    /**
+     * Returns all words stored in the Trie that begin with the given prefix (Autocomplete).
+     *
+     * @param prefix the prefix query
+     * @return list of matching complete words
+     */
+    static java.util.List<String> wordsWithPrefix(String prefix) {
+        java.util.List<String> results = new java.util.ArrayList<>();
+        if (prefix == null || root == null) return results;
+
+        TrieNode curr = root;
+        for (int i = 0; i < prefix.length(); i++) {
+            int idx = prefix.charAt(i) - 'a';
+            if (curr.children[idx] == null) return results;
+            curr = curr.children[idx];
+        }
+
+        collectWords(curr, new StringBuilder(prefix), results);
+        return results;
+    }
+
+    private static void collectWords(TrieNode node, StringBuilder sb, java.util.List<String> results) {
+        if (node == null) return;
+        if (node.isEndOfWord) {
+            results.add(sb.toString());
+        }
+        for (int i = 0; i < 26; i++) {
+            if (node.children[i] != null) {
+                sb.append((char) ('a' + i));
+                collectWords(node.children[i], sb, results);
+                sb.deleteCharAt(sb.length() - 1);
+            }
+        }
+    }
+
+    /**
+     * Counts the total number of words present in the Trie.
+     */
+    static int countWords() {
+        return countWordsHelper(root);
+    }
+
+    private static int countWordsHelper(TrieNode node) {
+        if (node == null) return 0;
+        int count = node.isEndOfWord ? 1 : 0;
+        for (int i = 0; i < 26; i++) {
+            count += countWordsHelper(node.children[i]);
+        }
+        return count;
+    }
+
     public static void main(String[] args) {
-        System.out.println("Trie Data Structure Implementation");
+        System.out.println("=== Trie Data Structure Implementation ===");
         String[] keys = {"the", "a", "there", "answer", "any", "by", "bye", "their"};
         root = new TrieNode();
         for (String key : keys) insert(key);
+
+        System.out.println("Initial word count: " + countWords());
+
+        System.out.println("\n--- Search Tests ---");
         System.out.println("the --- " + search("the"));
         System.out.println("these --- " + search("these"));
         System.out.println("their --- " + search("their"));
         System.out.println("thaw --- " + search("thaw"));
+
+        System.out.println("\n--- Prefix Search (startsWith) ---");
+        System.out.println("startsWith('th'): " + startsWith("th"));
+        System.out.println("startsWith('an'): " + startsWith("an"));
+        System.out.println("startsWith('xyz'): " + startsWith("xyz"));
+
+        System.out.println("\n--- Autocomplete Suggestions ---");
+        System.out.println("Prefix 'th' -> " + wordsWithPrefix("th"));
+        System.out.println("Prefix 'an' -> " + wordsWithPrefix("an"));
+
+        System.out.println("\n--- Deletion Tests ---");
+        System.out.println("Deleting 'their': " + delete("their"));
+        System.out.println("Search 'their' after deletion: " + search("their"));
+        System.out.println("Search 'the' after deleting 'their': " + search("the"));
+        System.out.println("Word count after deletion: " + countWords());
     }
 }
