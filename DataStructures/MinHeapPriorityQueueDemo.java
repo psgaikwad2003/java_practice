@@ -20,15 +20,25 @@ public class MinHeapPriorityQueueDemo {
     public static class MinHeap<T extends Comparable<T>> {
         private Object[] heap;
         private int size;
+        private final Comparator<? super T> comparator;
         private static final int DEFAULT_CAPACITY = 10;
 
         public MinHeap() {
-            this(DEFAULT_CAPACITY);
+            this(DEFAULT_CAPACITY, null);
         }
 
         public MinHeap(int initialCapacity) {
+            this(initialCapacity, null);
+        }
+
+        public MinHeap(Comparator<? super T> comparator) {
+            this(DEFAULT_CAPACITY, comparator);
+        }
+
+        public MinHeap(int initialCapacity, Comparator<? super T> comparator) {
             this.heap = new Object[Math.max(initialCapacity, 1)];
             this.size = 0;
+            this.comparator = comparator;
         }
 
         /**
@@ -128,6 +138,9 @@ public class MinHeapPriorityQueueDemo {
 
         @SuppressWarnings("unchecked")
         private int compare(int i, int j) {
+            if (comparator != null) {
+                return comparator.compare((T) heap[i], (T) heap[j]);
+            }
             return ((T) heap[i]).compareTo((T) heap[j]);
         }
 
