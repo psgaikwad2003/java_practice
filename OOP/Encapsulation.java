@@ -89,6 +89,45 @@ class BankAccount {
         System.out.println("----------------------------------------------------------------------");
     }
 
+    /**
+     * Atomically transfers funds from this account to a recipient account.
+     *
+     * @param recipient target BankAccount
+     * @param amount    amount to transfer
+     * @throws InsufficientFundsException if balance is insufficient
+     * @throws IllegalArgumentException   if recipient is null or self, or amount invalid
+     */
+    public void transferTo(BankAccount recipient, double amount) throws InsufficientFundsException {
+        if (recipient == null) {
+            throw new IllegalArgumentException("Recipient account cannot be null.");
+        }
+        if (recipient == this) {
+            throw new IllegalArgumentException("Cannot transfer funds to the same account.");
+        }
+        if (amount <= 0) {
+            throw new IllegalArgumentException("Transfer amount must be positive.");
+        }
+        if (amount > this.balance) {
+            throw new InsufficientFundsException(
+                String.format("Transfer failed: Insufficient funds in %s to transfer $%.2f (Current balance: $%.2f)",
+                    accountNumber, amount, balance)
+            );
+        }
+
+        this.balance -= amount;
+        String txId = java.util.UUID.randomUUID().toString().substring(0, 8);
+        this.transactionHistory.add(new TransactionRecord(
+            txId, "TRANSFER_OUT", amount, this.balance, java.time.LocalDateTime.now()
+        ));
+
+        recipient.balance += amount;
+        recipient.transactionHistory.add(new TransactionRecord(
+            txId, "TRANSFER_IN", amount, recipient.balance, java.time.LocalDateTime.now()
+        ));
+
+        System.out.printf("Transferred $%.2f from %s to %s successfully.%n", amount, this.accountNumber, recipient.accountNumber);
+    }
+
     @Deprecated
     public double setBalance() {
         return getBalance();
@@ -102,19 +141,27 @@ public class Encapsulation {
         System.out.println(" Encapsulation & Robust Exception Handling");
         System.out.println("==================================================");
 
-        BankAccount acc = new BankAccount("ACC-987654", 1000.00);
-        acc.deposit(500.00);
+        BankAccount acc1 = new BankAccount("ACC-987654", 1000.00);
+        BankAccount acc2 = new BankAccount("ACC-123456", 250.00);
+        acc1.deposit(500.00);
 
         try {
-            acc.withdraw(300.00);
-            System.out.println("Current Balance: $" + acc.getBalance());
+            acc1.withdraw(300.00);
+            System.out.println("Current Balance: $" + acc1.getBalance());
+
+            System.out.println("\n--- Transferring Funds ---");
+            acc1.transferTo(acc2, 450.00);
 
             System.out.println("\nAttempting overdraw ($2000)...");
-            acc.withdraw(2000.00);
+            acc1.withdraw(2000.00);
         } catch (InsufficientFundsException e) {
             System.err.println("Caught Exception: " + e.getMessage());
         } catch (IllegalArgumentException e) {
             System.err.println("Validation Error: " + e.getMessage());
         }
+
+        System.out.println("\n=== Account Statements ===");
+        acc1.printStatement();
+        acc2.printStatement();
     }
 }
