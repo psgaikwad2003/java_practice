@@ -92,6 +92,27 @@ public class GCDCalculator {
         return Math.abs(a / gcd(a, b) * b);
     }
 
+    /**
+     * Computes the Modular Multiplicative Inverse of a modulo m using the Extended Euclidean Algorithm.
+     * Finds x such that (a * x) % m == 1.
+     * A modular inverse exists if and only if gcd(a, m) == 1 (i.e., a and m are coprime).
+     *
+     * @param a the number
+     * @param m the modulus (must be > 1)
+     * @return the modular inverse in the range [0, m - 1]
+     * @throws ArithmeticException if modular inverse does not exist
+     */
+    public static long modInverse(long a, long m) {
+        if (m <= 1) {
+            throw new IllegalArgumentException("Modulus m must be greater than 1.");
+        }
+        ExtendedGCDResult result = extendedGCD(a, m);
+        if (result.gcd() != 1) {
+            throw new ArithmeticException(String.format("Modular inverse does not exist: %d and %d are not coprime (gcd = %d).", a, m, result.gcd()));
+        }
+        return (result.x() % m + m) % m;
+    }
+
     public static void main(String[] args) {
         System.out.println("=== Greatest Common Divisor (GCD) Calculations ===");
 
@@ -114,5 +135,27 @@ public class GCDCalculator {
         System.out.println("LCM(0, 12) = " + lcm(0, 12));
         System.out.println("LCM(4, 6) = " + lcm(4, 6));
         System.out.println("LCM(21, 14) = " + lcm(21, 14));
+
+        System.out.println("\n=== Extended Euclidean Algorithm (Bézout Identity) ===");
+        long exA = 35, exB = 15;
+        ExtendedGCDResult ext = extendedGCD(exA, exB);
+        System.out.printf("%d*(%d) + %d*(%d) = %d (GCD)%n",
+            exA, ext.x(), exB, ext.y(), ext.gcd());
+
+        long exA2 = 240, exB2 = 46;
+        ExtendedGCDResult ext2 = extendedGCD(exA2, exB2);
+        System.out.printf("%d*(%d) + %d*(%d) = %d (GCD)%n",
+            exA2, ext2.x(), exB2, ext2.y(), ext2.gcd());
+
+        System.out.println("\n=== Modular Multiplicative Inverse ===");
+        long val = 3, mod = 11;
+        long inv = modInverse(val, mod);
+        System.out.printf("Modular inverse of %d mod %d = %d (Check: (%d * %d) %% %d = %d)%n",
+            val, mod, inv, val, inv, mod, (val * inv) % mod);
+
+        long val2 = 10, mod2 = 17;
+        long inv2 = modInverse(val2, mod2);
+        System.out.printf("Modular inverse of %d mod %d = %d (Check: (%d * %d) %% %d = %d)%n",
+            val2, mod2, inv2, val2, inv2, mod2, (val2 * inv2) % mod2);
     }
 }
