@@ -96,12 +96,48 @@ public class ArmstrongNumber {
         return candidate;
     }
 
+    /**
+     * Returns a formatted mathematical breakdown explaining why the number is or isn't Armstrong.
+     * Example: "153 = 1^3 + 5^3 + 3^3 = 1 + 125 + 27 = 153 (Armstrong)"
+     *
+     * @param number the number to explain
+     * @return explanatory string
+     */
+    public static String getArmstrongBreakdown(long number) {
+        if (number < 0) return number + " is negative, hence not an Armstrong number.";
+        int power = countDigits(number);
+        String s = String.valueOf(number);
+        List<String> terms = new ArrayList<>();
+        List<Long> evaluated = new ArrayList<>();
+        long total = 0;
+
+        for (int i = 0; i < s.length(); i++) {
+            long d = s.charAt(i) - '0';
+            long termVal = intPow(d, power);
+            terms.add(d + "^" + power);
+            evaluated.add(termVal);
+            total += termVal;
+        }
+
+        String termsStr = String.join(" + ", terms);
+        String evalStr = evaluated.stream().map(String::valueOf).reduce((a, b) -> a + " + " + b).orElse("0");
+        boolean matches = (total == number);
+        return String.format("%d: %s = %s = %d -> %s",
+            number, termsStr, evalStr, total, matches ? "VALID ARMSTRONG" : "NOT ARMSTRONG");
+    }
+
     public static void main(String[] args) {
         System.out.println("=== Generalized Armstrong (Narcissistic) Number Checker ===");
 
         long[] testCases = {0, 1, 9, 153, 370, 371, 407, 1634, 8208, 9474, 54748, 100};
         for (long n : testCases) {
             System.out.printf("%6d is Armstrong? %s%n", n, isArmstrong(n) ? "YES" : "NO");
+        }
+
+        System.out.println("\n=== Detailed Mathematical Breakdown ===");
+        long[] sampleDecompositions = {153, 370, 1634, 9474, 123};
+        for (long n : sampleDecompositions) {
+            System.out.println("  " + getArmstrongBreakdown(n));
         }
 
         System.out.println("\n=== All Armstrong Numbers in Range [0, 10000] ===");
