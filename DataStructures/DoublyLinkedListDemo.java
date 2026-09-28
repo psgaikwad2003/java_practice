@@ -184,6 +184,44 @@ public class DoublyLinkedListDemo<T> implements Iterable<T> {
         };
     }
 
+    /**
+     * Returns an iterator over the elements in this list in reverse (tail to head) sequence.
+     *
+     * @return a reverse iterator
+     */
+    public Iterator<T> descendingIterator() {
+        return new Iterator<>() {
+            private Node<T> current = tail.prev;
+
+            @Override
+            public boolean hasNext() {
+                return current != head;
+            }
+
+            @Override
+            public T next() {
+                if (!hasNext()) throw new NoSuchElementException();
+                T data = current.data;
+                current = current.prev;
+                return data;
+            }
+        };
+    }
+
+    /**
+     * Converts the linked list into an array of Objects.
+     *
+     * @return an Object array containing all elements in forward order
+     */
+    public Object[] toArray() {
+        Object[] result = new Object[size];
+        int i = 0;
+        for (Node<T> curr = head.next; curr != tail; curr = curr.next) {
+            result[i++] = curr.data;
+        }
+        return result;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("[");
