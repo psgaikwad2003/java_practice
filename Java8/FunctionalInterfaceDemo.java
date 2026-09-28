@@ -69,6 +69,7 @@ public class FunctionalInterfaceDemo {
         demoMethodReferences();
         demoRealWorldPipeline();
         demoCheckedFunction();
+        demoMemoization();
     }
 
     static void demoCheckedFunction() {
@@ -88,6 +89,29 @@ public class FunctionalInterfaceDemo {
         System.out.println();
     }
 
+    static void demoMemoization() {
+        System.out.println("── 9. Memoized Functions ───────────────");
+        Function<Integer, Long> fib = memoize(new Function<Integer, Long>() {
+            @Override
+            public Long apply(Integer n) {
+                if (n <= 1) return (long) n;
+                return this.apply(n - 1) + this.apply(n - 2);
+            }
+        });
+
+        long start = System.nanoTime();
+        long val1 = fib.apply(40);
+        long time1 = System.nanoTime() - start;
+
+        start = System.nanoTime();
+        long val2 = fib.apply(40);
+        long time2 = System.nanoTime() - start;
+
+        System.out.printf("  Fib(40) first call  : %d (took %.3f ms)%n", val1, time1 / 1_000_000.0);
+        System.out.printf("  Fib(40) cached call : %d (took %.3f ms)%n", val2, time2 / 1_000_000.0);
+        System.out.println();
+    }
+
     static void demoCustomInterface() {
         System.out.println("── 1. Custom Functional Interface ──────");
         StringProcessor trim = String::trim;
@@ -100,8 +124,19 @@ public class FunctionalInterfaceDemo {
 
         
         TriFunction<String, String, Double, Employee> factory = Employee::new;
-        Employee emp = factory.apply("Alice", "Eng", 95000);
+        Employee emp = factory.apply("Alice", "Eng", 95000.0);
         System.out.println("  Created: " + emp + "\n");
+    }
+
+    /**
+     * Decorates a Function with thread-safe memoization caching computed results.
+     *
+     * @param fn the function to memoize
+     * @return memoized function
+     */
+    public static <T, R> Function<T, R> memoize(Function<T, R> fn) {
+        java.util.concurrent.ConcurrentMap<T, R> cache = new java.util.concurrent.ConcurrentHashMap<>();
+        return key -> cache.computeIfAbsent(key, fn);
     }
 
     static void demoPredicateChaining() {
