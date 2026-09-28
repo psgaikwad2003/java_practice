@@ -54,6 +54,31 @@ public class GCDCalculator {
     }
 
     /**
+     * Represents the result of the Extended Euclidean Algorithm:
+     * gcd = a * x + b * y
+     */
+    public record ExtendedGCDResult(long gcd, long x, long y) {}
+
+    /**
+     * Computes the Extended Euclidean Algorithm to find integers x and y (Bézout coefficients)
+     * such that: a * x + b * y = gcd(a, b).
+     *
+     * @param a first integer
+     * @param b second integer
+     * @return ExtendedGCDResult containing gcd, x, and y
+     */
+    public static ExtendedGCDResult extendedGCD(long a, long b) {
+        if (b == 0) {
+            return new ExtendedGCDResult(Math.abs(a), a < 0 ? -1 : 1, 0);
+        }
+        ExtendedGCDResult next = extendedGCD(b, a % b);
+        long gcd = next.gcd();
+        long x = next.y();
+        long y = next.x() - (a / b) * next.y();
+        return new ExtendedGCDResult(gcd, x, y);
+    }
+
+    /**
      * Computes the Least Common Multiple (LCM) of two numbers using the GCD identity:
      * LCM(a, b) = |a * b| / GCD(a, b).
      * Time Complexity: O(log(min(a, b)))
