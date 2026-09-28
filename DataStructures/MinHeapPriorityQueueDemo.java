@@ -309,7 +309,7 @@ public class MinHeapPriorityQueueDemo {
 
         // Demo 6: Max-Heap using Reverse Comparator
         System.out.println("\n[6] Max-Heap using Custom Reverse Comparator:");
-        MinHeap<Integer> maxHeap = new MinHeap<>(Comparator.reverseOrder());
+        MinHeap<Integer> maxHeap = new MinHeap<>(Comparator.<Integer>reverseOrder());
         for (int v : new int[]{12, 45, 19, 99, 3}) maxHeap.insert(v);
         System.out.print("    Extracted in descending order: ");
         while (!maxHeap.isEmpty()) {
