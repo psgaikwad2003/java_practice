@@ -21,6 +21,27 @@ public class ArmstrongNumber {
     }
 
     /**
+     * Fast integer exponentiation to avoid floating-point inaccuracies from Math.pow.
+     *
+     * @param base the base
+     * @param exp  the exponent (non-negative)
+     * @return base raised to exp
+     */
+    public static long intPow(long base, int exp) {
+        long result = 1;
+        long b = base;
+        int e = exp;
+        while (e > 0) {
+            if ((e & 1) == 1) {
+                result *= b;
+            }
+            b *= b;
+            e >>= 1;
+        }
+        return result;
+    }
+
+    /**
      * Checks if a number is an Armstrong (Narcissistic) number for any N digits.
      * A number is Armstrong if the sum of its own digits each raised to the power
      * of the number of digits equals the number itself.
@@ -37,7 +58,7 @@ public class ArmstrongNumber {
 
         while (original > 0) {
             long digit = original % 10;
-            sum += Math.round(Math.pow(digit, power));
+            sum += intPow(digit, power);
             original /= 10;
         }
 
