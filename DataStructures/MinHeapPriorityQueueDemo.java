@@ -98,6 +98,51 @@ public class MinHeapPriorityQueueDemo {
             return minVal;
         }
 
+        /**
+         * Checks if the heap contains the specified element.
+         *
+         * @param value element to search for
+         * @return true if found, false otherwise
+         */
+        public boolean contains(T value) {
+            return indexOf(value) != -1;
+        }
+
+        /**
+         * Removes a single instance of the specified element from the heap, if present.
+         *
+         * @param value element to be removed
+         * @return true if an element was removed
+         */
+        public boolean remove(T value) {
+            int index = indexOf(value);
+            if (index == -1) return false;
+
+            int lastIdx = size - 1;
+            if (index == lastIdx) {
+                heap[lastIdx] = null;
+                size--;
+                return true;
+            }
+
+            heap[index] = heap[lastIdx];
+            heap[lastIdx] = null;
+            size--;
+
+            heapifyDown(index);
+            heapifyUp(index);
+            return true;
+        }
+
+        private int indexOf(T value) {
+            for (int i = 0; i < size; i++) {
+                if (Objects.equals(heap[i], value)) {
+                    return i;
+                }
+            }
+            return -1;
+        }
+
         private void heapifyUp(int index) {
             while (index > 0) {
                 int parentIndex = (index - 1) / 2;
@@ -252,6 +297,25 @@ public class MinHeapPriorityQueueDemo {
         while (!scheduler.isEmpty()) {
             System.out.println("    Executing: " + scheduler.extractMin());
         }
+
+        // Demo 5: Arbitrary Element Removal & Contains
+        System.out.println("\n[5] Arbitrary Element Removal and Contains Check:");
+        MinHeap<Integer> removalHeap = new MinHeap<>();
+        int[] vals = {50, 30, 20, 15, 10, 8, 16};
+        for (int v : vals) removalHeap.insert(v);
+        System.out.println("    Contains 20? " + removalHeap.contains(20));
+        System.out.println("    Removing 20: " + removalHeap.remove(20));
+        System.out.println("    Contains 20 after removal? " + removalHeap.contains(20));
+
+        // Demo 6: Max-Heap using Reverse Comparator
+        System.out.println("\n[6] Max-Heap using Custom Reverse Comparator:");
+        MinHeap<Integer> maxHeap = new MinHeap<>(Comparator.reverseOrder());
+        for (int v : new int[]{12, 45, 19, 99, 3}) maxHeap.insert(v);
+        System.out.print("    Extracted in descending order: ");
+        while (!maxHeap.isEmpty()) {
+            System.out.print(maxHeap.extractMin() + " ");
+        }
+        System.out.println();
 
         System.out.println("\nAll Min-Heap Priority Queue tests passed successfully.");
     }
