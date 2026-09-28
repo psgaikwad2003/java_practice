@@ -188,5 +188,48 @@ public class TwoPointersTechniqueDemo {
         System.out.println("\n4. Trapping Rain Water:");
         System.out.println("   Elevation: " + Arrays.toString(elevation));
         System.out.println("   Trapped Water: " + trapRainWater(elevation) + " units");
+
+        // 5. Remove Duplicates II
+        int[] dupArr = {1, 1, 1, 2, 2, 3};
+        System.out.println("\n5. Remove Duplicates Allowing At Most Two Occurrences:");
+        System.out.println("   Original: " + Arrays.toString(dupArr));
+        int newLen = removeDuplicatesAllowTwo(dupArr);
+        System.out.println("   New Length: " + newLen + ", Valid Elements: " + Arrays.toString(Arrays.copyOf(dupArr, newLen)));
+
+        // 6. Dutch National Flag Sort Colors
+        int[] colors = {2, 0, 2, 1, 1, 0};
+        System.out.println("\n6. Sort Colors (Dutch National Flag 0, 1, 2):");
+        System.out.println("   Before: " + Arrays.toString(colors));
+        sortColors(colors);
+        System.out.println("   After:  " + Arrays.toString(colors));
+    }
+
+    /**
+     * 6. Dutch National Flag problem (LeetCode #75 - Sort Colors).
+     * Sorts an array containing only 0s, 1s, and 2s in-place in one pass.
+     * Time: O(n), Space: O(1).
+     *
+     * @param nums array containing values 0, 1, or 2
+     */
+    public static void sortColors(int[] nums) {
+        if (nums == null || nums.length <= 1) return;
+        int low = 0, mid = 0, high = nums.length - 1;
+
+        while (mid <= high) {
+            if (nums[mid] == 0) {
+                int temp = nums[low];
+                nums[low] = nums[mid];
+                nums[mid] = temp;
+                low++;
+                mid++;
+            } else if (nums[mid] == 1) {
+                mid++;
+            } else {
+                int temp = nums[mid];
+                nums[mid] = nums[high];
+                nums[high] = temp;
+                high--;
+            }
+        }
     }
 }
