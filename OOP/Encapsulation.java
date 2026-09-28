@@ -4,9 +4,19 @@ class InsufficientFundsException extends Exception {
     }
 }
 
+record TransactionRecord(String transactionId, String type, double amount, double resultingBalance, java.time.LocalDateTime timestamp) {
+    @Override
+    public String toString() {
+        return String.format("[%s] %-10s | Amount: $%8.2f | Balance: $%8.2f | ID: %s",
+            timestamp.format(java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")),
+            type, amount, resultingBalance, transactionId);
+    }
+}
+
 class BankAccount {
     private final String accountNumber;
     private double balance;
+    private final java.util.List<TransactionRecord> transactionHistory;
 
     public BankAccount(String accountNumber, double initialBalance) {
         if (initialBalance < 0) {
@@ -14,6 +24,13 @@ class BankAccount {
         }
         this.accountNumber = accountNumber;
         this.balance = initialBalance;
+        this.transactionHistory = new java.util.ArrayList<>();
+        if (initialBalance > 0) {
+            transactionHistory.add(new TransactionRecord(
+                java.util.UUID.randomUUID().toString().substring(0, 8),
+                "INITIAL", initialBalance, balance, java.time.LocalDateTime.now()
+            ));
+        }
     }
 
     public void deposit(double amount) {
@@ -21,6 +38,10 @@ class BankAccount {
             throw new IllegalArgumentException("Deposit amount must be positive.");
         }
         balance += amount;
+        transactionHistory.add(new TransactionRecord(
+            java.util.UUID.randomUUID().toString().substring(0, 8),
+            "DEPOSIT", amount, balance, java.time.LocalDateTime.now()
+        ));
         System.out.printf("Deposited $%.2f into account %s. New Balance: $%.2f%n", amount, accountNumber, balance);
     }
 
@@ -34,6 +55,10 @@ class BankAccount {
             );
         }
         balance -= amount;
+        transactionHistory.add(new TransactionRecord(
+            java.util.UUID.randomUUID().toString().substring(0, 8),
+            "WITHDRAWAL", amount, balance, java.time.LocalDateTime.now()
+        ));
         System.out.printf("Withdrew $%.2f from account %s. Remaining Balance: $%.2f%n", amount, accountNumber, balance);
     }
 
@@ -43,6 +68,25 @@ class BankAccount {
 
     public String getAccountNumber() {
         return accountNumber;
+    }
+
+    public java.util.List<TransactionRecord> getTransactionHistory() {
+        return java.util.Collections.unmodifiableList(transactionHistory);
+    }
+
+    public void printStatement() {
+        System.out.println("----------------------------------------------------------------------");
+        System.out.println("  STATEMENT FOR ACCOUNT: " + accountNumber);
+        System.out.println("----------------------------------------------------------------------");
+        if (transactionHistory.isEmpty()) {
+            System.out.println("  (No transactions recorded)");
+        } else {
+            for (TransactionRecord record : transactionHistory) {
+                System.out.println("  " + record);
+            }
+        }
+        System.out.printf("  Current Settled Balance: $%.2f%n", balance);
+        System.out.println("----------------------------------------------------------------------");
     }
 
     @Deprecated
