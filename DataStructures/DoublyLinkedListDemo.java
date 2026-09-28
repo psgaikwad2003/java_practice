@@ -76,6 +76,37 @@ public class DoublyLinkedListDemo<T> implements Iterable<T> {
         return unlink(tail.prev);
     }
 
+    /**
+     * Inserts an element at the specified index.
+     *
+     * @param index index at which the specified element is to be inserted (0 <= index <= size)
+     * @param element element to be inserted
+     */
+    public void insertAt(int index, T element) {
+        if (index < 0 || index > size) {
+            throw new IndexOutOfBoundsException("Index: " + index + ", Size: " + size);
+        }
+        if (index == 0) {
+            addFirst(element);
+        } else if (index == size) {
+            addLast(element);
+        } else {
+            Node<T> succ = getNode(index);
+            insertAfter(succ.prev, element);
+        }
+    }
+
+    /**
+     * Removes the element at the specified index.
+     *
+     * @param index index of the element to be removed (0 <= index < size)
+     * @return the removed element
+     */
+    public T removeAt(int index) {
+        checkElementIndex(index);
+        return unlink(getNode(index));
+    }
+
     public boolean removeValue(T value) {
         Node<T> curr = head.next;
         while (curr != tail) {
@@ -270,5 +301,24 @@ public class DoublyLinkedListDemo<T> implements Iterable<T> {
         System.out.println("\nReversing list in-place...");
         list.reverse();
         System.out.println("Reversed list: " + list);
+
+        // Index-based insertion and removal tests
+        System.out.println("\n=== Index Insertion & Removal Tests ===");
+        list.insertAt(1, "InsertedAt1");
+        System.out.println("After insertAt(1, 'InsertedAt1'): " + list);
+        String removedAt1 = list.removeAt(1);
+        System.out.println("Removed at index 1: " + removedAt1 + " -> " + list);
+
+        // Descending Iterator test
+        System.out.print("\nDescending Iteration: ");
+        Iterator<String> descIt = list.descendingIterator();
+        while (descIt.hasNext()) {
+            System.out.print(descIt.next() + " ");
+        }
+        System.out.println();
+
+        // toArray test
+        Object[] arr = list.toArray();
+        System.out.println("toArray() length: " + arr.length + ", content: " + java.util.Arrays.toString(arr));
     }
 }
