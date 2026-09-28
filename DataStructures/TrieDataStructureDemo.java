@@ -32,6 +32,65 @@ public class TrieDataStructureDemo {
         return (pCrawl != null && pCrawl.isEndOfWord);
     }
 
+    /**
+     * Returns true if there is any word in the trie that starts with the given prefix.
+     *
+     * @param prefix the prefix to query
+     * @return true if prefix exists
+     */
+    static boolean startsWith(String prefix) {
+        if (prefix == null || root == null) return false;
+        TrieNode pCrawl = root;
+        for (int i = 0; i < prefix.length(); i++) {
+            int index = prefix.charAt(i) - 'a';
+            if (pCrawl.children[index] == null)
+                return false;
+            pCrawl = pCrawl.children[index];
+        }
+        return pCrawl != null;
+    }
+
+    /**
+     * Deletes a key from the trie, pruning child branches that have become unused.
+     *
+     * @param key word to delete
+     * @return true if word was present and successfully deleted
+     */
+    static boolean delete(String key) {
+        if (key == null || root == null) return false;
+        return deleteHelper(root, key, 0);
+    }
+
+    private static boolean deleteHelper(TrieNode current, String key, int depth) {
+        if (current == null) return false;
+
+        if (depth == key.length()) {
+            if (!current.isEndOfWord) return false;
+            current.isEndOfWord = false;
+            return true;
+        }
+
+        int index = key.charAt(depth) - 'a';
+        TrieNode child = current.children[index];
+        if (child == null) return false;
+
+        boolean deleted = deleteHelper(child, key, depth + 1);
+
+        // If child node is not end-of-word and has no children, prune it
+        if (deleted && !child.isEndOfWord && hasNoChildren(child)) {
+            current.children[index] = null;
+        }
+
+        return deleted;
+    }
+
+    private static boolean hasNoChildren(TrieNode node) {
+        for (int i = 0; i < 26; i++) {
+            if (node.children[i] != null) return false;
+        }
+        return true;
+    }
+
     public static void main(String[] args) {
         System.out.println("Trie Data Structure Implementation");
         String[] keys = {"the", "a", "there", "answer", "any", "by", "bye", "their"};
