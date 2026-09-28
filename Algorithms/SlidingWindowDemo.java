@@ -170,6 +170,36 @@ public class SlidingWindowDemo {
         return result;
     }
 
+    /**
+     * Problem 6: Max Consecutive Ones III (LeetCode #1004).
+     * Given a binary array and integer k, return the maximum number of consecutive 1's
+     * if you can flip at most k 0's.
+     *
+     * @param nums binary array
+     * @param k    allowed number of flips
+     * @return maximum window length
+     */
+    public static int longestOnes(int[] nums, int k) {
+        if (nums == null || nums.length == 0) return 0;
+        int left = 0;
+        int zeroCount = 0;
+        int maxLen = 0;
+
+        for (int right = 0; right < nums.length; right++) {
+            if (nums[right] == 0) {
+                zeroCount++;
+            }
+            while (zeroCount > k) {
+                if (nums[left] == 0) {
+                    zeroCount--;
+                }
+                left++;
+            }
+            maxLen = Math.max(maxLen, right - left + 1);
+        }
+        return maxLen;
+    }
+
     public static void main(String[] args) {
         System.out.println("==========================================");
         System.out.println("  SLIDING WINDOW ALGORITHMIC PATTERNS     ");
@@ -205,6 +235,21 @@ public class SlidingWindowDemo {
         System.out.println("\n[4] Find All Anagram Starting Indices:");
         System.out.println("    Text: \"" + text + "\", Pattern: \"" + pattern + "\"");
         System.out.println("    Indices: " + findAnagrams(text, pattern)); // Expected: [0, 6]
+
+        // Demo 5: Sliding Window Maximum
+        int[] maxArr = {1, 3, -1, -3, 5, 3, 6, 7};
+        int winK = 3;
+        System.out.println("\n[5] Sliding Window Maximum (k = " + winK + "):");
+        System.out.println("    Array: " + Arrays.toString(maxArr));
+        System.out.println("    Window Maxes: " + Arrays.toString(maxSlidingWindow(maxArr, winK)));
+
+        // Demo 6: Max Consecutive Ones with K Flips
+        int[] binArr = {1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 0};
+        int flips = 2;
+        System.out.println("\n[6] Max Consecutive Ones after at most " + flips + " flips:");
+        System.out.println("    Array: " + Arrays.toString(binArr));
+        System.out.println("    Max Length: " + longestOnes(binArr, flips));
+
         System.out.println("\nAll Sliding Window demonstrations completed successfully.");
     }
 }
