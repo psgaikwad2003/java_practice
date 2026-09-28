@@ -133,6 +133,43 @@ public class SlidingWindowDemo {
         return result;
     }
 
+    /**
+     * Problem 5: Sliding Window Maximum (LeetCode #239).
+     * Computes the maximum value in every sliding window of size k in O(n) time
+     * using a Monotonic Decreasing Deque storing array indices.
+     *
+     * @param nums input array
+     * @param k    window size
+     * @return array of maximums for each window
+     */
+    public static int[] maxSlidingWindow(int[] nums, int k) {
+        if (nums == null || nums.length == 0 || k <= 0) return new int[0];
+        int n = nums.length;
+        int[] result = new int[n - k + 1];
+        int resIdx = 0;
+        Deque<Integer> deque = new ArrayDeque<>();
+
+        for (int i = 0; i < n; i++) {
+            // Remove elements outside of current window [i - k + 1, i]
+            while (!deque.isEmpty() && deque.peekFirst() < i - k + 1) {
+                deque.pollFirst();
+            }
+
+            // Maintain monotonic decreasing order: remove smaller elements from back
+            while (!deque.isEmpty() && nums[deque.peekLast()] < nums[i]) {
+                deque.pollLast();
+            }
+
+            deque.offerLast(i);
+
+            // Record maximum for valid windows
+            if (i >= k - 1) {
+                result[resIdx++] = nums[deque.peekFirst()];
+            }
+        }
+        return result;
+    }
+
     public static void main(String[] args) {
         System.out.println("==========================================");
         System.out.println("  SLIDING WINDOW ALGORITHMIC PATTERNS     ");
