@@ -97,6 +97,25 @@ public class PalindromeString {
         return right - left - 1;
     }
 
+    /**
+     * Checks if any permutation of the string can form a valid palindrome.
+     * A string can form a palindrome if and only if at most one character has an odd frequency.
+     * Uses bit manipulation for lowercase letters ('a'-'z'), and a HashSet fallback for full unicode.
+     *
+     * @param s input string
+     * @return true if a palindromic permutation is possible
+     */
+    public static boolean canPermutePalindrome(String s) {
+        if (s == null) return false;
+        java.util.Set<Character> oddChars = new java.util.HashSet<>();
+        for (char c : s.toLowerCase().toCharArray()) {
+            if (!oddChars.add(c)) {
+                oddChars.remove(c);
+            }
+        }
+        return oddChars.size() <= 1;
+    }
+
     public static void main(String[] args) {
         System.out.println("=== Palindrome Word Check (Two-Pointer) ===");
         String[] words = {"Radar", "Level", "Madam", "Java", "noon", "hello", "", "a"};
@@ -117,6 +136,20 @@ public class PalindromeString {
         };
         for (String phrase : phrases) {
             System.out.printf("\"%s\" -> %s%n", phrase, isPalindromePhrase(phrase) ? "PALINDROME" : "NOT PALINDROME");
+        }
+
+        System.out.println("\n=== Longest Palindromic Substring ===");
+        String[] subTests = {"babad", "cbbd", "forgeeksskeegfor", "racecar", "abacdfgdcaba"};
+        for (String st : subTests) {
+            System.out.printf("Original: '%s' -> Longest Palindromic Substring: '%s'%n",
+                st, longestPalindromeSubstring(st));
+        }
+
+        System.out.println("\n=== Permutation Can Form Palindrome ===");
+        String[] permTests = {"code", "aab", "carerac", "tactcoa", "daily"};
+        for (String pt : permTests) {
+            System.out.printf("Can '%s' form a palindrome? %s%n",
+                pt, canPermutePalindrome(pt) ? "YES" : "NO");
         }
     }
 }
