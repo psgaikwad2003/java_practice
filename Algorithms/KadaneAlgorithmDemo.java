@@ -119,6 +119,66 @@ public class KadaneAlgorithmDemo {
         return Math.max(maxKadane, totalSum - minKadane);
     }
 
+    /**
+     * Calculates the maximum product contiguous subarray.
+     * Keeps track of both maximum and minimum products due to negative signs flipping parity.
+     *
+     * @param nums array of integers
+     * @return maximum contiguous subarray product
+     */
+    public static int maxProductSubArray(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            throw new IllegalArgumentException("Array cannot be null or empty");
+        }
+
+        int maxProd = nums[0];
+        int minProd = nums[0];
+        int result = nums[0];
+
+        for (int i = 1; i < nums.length; i++) {
+            int x = nums[i];
+            if (x < 0) {
+                int temp = maxProd;
+                maxProd = minProd;
+                minProd = temp;
+            }
+
+            maxProd = Math.max(x, maxProd * x);
+            minProd = Math.min(x, minProd * x);
+
+            result = Math.max(result, maxProd);
+        }
+
+        return result;
+    }
+
+    /**
+     * Maximum Subarray Sum with at most one element deleted.
+     * Uses two DP states:
+     * - noDelete: max subarray sum ending at current index without any deletion
+     * - oneDelete: max subarray sum ending at current index with exactly one deletion
+     */
+    public static int maxSubarrayWithOneDeletion(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            throw new IllegalArgumentException("Array cannot be null or empty");
+        }
+
+        int n = nums.length;
+        if (n == 1) return nums[0];
+
+        int noDelete = nums[0];
+        int oneDelete = 0;
+        int overallMax = nums[0];
+
+        for (int i = 1; i < n; i++) {
+            oneDelete = Math.max(oneDelete + nums[i], noDelete);
+            noDelete = Math.max(nums[i], noDelete + nums[i]);
+            overallMax = Math.max(overallMax, Math.max(noDelete, oneDelete));
+        }
+
+        return overallMax;
+    }
+
     public static void main(String[] args) {
         System.out.println("=== Kadane's Algorithm Demonstration ===\n");
 
@@ -147,5 +207,14 @@ public class KadaneAlgorithmDemo {
         System.out.println("Circular Showcase: " + Arrays.toString(circularTest));
         System.out.println("  Linear Max: " + maxSubArraySum(circularTest));
         System.out.println("  Circular Max: " + maxCircularSubarraySum(circularTest) + " (wraps 5 + 5 = 10)");
+
+        // Product subarray & one deletion demo
+        int[] prodArray = {2, 3, -2, 4, -1};
+        System.out.println("\nProduct Subarray Showcase: " + Arrays.toString(prodArray));
+        System.out.println("  Max Product: " + maxProductSubArray(prodArray));
+
+        int[] deleteArray = {1, -2, 0, 3};
+        System.out.println("\nOne Deletion Subarray Showcase: " + Arrays.toString(deleteArray));
+        System.out.println("  Max Sum (with at most 1 deletion): " + maxSubarrayWithOneDeletion(deleteArray) + " (deleted -2 to get 1+0+3=4)");
     }
 }
