@@ -27,6 +27,11 @@ public class RateLimiterTokenBucketDemo {
         private long lastRefillNanos;
         private final ReentrantLock lock = new ReentrantLock();
 
+        // Telemetry counters
+        private long totalRequests = 0;
+        private long acceptedRequests = 0;
+        private long throttledRequests = 0;
+
         public TokenBucketRateLimiter(long capacity, double refillTokensPerSecond) {
             if (capacity <= 0 || refillTokensPerSecond <= 0) {
                 throw new IllegalArgumentException("Capacity and refill rate must be positive.");
@@ -54,14 +59,66 @@ public class RateLimiterTokenBucketDemo {
 
             lock.lock();
             try {
+                totalRequests++;
                 refill();
                 if (availableTokens >= tokens) {
                     availableTokens -= tokens;
+                    acceptedRequests++;
                     return true;
                 }
+                throttledRequests++;
                 return false;
             } finally {
                 lock.unlock();
+            }
+        }
+
+        /**
+         * Timed acquire attempt: Waits up to the specified timeout for tokens to become available.
+         *
+         * @param tokens amount of tokens to acquire
+         * @param timeout maximum time to wait
+         * @param unit time unit
+         * @return true if acquired within timeout, false otherwise
+         */
+        public boolean tryAcquire(int tokens, long timeout, TimeUnit unit) throws InterruptedException {
+            if (tokens <= 0) return true;
+            if (tokens > capacity) return false;
+
+            long timeoutNanos = unit.toNanos(timeout);
+            long deadline = System.nanoTime() + timeoutNanos;
+
+            while (true) {
+                long waitNanos = 0;
+                lock.lock();
+                try {
+                    refill();
+                    if (availableTokens >= tokens) {
+                        availableTokens -= tokens;
+                        totalRequests++;
+                        acceptedRequests++;
+                        return true;
+                    }
+
+                    double missingTokens = tokens - availableTokens;
+                    waitNanos = (long) ((missingTokens / refillTokensPerSecond) * 1_000_000_000L);
+                } finally {
+                    lock.unlock();
+                }
+
+                long remainingNanos = deadline - System.nanoTime();
+                if (remainingNanos <= 0 || waitNanos > remainingNanos) {
+                    lock.lock();
+                    try {
+                        totalRequests++;
+                        throttledRequests++;
+                    } finally {
+                        lock.unlock();
+                    }
+                    return false;
+                }
+
+                TimeUnit.NANOSECONDS.sleep(Math.min(waitNanos, remainingNanos));
             }
         }
 
@@ -78,6 +135,8 @@ public class RateLimiterTokenBucketDemo {
                     refill();
                     if (availableTokens >= tokens) {
                         availableTokens -= tokens;
+                        totalRequests++;
+                        acceptedRequests++;
                         return; // Acquired successfully
                     }
 
@@ -119,6 +178,21 @@ public class RateLimiterTokenBucketDemo {
             } finally {
                 lock.unlock();
             }
+        }
+
+        public long getTotalRequests() {
+            lock.lock();
+            try { return totalRequests; } finally { lock.unlock(); }
+        }
+
+        public long getAcceptedRequests() {
+            lock.lock();
+            try { return acceptedRequests; } finally { lock.unlock(); }
+        }
+
+        public long getThrottledRequests() {
+            lock.lock();
+            try { return throttledRequests; } finally { lock.unlock(); }
         }
     }
 
@@ -184,6 +258,16 @@ public class RateLimiterTokenBucketDemo {
         System.out.println("    Total Requests: 10");
         System.out.println("    Accepted: " + acceptedCount.get() + " (Permitted by initial burst capacity)");
         System.out.println("    Throttled: " + rejectedCount.get());
+
+        // Demo 4: Timed tryAcquire with timeout
+        System.out.println("\n[4] Timed tryAcquire Demo:");
+        TokenBucketRateLimiter timedLimiter = new TokenBucketRateLimiter(1, 2.0); // 1 token, 2 tokens/sec
+        timedLimiter.tryAcquire(); // Drain
+        System.out.println("    Tokens drained. Attempting timed acquire with 600ms timeout...");
+        boolean acquiredWithinTimeout = timedLimiter.tryAcquire(1, 600, TimeUnit.MILLISECONDS);
+        System.out.println("    Acquired within 600ms? " + acquiredWithinTimeout);
+        System.out.printf("    Telemetry: Total=%d, Accepted=%d, Throttled=%d%n",
+                timedLimiter.getTotalRequests(), timedLimiter.getAcceptedRequests(), timedLimiter.getThrottledRequests());
 
         System.out.println("\nAll Token Bucket Rate Limiter tests completed successfully.");
     }
