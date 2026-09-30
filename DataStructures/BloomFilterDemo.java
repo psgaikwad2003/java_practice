@@ -118,6 +118,35 @@ public class BloomFilterDemo {
         return bitSet.cardinality();
     }
 
+    public int getInsertedElements() {
+        return insertedElements;
+    }
+
+    /**
+     * Calculates the theoretical false positive probability given the current number of inserted items.
+     * Formula: (1 - e^(-k * n / m))^k
+     */
+    public double currentFalsePositiveRate() {
+        if (bitSetSize == 0 || insertedElements == 0) return 0.0;
+        double exponent = -1.0 * numHashFunctions * insertedElements / bitSetSize;
+        return Math.pow(1.0 - Math.exp(exponent), numHashFunctions);
+    }
+
+    /**
+     * Performs a bitwise OR union of two compatible Bloom Filters.
+     * The resulting filter represents the union of elements from both filters.
+     *
+     * @param other another Bloom Filter with the exact same size and hash count
+     */
+    public void union(BloomFilterDemo other) {
+        if (other == null) return;
+        if (this.bitSetSize != other.bitSetSize || this.numHashFunctions != other.numHashFunctions) {
+            throw new IllegalArgumentException("Cannot merge Bloom Filters with incompatible configurations.");
+        }
+        this.bitSet.or(other.bitSet);
+        this.insertedElements += other.insertedElements;
+    }
+
     public static void main(String[] args) {
         System.out.println("=== Bloom Filter Probabilistic Data Structure Demo ===\n");
 
@@ -168,6 +197,21 @@ public class BloomFilterDemo {
         System.out.printf("Empirical Test on %d unseen keys:%n", testCount);
         System.out.printf("  False Positives:     %d%n", falsePositives);
         System.out.printf("  Empirical FP Rate:   %.4f%%%n", empiricalFPRate * 100);
+        System.out.printf("  Theoretical FP Rate: %.4f%%%n", bloomFilter.currentFalsePositiveRate() * 100);
         System.out.printf("  Target FP Rate was:  %.4f%%%n", targetFPRate * 100);
+
+        // 4. Test Bloom Filter Union (Merging two sets)
+        System.out.println("\n[4] Bloom Filter Union Demo:");
+        BloomFilterDemo bf1 = new BloomFilterDemo(1000, 0.01);
+        BloomFilterDemo bf2 = new BloomFilterDemo(1000, 0.01);
+        bf1.add("apple");
+        bf1.add("banana");
+        bf2.add("cherry");
+        bf2.add("date");
+
+        System.out.println("  Before merge, bf1 contains 'cherry'? " + bf1.mightContain("cherry"));
+        bf1.union(bf2);
+        System.out.println("  After union, bf1 contains 'cherry'? " + bf1.mightContain("cherry"));
+        System.out.println("  After union, bf1 contains 'apple'?  " + bf1.mightContain("apple"));
     }
 }
