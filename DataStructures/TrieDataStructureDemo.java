@@ -142,6 +142,68 @@ public class TrieDataStructureDemo {
         return count;
     }
 
+    /**
+     * Searches for a pattern where '.' can match any single arbitrary character.
+     *
+     * @param pattern wildcard pattern to search
+     * @return true if there is a match in the Trie
+     */
+    static boolean searchPattern(String pattern) {
+        if (pattern == null || root == null) return false;
+        return searchPatternHelper(root, pattern, 0);
+    }
+
+    private static boolean searchPatternHelper(TrieNode current, String pattern, int index) {
+        if (current == null) return false;
+        if (index == pattern.length()) return current.isEndOfWord;
+
+        char ch = pattern.charAt(index);
+        if (ch == '.') {
+            for (int i = 0; i < 26; i++) {
+                if (current.children[i] != null && searchPatternHelper(current.children[i], pattern, index + 1)) {
+                    return true;
+                }
+            }
+            return false;
+        } else {
+            int childIdx = ch - 'a';
+            if (childIdx < 0 || childIdx >= 26 || current.children[childIdx] == null) {
+                return false;
+            }
+            return searchPatternHelper(current.children[childIdx], pattern, index + 1);
+        }
+    }
+
+    /**
+     * Computes the Longest Common Prefix (LCP) of words present in the Trie.
+     * Traverses the Trie down until a node has more than one child or marks end of a word.
+     */
+    static String longestCommonPrefix() {
+        if (root == null) return "";
+        StringBuilder lcp = new StringBuilder();
+        TrieNode curr = root;
+
+        while (curr != null && !curr.isEndOfWord) {
+            int childCount = 0;
+            int nextIdx = -1;
+            for (int i = 0; i < 26; i++) {
+                if (curr.children[i] != null) {
+                    childCount++;
+                    nextIdx = i;
+                }
+            }
+
+            if (childCount != 1) {
+                break;
+            }
+
+            lcp.append((char) ('a' + nextIdx));
+            curr = curr.children[nextIdx];
+        }
+
+        return lcp.toString();
+    }
+
     public static void main(String[] args) {
         System.out.println("=== Trie Data Structure Implementation ===");
         String[] keys = {"the", "a", "there", "answer", "any", "by", "bye", "their"};
@@ -165,10 +227,23 @@ public class TrieDataStructureDemo {
         System.out.println("Prefix 'th' -> " + wordsWithPrefix("th"));
         System.out.println("Prefix 'an' -> " + wordsWithPrefix("an"));
 
+        System.out.println("\n--- Wildcard Search (.) ---");
+        System.out.println("searchPattern('th.r.'): " + searchPattern("th.r.")); // matches "there"
+        System.out.println("searchPattern('b..'): " + searchPattern("b.."));     // matches "bye"
+        System.out.println("searchPattern('..'): " + searchPattern(".."));       // matches "by"
+
         System.out.println("\n--- Deletion Tests ---");
         System.out.println("Deleting 'their': " + delete("their"));
         System.out.println("Search 'their' after deletion: " + search("their"));
         System.out.println("Search 'the' after deleting 'their': " + search("the"));
         System.out.println("Word count after deletion: " + countWords());
+
+        // LCP Demo with dedicated prefix root
+        TrieNode tempRoot = root;
+        root = new TrieNode();
+        for (String word : new String[]{"interspecies", "interstellar", "interstate"}) insert(word);
+        System.out.println("\n--- Longest Common Prefix Demo ---");
+        System.out.println("LCP of [interspecies, interstellar, interstate]: \"" + longestCommonPrefix() + "\"");
+        root = tempRoot; // restore
     }
 }
