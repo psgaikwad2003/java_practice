@@ -207,6 +207,32 @@ public class DecoratorPatternDemo {
         }
     }
 
+    /**
+     * Decorator that intercepts read and write operations on DataSource to log execution audit logs.
+     */
+    public static class LoggingDataSourceDecorator extends DataSourceDecorator {
+        public LoggingDataSourceDecorator(DataSource source) {
+            super(source);
+        }
+
+        @Override
+        public void writeData(String data) {
+            long start = System.nanoTime();
+            super.writeData(data);
+            long elapsedMicros = (System.nanoTime() - start) / 1000;
+            System.out.printf("  [LOG-WRITE] Wrote %d characters (%d µs)%n", data.length(), elapsedMicros);
+        }
+
+        @Override
+        public String readData() {
+            long start = System.nanoTime();
+            String result = super.readData();
+            long elapsedMicros = (System.nanoTime() - start) / 1000;
+            System.out.printf("  [LOG-READ] Read %d characters (%d µs)%n", result.length(), elapsedMicros);
+            return result;
+        }
+    }
+
     public static void main(String[] args) {
         System.out.println("==========================================");
         System.out.println("      DECORATOR PATTERN DEMONSTRATION     ");
@@ -234,20 +260,22 @@ public class DecoratorPatternDemo {
         );
         System.out.printf("3. Fully Loaded: %s -> $%.2f%n", luxuryDrink.getDescription(), luxuryDrink.cost());
 
-        // Demo 2: Composable Data Pipeline (Raw -> Encrypted -> Compressed)
+        // Demo 2: Composable Data Pipeline (Raw -> Encrypted -> Compressed -> Logged)
         System.out.println("\n--- [2] Composable Data Stream Pipeline ---");
         String originalSecret = "TopSecretPayload-SensitiveUserCredentials-2026";
         System.out.println("Original Data: " + originalSecret);
 
-        // Stacked decorator: Compression on top of Encryption on top of Raw Storage
-        DataSource pipeline = new CompressionDecorator(
-            new EncryptionDecorator(
-                new InMemoryDataSource()
+        // Stacked decorator: Logging on top of Compression on top of Encryption on top of Raw Storage
+        DataSource pipeline = new LoggingDataSourceDecorator(
+            new CompressionDecorator(
+                new EncryptionDecorator(
+                    new InMemoryDataSource()
+                )
             )
         );
 
         pipeline.writeData(originalSecret);
-        System.out.println("Data successfully written through [Compress -> Encrypt -> Storage] pipeline.");
+        System.out.println("Data successfully written through [Log -> Compress -> Encrypt -> Storage] pipeline.");
 
         String retrieved = pipeline.readData();
         System.out.println("Decoded & Read back: " + retrieved);
