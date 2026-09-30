@@ -99,6 +99,60 @@ public class MinHeapPriorityQueueDemo {
         }
 
         /**
+         * Replaces the minimum root element with a new value in a single O(log n) pass.
+         * More efficient than calling extractMin() followed by insert().
+         *
+         * @param newValue the value to insert at root
+         * @return the previous minimum value
+         */
+        @SuppressWarnings("unchecked")
+        public T replaceTop(T newValue) {
+            if (isEmpty()) {
+                throw new NoSuchElementException("Heap is empty.");
+            }
+            T oldMin = (T) heap[0];
+            heap[0] = newValue;
+            heapifyDown(0);
+            return oldMin;
+        }
+
+        /**
+         * In-place Heap Sort algorithm (O(n log n) time, O(1) auxiliary space).
+         */
+        public static <E extends Comparable<E>> void heapSort(E[] arr) {
+            if (arr == null || arr.length <= 1) return;
+            int n = arr.length;
+            for (int i = (n / 2) - 1; i >= 0; i--) {
+                maxHeapify(arr, n, i);
+            }
+            for (int i = n - 1; i > 0; i--) {
+                E temp = arr[0];
+                arr[0] = arr[i];
+                arr[i] = temp;
+                maxHeapify(arr, i, 0);
+            }
+        }
+
+        private static <E extends Comparable<E>> void maxHeapify(E[] arr, int n, int i) {
+            int largest = i;
+            int left = 2 * i + 1;
+            int right = 2 * i + 2;
+
+            if (left < n && arr[left].compareTo(arr[largest]) > 0) {
+                largest = left;
+            }
+            if (right < n && arr[right].compareTo(arr[largest]) > 0) {
+                largest = right;
+            }
+            if (largest != i) {
+                E swap = arr[i];
+                arr[i] = arr[largest];
+                arr[largest] = swap;
+                maxHeapify(arr, n, largest);
+            }
+        }
+
+        /**
          * Checks if the heap contains the specified element.
          *
          * @param value element to search for
@@ -316,6 +370,21 @@ public class MinHeapPriorityQueueDemo {
             System.out.print(maxHeap.extractMin() + " ");
         }
         System.out.println();
+
+        // Demo 7: Single-pass replaceTop
+        System.out.println("\n[7] Single-Pass replaceTop Optimization:");
+        MinHeap<Integer> topHeap = new MinHeap<>();
+        for (int v : new int[]{10, 20, 30, 40}) topHeap.insert(v);
+        System.out.println("    Current peek: " + topHeap.peek());
+        int oldMin = topHeap.replaceTop(25);
+        System.out.println("    Replaced top " + oldMin + " with 25. New peek: " + topHeap.peek());
+
+        // Demo 8: In-place Heap Sort
+        Integer[] unsorted = {64, 25, 12, 22, 11, 90};
+        System.out.println("\n[8] In-Place Heap Sort:");
+        System.out.println("    Original: " + Arrays.toString(unsorted));
+        MinHeap.heapSort(unsorted);
+        System.out.println("    Sorted:   " + Arrays.toString(unsorted));
 
         System.out.println("\nAll Min-Heap Priority Queue tests passed successfully.");
     }
