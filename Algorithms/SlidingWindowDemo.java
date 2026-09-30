@@ -200,6 +200,56 @@ public class SlidingWindowDemo {
         return maxLen;
     }
 
+    /**
+     * Problem 7: Minimum Window Substring (LeetCode #76).
+     * Finds the minimum window substring in s which contains all characters in t in O(n) time.
+     *
+     * @param s source string
+     * @param t target template string
+     * @return smallest substring of s containing all characters in t, or "" if none
+     */
+    public static String minWindowSubstring(String s, String t) {
+        if (s == null || t == null || s.length() < t.length()) return "";
+
+        Map<Character, Integer> targetMap = new HashMap<>();
+        for (char c : t.toCharArray()) {
+            targetMap.put(c, targetMap.getOrDefault(c, 0) + 1);
+        }
+
+        int required = targetMap.size();
+        int formed = 0;
+        Map<Character, Integer> windowCounts = new HashMap<>();
+
+        int[] ans = {-1, 0, 0}; // length, left, right
+        int left = 0;
+
+        for (int right = 0; right < s.length(); right++) {
+            char c = s.charAt(right);
+            windowCounts.put(c, windowCounts.getOrDefault(c, 0) + 1);
+
+            if (targetMap.containsKey(c) && windowCounts.get(c).intValue() == targetMap.get(c).intValue()) {
+                formed++;
+            }
+
+            while (left <= right && formed == required) {
+                c = s.charAt(left);
+                if (ans[0] == -1 || (right - left + 1) < ans[0]) {
+                    ans[0] = right - left + 1;
+                    ans[1] = left;
+                    ans[2] = right;
+                }
+
+                windowCounts.put(c, windowCounts.get(c) - 1);
+                if (targetMap.containsKey(c) && windowCounts.get(c) < targetMap.get(c)) {
+                    formed--;
+                }
+                left++;
+            }
+        }
+
+        return ans[0] == -1 ? "" : s.substring(ans[1], ans[2] + 1);
+    }
+
     public static void main(String[] args) {
         System.out.println("==========================================");
         System.out.println("  SLIDING WINDOW ALGORITHMIC PATTERNS     ");
@@ -249,6 +299,13 @@ public class SlidingWindowDemo {
         System.out.println("\n[6] Max Consecutive Ones after at most " + flips + " flips:");
         System.out.println("    Array: " + Arrays.toString(binArr));
         System.out.println("    Max Length: " + longestOnes(binArr, flips));
+
+        // Demo 7: Minimum Window Substring
+        String sourceStr = "ADOBECODEBANC";
+        String targetPattern = "ABC";
+        System.out.println("\n[7] Minimum Window Substring:");
+        System.out.println("    Source: \"" + sourceStr + "\", Target: \"" + targetPattern + "\"");
+        System.out.println("    Minimum Window: \"" + minWindowSubstring(sourceStr, targetPattern) + "\" (Expected: \"BANC\")");
 
         System.out.println("\nAll Sliding Window demonstrations completed successfully.");
     }
