@@ -4,28 +4,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-/**
- * Demonstrates the Composite Design Pattern (Structural Pattern).
- * 
- * Intent: Compose objects into tree structures to represent part-whole hierarchies.
- * Composite lets clients treat individual objects (leaves) and compositions
- * of objects (composites) uniformly.
- * 
- * Included Examples:
- * 1. File System Hierarchy: Files (Leaf) and Directories (Composite) with recursive
- *    size calculations, formatting tree prints, and keyword searches.
- * 2. Enterprise Organization Tree: Individual Contributors (Leaf) and Managers/Departments
- *    (Composite) with aggregate salary rollups and headcount calculations.
- */
 public class CompositePatternDemo {
 
-    // =========================================================================
-    // Example 1: File System Tree Structure (Leaves & Composite Nodes)
-    // =========================================================================
-
-    /**
-     * Component Interface for File System entries.
-     */
     public interface FileSystemNode {
         String getName();
         long getSizeInBytes();
@@ -33,9 +13,6 @@ public class CompositePatternDemo {
         List<FileSystemNode> search(String query);
     }
 
-    /**
-     * Leaf: Represents an individual file with no children.
-     */
     public static class FileLeaf implements FileSystemNode {
         private final String name;
         private final long sizeInBytes;
@@ -65,9 +42,6 @@ public class CompositePatternDemo {
         }
     }
 
-    /**
-     * Composite: Represents a directory containing other directories and files.
-     */
     public static class DirectoryComposite implements FileSystemNode {
         private final String name;
         private final List<FileSystemNode> children = new ArrayList<>();
@@ -94,7 +68,7 @@ public class CompositePatternDemo {
 
         @Override
         public long getSizeInBytes() {
-            // Recursive calculation over all child components
+
             return children.stream().mapToLong(FileSystemNode::getSizeInBytes).sum();
         }
 
@@ -120,13 +94,6 @@ public class CompositePatternDemo {
         }
     }
 
-    // =========================================================================
-    // Example 2: Enterprise Organization and Budget Hierarchy
-    // =========================================================================
-
-    /**
-     * Component Interface for corporate entities.
-     */
     public interface CorporateMember {
         String getName();
         String getTitle();
@@ -135,9 +102,6 @@ public class CompositePatternDemo {
         void printOrgChart(String indent);
     }
 
-    /**
-     * Leaf: Individual contributor (Engineer, Designer, Analyst).
-     */
     public static class IndividualContributor implements CorporateMember {
         private final String name;
         private final String title;
@@ -167,9 +131,6 @@ public class CompositePatternDemo {
         }
     }
 
-    /**
-     * Composite: Manager or Department leading direct reports or sub-teams.
-     */
     public static class TeamLeadComposite implements CorporateMember {
         private final String name;
         private final String title;
@@ -204,7 +165,7 @@ public class CompositePatternDemo {
 
         @Override
         public int getHeadcount() {
-            int count = 1; // self
+            int count = 1;
             for (CorporateMember report : directReports) {
                 count += report.getHeadcount();
             }
@@ -221,16 +182,11 @@ public class CompositePatternDemo {
         }
     }
 
-    // =========================================================================
-    // Demonstration and Verification
-    // =========================================================================
-
     public static void main(String[] args) {
         System.out.println("=========================================================");
         System.out.println("          COMPOSITE DESIGN PATTERN DEMONSTRATION         ");
         System.out.println("=========================================================");
 
-        // --- Demo 1: File System Tree ---
         System.out.println("\n[Demo 1] Constructing and Traversing Nested File System:");
         DirectoryComposite rootDir = new DirectoryComposite("Workspace");
         DirectoryComposite srcDir = new DirectoryComposite("src");
@@ -249,17 +205,14 @@ public class CompositePatternDemo {
 
         rootDir.add(srcDir).add(testDir).add(docsDir).add(new FileLeaf(".gitignore", 120));
 
-        // Uniform tree display
         rootDir.display("");
 
-        // Recursive search across arbitrary depth
         System.out.println("\n--- Search Results for query 'java': ---");
         List<FileSystemNode> searchHits = rootDir.search("java");
         for (FileSystemNode hit : searchHits) {
             System.out.printf("  Found: %-22s (Size: %d bytes)%n", hit.getName(), hit.getSizeInBytes());
         }
 
-        // --- Demo 2: Corporate Org Hierarchy ---
         System.out.println("\n[Demo 2] Enterprise Corporate Hierarchy & Rollup Costs:");
         TeamLeadComposite engineeringVP = new TeamLeadComposite("Sophia Chen", "VP of Engineering", 22000.0);
         TeamLeadComposite backendLead = new TeamLeadComposite("Marcus Vance", "Backend Tech Lead", 14500.0);
@@ -273,7 +226,6 @@ public class CompositePatternDemo {
 
         engineeringVP.addMember(backendLead).addMember(frontendLead);
 
-        // Print entire organization hierarchy uniformly
         engineeringVP.printOrgChart("");
 
         System.out.printf("%nSummary for %s's Division:%n", engineeringVP.getName());

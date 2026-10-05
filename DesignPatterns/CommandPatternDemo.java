@@ -5,20 +5,8 @@ import java.util.ArrayList;
 import java.util.Deque;
 import java.util.List;
 
-/**
- * Demonstrates the Command Design Pattern (Behavioral Pattern) with Undo / Redo support.
- * 
- * Components:
- * 1. Command Interface: execute() and undo().
- * 2. Receiver (TextDocument): Performs the actual text mutations.
- * 3. Concrete Commands: InsertTextCommand, DeleteTextCommand, MacroCommand.
- * 4. Invoker (CommandHistoryManager): Maintains undo/redo stacks.
- */
 public class CommandPatternDemo {
 
-    // =========================================================================
-    // 1. Receiver: Holds state and primitives
-    // =========================================================================
     public static class TextDocument {
         private final StringBuilder content = new StringBuilder();
 
@@ -44,18 +32,12 @@ public class CommandPatternDemo {
         }
     }
 
-    // =========================================================================
-    // 2. Command Interface
-    // =========================================================================
     public interface Command {
         void execute();
         void undo();
         String getDescription();
     }
 
-    // =========================================================================
-    // 3. Concrete Commands
-    // =========================================================================
     public static class InsertTextCommand implements Command {
         private final TextDocument document;
         private final int position;
@@ -139,9 +121,6 @@ public class CommandPatternDemo {
         }
     }
 
-    /**
-     * Composite Macro Command to execute multiple commands as a single atomic batch.
-     */
     public static class MacroCommand implements Command {
         private final List<Command> commands = new ArrayList<>();
         private final String name;
@@ -163,7 +142,7 @@ public class CommandPatternDemo {
 
         @Override
         public void undo() {
-            // Undo in reverse order of execution
+
             for (int i = commands.size() - 1; i >= 0; i--) {
                 commands.get(i).undo();
             }
@@ -175,9 +154,6 @@ public class CommandPatternDemo {
         }
     }
 
-    // =========================================================================
-    // 4. Invoker: Tracks History for Undo / Redo
-    // =========================================================================
     public static class CommandHistoryManager {
         private final Deque<Command> undoStack = new ArrayDeque<>();
         private final Deque<Command> redoStack = new ArrayDeque<>();
@@ -185,7 +161,7 @@ public class CommandPatternDemo {
         public void executeCommand(Command command) {
             command.execute();
             undoStack.push(command);
-            redoStack.clear(); // Clear redo stack on new operation
+            redoStack.clear();
             System.out.printf("  [Executed] %s%n", command.getDescription());
         }
 
@@ -228,7 +204,6 @@ public class CommandPatternDemo {
 
         System.out.println("Initial Document: " + doc);
 
-        // 1. Execute sequential insert commands
         manager.executeCommand(new InsertTextCommand(doc, 0, "Hello"));
         System.out.println("  Doc: " + doc);
 
@@ -238,28 +213,24 @@ public class CommandPatternDemo {
         manager.executeCommand(new InsertTextCommand(doc, doc.getLength(), "!"));
         System.out.println("  Doc: " + doc);
 
-        // 2. Undo operations
         System.out.println("\n--- Testing Undo ---");
-        manager.undo(); // removes '!'
+        manager.undo();
         System.out.println("  Doc: " + doc);
 
-        manager.undo(); // removes ' World'
+        manager.undo();
         System.out.println("  Doc: " + doc);
 
-        // 3. Redo operations
         System.out.println("\n--- Testing Redo ---");
-        manager.redo(); // restores ' World'
+        manager.redo();
         System.out.println("  Doc: " + doc);
 
-        // 4. Delete operation
         System.out.println("\n--- Testing Delete Command ---");
-        manager.executeCommand(new DeleteTextCommand(doc, 0, 5)); // Deletes "Hello"
+        manager.executeCommand(new DeleteTextCommand(doc, 0, 5));
         System.out.println("  Doc: " + doc);
 
-        manager.undo(); // Restores "Hello"
+        manager.undo();
         System.out.println("  Doc after undoing delete: " + doc);
 
-        // 5. Macro Command
         System.out.println("\n--- Testing Macro / Batch Command ---");
         MacroCommand addSignatureMacro = new MacroCommand("Add Signature");
         addSignatureMacro.add(new AppendTextCommand(doc, "\nBest regards,"));

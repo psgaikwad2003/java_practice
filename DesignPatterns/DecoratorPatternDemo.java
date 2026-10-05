@@ -4,32 +4,12 @@ import java.util.Base64;
 import java.util.zip.Deflater;
 import java.util.zip.Inflater;
 
-/**
- * Demonstrates the Decorator Structural Design Pattern.
- *
- * Core Concept:
- * - Attaches additional responsibilities and behavior to an object dynamically.
- * - Provides a flexible, composable alternative to subclassing for extending functionality.
- * - Adheres to the Open/Closed Principle (classes open for extension, closed for modification).
- *
- * Scenarios implemented:
- * 1. Beverage Order Customizer (Coffee Shop condiment stack with dynamic pricing).
- * 2. Data Stream Processing Pipeline (Encryption + Compression wrapper around raw storage).
- */
 public class DecoratorPatternDemo {
 
-    // =========================================================================
-    // SCENARIO 1: BEVERAGE CUSTOMIZER
-    // =========================================================================
-
-    /**
-     * Represents a Beverage with a human-readable description and a price.
-     * Concrete implementations provide base beverages; decorators wrap them to add condiments.
-     */
     public interface Beverage {
-        /** @return a human-readable description of the beverage and its condiments */
+
         String getDescription();
-        /** @return the total cost of the beverage in USD */
+
         double cost();
     }
 
@@ -92,7 +72,6 @@ public class DecoratorPatternDemo {
         public double cost() { return beverage.cost() + 0.55; }
     }
 
-    /** New condiment: Vanilla syrup adds a sweet vanilla flavour. */
     public static class Vanilla extends CondimentDecorator {
         public Vanilla(Beverage beverage) { super(beverage); }
         @Override
@@ -100,10 +79,6 @@ public class DecoratorPatternDemo {
         @Override
         public double cost() { return beverage.cost() + 0.45; }
     }
-
-    // =========================================================================
-    // SCENARIO 2: DATA STREAM PIPELINE (ENCRYPTION + COMPRESSION)
-    // =========================================================================
 
     public interface DataSource {
         void writeData(String data);
@@ -207,9 +182,6 @@ public class DecoratorPatternDemo {
         }
     }
 
-    /**
-     * Decorator that intercepts read and write operations on DataSource to log execution audit logs.
-     */
     public static class LoggingDataSourceDecorator extends DataSourceDecorator {
         public LoggingDataSourceDecorator(DataSource source) {
             super(source);
@@ -238,17 +210,14 @@ public class DecoratorPatternDemo {
         System.out.println("      DECORATOR PATTERN DEMONSTRATION     ");
         System.out.println("==========================================");
 
-        // Demo 1: Dynamic Beverage Building
         System.out.println("\n--- [1] Coffee Customization ---");
         Beverage order1 = new Espresso();
         System.out.printf("1. Plain: %s -> $%.2f%n", order1.getDescription(), order1.cost());
 
-        // Decorate with Milk and Mocha
         order1 = new SteamedMilk(order1);
         order1 = new Mocha(order1);
         System.out.printf("2. Layered: %s -> $%.2f%n", order1.getDescription(), order1.cost());
 
-        // Decorate Dark Roast with Milk, Mocha, Whip, Caramel
         Beverage luxuryDrink = new CaramelDrizzle(
             new WhippedCream(
                 new Mocha(
@@ -260,12 +229,10 @@ public class DecoratorPatternDemo {
         );
         System.out.printf("3. Fully Loaded: %s -> $%.2f%n", luxuryDrink.getDescription(), luxuryDrink.cost());
 
-        // Demo 2: Composable Data Pipeline (Raw -> Encrypted -> Compressed -> Logged)
         System.out.println("\n--- [2] Composable Data Stream Pipeline ---");
         String originalSecret = "TopSecretPayload-SensitiveUserCredentials-2026";
         System.out.println("Original Data: " + originalSecret);
 
-        // Stacked decorator: Logging on top of Compression on top of Encryption on top of Raw Storage
         DataSource pipeline = new LoggingDataSourceDecorator(
             new CompressionDecorator(
                 new EncryptionDecorator(
