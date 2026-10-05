@@ -1,13 +1,5 @@
 public class PalindromeString {
 
-    /**
-     * Checks if a string is a palindrome using two pointers.
-     * Case-insensitive comparison. Empty strings are considered palindromes.
-     * Time Complexity: O(n), Space Complexity: O(1)
-     *
-     * @param str the string to check
-     * @return true if str is a palindrome, false otherwise
-     */
     public static boolean isPalindrome(String str) {
         if (str == null) return false;
         int left = 0;
@@ -23,13 +15,6 @@ public class PalindromeString {
         return true;
     }
 
-    /**
-     * Checks if a phrase is a palindrome, considering only alphanumeric characters and ignoring cases.
-     * Classic LeetCode #125 pattern.
-     *
-     * @param s the phrase to check
-     * @return true if the phrase is a palindrome when ignoring non-alphanumeric chars
-     */
     public static boolean isPalindromePhrase(String s) {
         if (s == null) return false;
         int left = 0;
@@ -52,34 +37,19 @@ public class PalindromeString {
         return true;
     }
 
-    /**
-     * Checks if a string is a palindrome using StringBuilder reversal.
-     * Simple but uses O(n) extra space.
-     * Time Complexity: O(n), Space Complexity: O(n)
-     *
-     * @param str the string to check
-     * @return true if the string equals its reverse (case-sensitive)
-     */
     public static boolean isPalindromeReverse(String str) {
         if (str == null) return false;
         String reversed = new StringBuilder(str).reverse().toString();
         return str.equalsIgnoreCase(reversed);
     }
 
-    /**
-     * Finds the longest palindromic substring in O(n^2) time and O(1) auxiliary space
-     * using the expand-around-center approach.
-     *
-     * @param s the input string
-     * @return the longest palindromic substring
-     */
     public static String longestPalindromeSubstring(String s) {
         if (s == null || s.length() <= 1) return s == null ? "" : s;
         int start = 0, end = 0;
 
         for (int i = 0; i < s.length(); i++) {
-            int len1 = expandAroundCenter(s, i, i);     // Odd-length palindromes
-            int len2 = expandAroundCenter(s, i, i + 1); // Even-length palindromes
+            int len1 = expandAroundCenter(s, i, i);
+            int len2 = expandAroundCenter(s, i, i + 1);
             int maxLen = Math.max(len1, len2);
             if (maxLen > end - start + 1) {
                 start = i - (maxLen - 1) / 2;
@@ -97,14 +67,6 @@ public class PalindromeString {
         return right - left - 1;
     }
 
-    /**
-     * Checks if any permutation of the string can form a valid palindrome.
-     * A string can form a palindrome if and only if at most one character has an odd frequency.
-     * Uses bit manipulation for lowercase letters ('a'-'z'), and a HashSet fallback for full unicode.
-     *
-     * @param s input string
-     * @return true if a palindromic permutation is possible
-     */
     public static boolean canPermutePalindrome(String s) {
         if (s == null) return false;
         java.util.Set<Character> oddChars = new java.util.HashSet<>();
@@ -153,4 +115,3 @@ public class PalindromeString {
         }
     }
 }
-

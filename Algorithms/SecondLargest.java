@@ -3,10 +3,6 @@ import java.util.OptionalInt;
 
 public class SecondLargest {
 
-    /**
-     * Finds the second largest distinct element in an array in single-pass O(n) time.
-     * Returns OptionalInt.empty() if no distinct second largest exists (e.g., length < 2 or all elements equal).
-     */
     public static OptionalInt findSecondLargest(int[] arr) {
         if (arr == null || arr.length < 2) {
             return OptionalInt.empty();
@@ -27,9 +23,6 @@ public class SecondLargest {
         return (secondLargest != null) ? OptionalInt.of(secondLargest) : OptionalInt.empty();
     }
 
-    /**
-     * Finds the second smallest distinct element in an array in single-pass O(n) time.
-     */
     public static OptionalInt findSecondSmallest(int[] arr) {
         if (arr == null || arr.length < 2) {
             return OptionalInt.empty();
@@ -54,11 +47,11 @@ public class SecondLargest {
         System.out.println("=== Second Largest & Smallest Number Analysis ===");
 
         int[][] testCases = {
-            {45, 78, 12, 90, 67, 90, 23},    // Duplicate largest (90, 90) -> second largest is 78
-            {-10, -5, -20, -3, -50},         // All negative values
-            {10, 10, 10},                    // All identical values (no second largest)
-            {42},                            // Single element
-            {100, 200}                       // Two distinct elements
+            {45, 78, 12, 90, 67, 90, 23},
+            {-10, -5, -20, -3, -50},
+            {10, 10, 10},
+            {42},
+            {100, 200}
         };
 
         for (int[] arr : testCases) {

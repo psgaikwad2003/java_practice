@@ -3,13 +3,6 @@ import java.util.List;
 
 public class PrimeNumber {
 
-    /**
-     * Efficiently checks if a number is prime using the 6k +/- 1 optimization.
-     * Time Complexity: O(sqrt(n))
-     *
-     * @param num the integer to check
-     * @return true if num is a prime number, false otherwise
-     */
     public static boolean isPrime(int num) {
         if (num <= 1) return false;
         if (num <= 3) return true;
@@ -23,13 +16,6 @@ public class PrimeNumber {
         return true;
     }
 
-    /**
-     * Finds all prime numbers within an inclusive range [start, end] using trial division.
-     *
-     * @param start the start of the range (inclusive)
-     * @param end   the end of the range (inclusive)
-     * @return a list of prime numbers in [start, end]
-     */
     public static List<Integer> findPrimesInRange(int start, int end) {
         List<Integer> primes = new ArrayList<>();
         for (int i = Math.max(2, start); i <= end; i++) {
@@ -40,15 +26,6 @@ public class PrimeNumber {
         return primes;
     }
 
-    /**
-     * Generates all prime numbers up to {@code limit} using the Sieve of Eratosthenes.
-     * More efficient than trial division for large ranges.
-     * Time Complexity: O(n log log n), Space Complexity: O(n)
-     *
-     * @param limit the upper bound (inclusive)
-     * @return a list of all primes up to limit
-     * @throws IllegalArgumentException if limit is negative
-     */
     public static List<Integer> sieveOfEratosthenes(int limit) {
         if (limit < 0) throw new IllegalArgumentException("Limit must be non-negative.");
         boolean[] isComposite = new boolean[limit + 1];
