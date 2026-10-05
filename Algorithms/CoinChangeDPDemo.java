@@ -1,24 +1,7 @@
 import java.util.*;
 
-/**
- * Demonstrates Dynamic Programming solutions to classic Coin Change problems:
- *
- * 1. Coin Change I: Fewest number of coins needed to make up a given amount.
- *    - Bottom-up DP tabulation with O(amount) space.
- *    - Path reconstruction: recovers the exact coins used in the optimal combination.
- * 2. Coin Change II: Total number of unique combinations that sum up to the target amount.
- *    - Unbounded Knapsack counting variation.
- *
- * Complexity:
- * - Coin Change I: Time O(n * amount), Space O(amount)
- * - Coin Change II: Time O(n * amount), Space O(amount)
- */
 public class CoinChangeDPDemo {
 
-    /**
-     * Finds the minimum number of coins needed to make the given amount.
-     * Returns -1 if the amount cannot be formed.
-     */
     public static int minCoins(int[] coins, int amount) {
         if (amount < 0 || coins == null || coins.length == 0) {
             return -1;
@@ -28,7 +11,7 @@ public class CoinChangeDPDemo {
         }
 
         int[] dp = new int[amount + 1];
-        // Fill with a sentinel representing infinity
+
         Arrays.fill(dp, amount + 1);
         dp[0] = 0;
 
@@ -43,10 +26,6 @@ public class CoinChangeDPDemo {
         return dp[amount] > amount ? -1 : dp[amount];
     }
 
-    /**
-     * Solves Coin Change I and reconstructs the actual coins used in the optimal answer.
-     * Returns an empty list if impossible.
-     */
     public static List<Integer> minCoinsWithPath(int[] coins, int amount) {
         if (amount <= 0 || coins == null || coins.length == 0) {
             return Collections.emptyList();
@@ -68,10 +47,9 @@ public class CoinChangeDPDemo {
         }
 
         if (dp[amount] > amount) {
-            return Collections.emptyList(); // Not possible
+            return Collections.emptyList();
         }
 
-        // Reconstruct path
         List<Integer> result = new ArrayList<>();
         int curr = amount;
         while (curr > 0) {
@@ -83,9 +61,6 @@ public class CoinChangeDPDemo {
         return result;
     }
 
-    /**
-     * Coin Change II: Computes the number of distinct combinations to make the target amount.
-     */
     public static int totalCombinations(int[] coins, int amount) {
         if (amount < 0 || coins == null) {
             return 0;
@@ -95,9 +70,8 @@ public class CoinChangeDPDemo {
         }
 
         int[] dp = new int[amount + 1];
-        dp[0] = 1; // Base case: 1 way to make amount 0 (using no coins)
+        dp[0] = 1;
 
-        // Outer loop iterates over coins to prevent counting permutations as distinct
         for (int coin : coins) {
             for (int i = coin; i <= amount; i++) {
                 dp[i] += dp[i - coin];
@@ -112,7 +86,6 @@ public class CoinChangeDPDemo {
         System.out.println("     DYNAMIC PROGRAMMING: COIN CHANGE     ");
         System.out.println("==========================================");
 
-        // Problem 1: Minimum coins
         int[] coins1 = {1, 2, 5};
         int amount1 = 11;
         System.out.println("\n[1] Minimum Coins Problem (Coin Change I):");
@@ -123,14 +96,12 @@ public class CoinChangeDPDemo {
         System.out.println("    Minimum coins needed: " + minCount);
         System.out.println("    Reconstructed Coin Selection: " + path);
 
-        // Unreachable amount test
         int[] coins2 = {2};
         int amount2 = 3;
         System.out.println("\n[2] Edge Case - Unreachable Amount:");
         System.out.println("    Coins: " + Arrays.toString(coins2) + ", Target: " + amount2);
         System.out.println("    Result: " + minCoins(coins2, amount2) + " (Expected: -1)");
 
-        // Problem 2: Total unique combinations
         int[] coins3 = {1, 2, 5};
         int amount3 = 5;
         System.out.println("\n[3] Total Unique Combinations (Coin Change II):");
@@ -143,7 +114,6 @@ public class CoinChangeDPDemo {
         System.out.println("      - 2 + 1 + 1 + 1");
         System.out.println("      - 1 + 1 + 1 + 1 + 1");
 
-        // Large amount test
         int[] coins4 = {186, 419, 83, 408};
         int amount4 = 6249;
         System.out.println("\n[4] Large Benchmark Case:");

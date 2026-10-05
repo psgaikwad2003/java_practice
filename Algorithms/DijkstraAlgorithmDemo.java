@@ -1,13 +1,5 @@
 import java.util.*;
 
-/**
- * Demonstrates Dijkstra's Shortest Path Algorithm on non-negatively weighted graphs.
- *
- * Enhancements:
- * 1. Predecessor tracking (parent array) for exact path reconstruction from source to destination.
- * 2. Stale node pruning in the PriorityQueue (skipping already finalized shorter distances).
- * 3. Unreachable vertex detection and structured ShortestPathResult output.
- */
 public class DijkstraAlgorithmDemo {
 
     public record Edge(int target, int weight) {}
@@ -82,7 +74,6 @@ public class DijkstraAlgorithmDemo {
             Node current = pq.poll();
             int u = current.vertex();
 
-            // Optimization: Skip stale entries if we found a shorter path previously
             if (current.weight() > dist[u]) {
                 continue;
             }
@@ -110,7 +101,6 @@ public class DijkstraAlgorithmDemo {
         int V = 6;
         Graph graph = new Graph(V);
 
-        // Building weighted directed graph
         graph.addDirectedEdge(0, 1, 9);
         graph.addDirectedEdge(0, 2, 6);
         graph.addDirectedEdge(0, 3, 5);
