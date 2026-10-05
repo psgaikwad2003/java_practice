@@ -89,14 +89,6 @@ class BankAccount {
         System.out.println("----------------------------------------------------------------------");
     }
 
-    /**
-     * Atomically transfers funds from this account to a recipient account.
-     *
-     * @param recipient target BankAccount
-     * @param amount    amount to transfer
-     * @throws InsufficientFundsException if balance is insufficient
-     * @throws IllegalArgumentException   if recipient is null or self, or amount invalid
-     */
     public void transferTo(BankAccount recipient, double amount) throws InsufficientFundsException {
         if (recipient == null) {
             throw new IllegalArgumentException("Recipient account cannot be null.");
