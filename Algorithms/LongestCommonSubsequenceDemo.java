@@ -2,24 +2,8 @@ package Algorithms;
 
 import java.util.Arrays;
 
-/**
- * Demonstrates the Longest Common Subsequence (LCS) dynamic programming problem.
- * 
- * Provides:
- * 1. Recursive with Memoization (Top-Down): O(m * n) time, O(m * n) space.
- * 2. Tabulation (Bottom-Up): O(m * n) time, O(m * n) space.
- * 3. Space-Optimized Tabulation: O(m * n) time, O(min(m, n)) space.
- * 4. Path Reconstruction: Finding the actual LCS string.
- */
 public class LongestCommonSubsequenceDemo {
 
-    /**
-     * Computes the length of the Longest Common Subsequence using Top-Down DP (Memoization).
-     *
-     * @param text1 first string
-     * @param text2 second string
-     * @return length of LCS
-     */
     public static int lcsMemo(String text1, String text2) {
         if (text1 == null || text2 == null) return 0;
         int m = text1.length();
@@ -46,13 +30,6 @@ public class LongestCommonSubsequenceDemo {
         return memo[i][j];
     }
 
-    /**
-     * Computes the length of the Longest Common Subsequence using Bottom-Up Tabulation.
-     *
-     * @param text1 first string
-     * @param text2 second string
-     * @return length of LCS
-     */
     public static int lcsTabulation(String text1, String text2) {
         if (text1 == null || text2 == null || text1.isEmpty() || text2.isEmpty()) return 0;
         int m = text1.length();
@@ -71,17 +48,9 @@ public class LongestCommonSubsequenceDemo {
         return dp[m][n];
     }
 
-    /**
-     * Space-optimized LCS calculation using two rows.
-     * Time: O(m * n), Space: O(min(m, n)).
-     *
-     * @param text1 first string
-     * @param text2 second string
-     * @return length of LCS
-     */
     public static int lcsSpaceOptimized(String text1, String text2) {
         if (text1 == null || text2 == null || text1.isEmpty() || text2.isEmpty()) return 0;
-        // Ensure text2 is the shorter string for O(min(m, n)) space
+
         if (text1.length() < text2.length()) {
             String temp = text1;
             text1 = text2;
@@ -106,13 +75,6 @@ public class LongestCommonSubsequenceDemo {
         return prev[n];
     }
 
-    /**
-     * Reconstructs the actual LCS string using the full DP table.
-     *
-     * @param text1 first string
-     * @param text2 second string
-     * @return one valid longest common subsequence string
-     */
     public static String getLCSString(String text1, String text2) {
         if (text1 == null || text2 == null || text1.isEmpty() || text2.isEmpty()) return "";
         int m = text1.length();
@@ -129,7 +91,6 @@ public class LongestCommonSubsequenceDemo {
             }
         }
 
-        // Backtrack to find the sequence
         StringBuilder lcs = new StringBuilder();
         int i = m, j = n;
         while (i > 0 && j > 0) {
