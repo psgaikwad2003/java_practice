@@ -2,14 +2,6 @@ import java.util.Arrays;
 
 public class GCDCalculator {
 
-    /**
-     * Computes the Greatest Common Divisor (GCD) using the Euclidean Algorithm (Iterative).
-     * Time Complexity: O(log(min(a, b)))
-     *
-     * @param a first number
-     * @param b second number
-     * @return the GCD of a and b
-     */
     public static long gcd(long a, long b) {
         a = Math.abs(a);
         b = Math.abs(b);
@@ -21,26 +13,12 @@ public class GCDCalculator {
         return a;
     }
 
-    /**
-     * Computes the Greatest Common Divisor (GCD) using the Euclidean Algorithm (Recursive).
-     *
-     * @param a first number
-     * @param b second number
-     * @return the GCD of a and b
-     */
     public static long gcdRecursive(long a, long b) {
         a = Math.abs(a);
         b = Math.abs(b);
         return (b == 0) ? a : gcdRecursive(b, a % b);
     }
 
-    /**
-     * Computes the GCD for an array or variable arguments of numbers.
-     *
-     * @param numbers one or more long values
-     * @return the GCD of all provided numbers
-     * @throws IllegalArgumentException if the input array is null or empty
-     */
     public static long gcd(long... numbers) {
         if (numbers == null || numbers.length == 0) {
             throw new IllegalArgumentException("Input array must not be empty.");
@@ -48,25 +26,13 @@ public class GCDCalculator {
         long result = Math.abs(numbers[0]);
         for (int i = 1; i < numbers.length; i++) {
             result = gcd(result, numbers[i]);
-            if (result == 1) break; // Early exit optimization
+            if (result == 1) break;
         }
         return result;
     }
 
-    /**
-     * Represents the result of the Extended Euclidean Algorithm:
-     * gcd = a * x + b * y
-     */
     public record ExtendedGCDResult(long gcd, long x, long y) {}
 
-    /**
-     * Computes the Extended Euclidean Algorithm to find integers x and y (Bézout coefficients)
-     * such that: a * x + b * y = gcd(a, b).
-     *
-     * @param a first integer
-     * @param b second integer
-     * @return ExtendedGCDResult containing gcd, x, and y
-     */
     public static ExtendedGCDResult extendedGCD(long a, long b) {
         if (b == 0) {
             return new ExtendedGCDResult(Math.abs(a), a < 0 ? -1 : 1, 0);
@@ -78,30 +44,11 @@ public class GCDCalculator {
         return new ExtendedGCDResult(gcd, x, y);
     }
 
-    /**
-     * Computes the Least Common Multiple (LCM) of two numbers using the GCD identity:
-     * LCM(a, b) = |a * b| / GCD(a, b).
-     * Time Complexity: O(log(min(a, b)))
-     *
-     * @param a first number
-     * @param b second number
-     * @return the LCM of a and b, or 0 if either input is 0
-     */
     public static long lcm(long a, long b) {
         if (a == 0 || b == 0) return 0;
         return Math.abs(a / gcd(a, b) * b);
     }
 
-    /**
-     * Computes the Modular Multiplicative Inverse of a modulo m using the Extended Euclidean Algorithm.
-     * Finds x such that (a * x) % m == 1.
-     * A modular inverse exists if and only if gcd(a, m) == 1 (i.e., a and m are coprime).
-     *
-     * @param a the number
-     * @param m the modulus (must be > 1)
-     * @return the modular inverse in the range [0, m - 1]
-     * @throws ArithmeticException if modular inverse does not exist
-     */
     public static long modInverse(long a, long m) {
         if (m <= 1) {
             throw new IllegalArgumentException("Modulus m must be greater than 1.");

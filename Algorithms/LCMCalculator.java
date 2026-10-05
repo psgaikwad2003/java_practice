@@ -2,9 +2,6 @@ import java.util.Arrays;
 
 public class LCMCalculator {
 
-    /**
-     * Helper method to compute GCD using Euclidean algorithm.
-     */
     private static long gcd(long a, long b) {
         a = Math.abs(a);
         b = Math.abs(b);
@@ -16,10 +13,6 @@ public class LCMCalculator {
         return a;
     }
 
-    /**
-     * Computes the Least Common Multiple (LCM) of two numbers using LCM(a, b) = (|a * b|) / GCD(a, b).
-     * Divides before multiplying to prevent premature integer overflow.
-     */
     public static long lcm(long a, long b) {
         if (a == 0 || b == 0) {
             return 0;
@@ -29,9 +22,6 @@ public class LCMCalculator {
         return (a / gcd(a, b)) * b;
     }
 
-    /**
-     * Computes the LCM of an array or variable arguments of numbers.
-     */
     public static long lcm(long... numbers) {
         if (numbers == null || numbers.length == 0) {
             throw new IllegalArgumentException("Input array must not be empty.");
