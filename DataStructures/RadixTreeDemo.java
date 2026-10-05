@@ -2,22 +2,6 @@ package DataStructures;
 
 import java.util.*;
 
-/**
- * Demonstrates a Compressed Radix Tree (Patricia Trie / Compact Trie).
- *
- * Characteristics:
- * - Unlike standard Tries where each edge represents a single character, Radix Tree
- *   edges represent strings of varying lengths.
- * - Nodes with single children are compressed, drastically reducing node allocation and traversal depth.
- * - Ideal for: IP routing tables (longest prefix match), filesystem directory hierarchies,
- *   and high-throughput URL routing.
- *
- * Operations:
- * - insert(key, value): splits existing edges if a partial prefix match occurs.
- * - search(key): exact lookup in O(K) where K is key length.
- * - findLongestPrefixMatch(key): finds the most specific route/rule matching the query.
- * - delete(key): removes key and merges single-child nodes to maintain the radix property.
- */
 public class RadixTreeDemo {
 
     public static class RadixTree<T> {
@@ -34,9 +18,6 @@ public class RadixTreeDemo {
 
         private final Node<T> root = new Node<>("");
 
-        /**
-         * Inserts a key-value mapping into the radix tree.
-         */
         public void insert(String key, T value) {
             if (key == null) throw new IllegalArgumentException("Key cannot be null");
             insert(root, key, value);
@@ -53,7 +34,7 @@ public class RadixTreeDemo {
             Node<T> child = current.children.get(firstChar);
 
             if (child == null) {
-                // No existing edge starts with this char: create fresh child node
+
                 Node<T> newNode = new Node<>(remaining);
                 newNode.isTerminal = true;
                 newNode.value = value;
@@ -61,14 +42,13 @@ public class RadixTreeDemo {
                 return;
             }
 
-            // Find longest common prefix between child's edgeLabel and remaining
             int commonLength = getCommonPrefixLength(child.edgeLabel, remaining);
 
             if (commonLength == child.edgeLabel.length()) {
-                // Entire edge label matches: recurse further down
+
                 insert(child, remaining.substring(commonLength), value);
             } else {
-                // Partial match: split child's edge into two nodes
+
                 String commonPrefix = child.edgeLabel.substring(0, commonLength);
                 String childSuffix = child.edgeLabel.substring(commonLength);
                 String remainingSuffix = remaining.substring(commonLength);
@@ -76,7 +56,6 @@ public class RadixTreeDemo {
                 Node<T> splitNode = new Node<>(commonPrefix);
                 current.children.put(firstChar, splitNode);
 
-                // Child keeps remainder of its label
                 child.edgeLabel = childSuffix;
                 splitNode.children.put(childSuffix.charAt(0), child);
 
@@ -92,9 +71,6 @@ public class RadixTreeDemo {
             }
         }
 
-        /**
-         * Returns exact match value, or null if not present.
-         */
         public T search(String key) {
             Node<T> current = root;
             String remaining = key;
@@ -115,10 +91,6 @@ public class RadixTreeDemo {
             return current.isTerminal ? current.value : null;
         }
 
-        /**
-         * Finds the longest registered prefix that matches the beginning of the query string.
-         * Critical for IP CIDR routing tables!
-         */
         public Map.Entry<String, T> findLongestPrefixMatch(String query) {
             Node<T> current = root;
             String remaining = query;
@@ -153,9 +125,6 @@ public class RadixTreeDemo {
             return Map.entry(bestKey, bestValue);
         }
 
-        /**
-         * Deletes a key from the tree and compresses nodes if needed.
-         */
         public boolean delete(String key) {
             return delete(root, key);
         }
@@ -177,12 +146,10 @@ public class RadixTreeDemo {
             boolean deleted = delete(child, remaining.substring(child.edgeLabel.length()));
             if (!deleted) return false;
 
-            // Cleanup & Compression logic:
-            // 1. If child has no children and is not terminal, remove it
             if (child.children.isEmpty() && !child.isTerminal) {
                 current.children.remove(firstChar);
             }
-            // 2. If child has exactly 1 child and is not terminal, merge child with its single grandchild
+
             else if (child.children.size() == 1 && !child.isTerminal) {
                 Node<T> grandchild = child.children.values().iterator().next();
                 child.edgeLabel = child.edgeLabel + grandchild.edgeLabel;
@@ -244,7 +211,6 @@ public class RadixTreeDemo {
         System.out.println("search('roma'):    " + trie.search("roma") + " (non-terminal prefix)");
         System.out.println("search('caesar'):  " + trie.search("caesar") + " (non-existent)");
 
-        // Longest Prefix Matching (CIDR Network Router simulation)
         System.out.println("\n--- Network CIDR Routing Table Simulation ---");
         RadixTree<String> routingTable = new RadixTree<>();
         routingTable.insert("10.", "Gateway-Default-10");
@@ -273,7 +239,6 @@ public class RadixTreeDemo {
             }
         }
 
-        // Deletion & Node Re-compression
         System.out.println("\n--- Node Deletion & Compression Test ---");
         System.out.println("Deleting 'rubicundus' and 'rubicon'...");
         trie.delete("rubicundus");
