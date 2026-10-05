@@ -3,7 +3,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-
 public class AsyncDemo {
 
     public static void main(String[] args) {
@@ -14,29 +13,26 @@ public class AsyncDemo {
         ExecutorService executor = Executors.newFixedThreadPool(4);
 
         try {
-            
+
             CompletableFuture<String> userFuture = CompletableFuture.supplyAsync(() -> {
                 simulateDelay(500);
                 System.out.println(Thread.currentThread().getName() + " -> Fetched User Details");
                 return "User: Alex";
             }, executor);
 
-            
             CompletableFuture<Integer> orderFuture = CompletableFuture.supplyAsync(() -> {
                 simulateDelay(700);
                 System.out.println(Thread.currentThread().getName() + " -> Fetched Order Count");
                 return 42;
             }, executor);
 
-            
-            CompletableFuture<String> reportFuture = userFuture.thenCombine(orderFuture, (user, count) -> 
+            CompletableFuture<String> reportFuture = userFuture.thenCombine(orderFuture, (user, count) ->
                 user + " | Total Orders Placed: " + count
             );
 
-            
-            reportFuture.thenAccept(report -> 
+            reportFuture.thenAccept(report ->
                 System.out.println("\nConsolidated Report: " + report)
-            ).join(); 
+            ).join();
 
         } finally {
             executor.shutdown();
@@ -59,4 +55,3 @@ public class AsyncDemo {
         }
     }
 }
-// Updated for demonstration

@@ -6,7 +6,7 @@ public class AtomicIntegerDemo {
     public static void main(String[] args) throws InterruptedException {
         Runnable task = () -> {
             for (int i = 0; i < 1000; i++) {
-                counter.incrementAndGet(); 
+                counter.incrementAndGet();
             }
         };
 
@@ -22,4 +22,3 @@ public class AtomicIntegerDemo {
         System.out.println("Final Counter Value: " + counter.get());
     }
 }
-// Updated for demonstration
