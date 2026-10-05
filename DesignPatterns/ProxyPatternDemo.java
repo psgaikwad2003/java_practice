@@ -6,27 +6,8 @@ import java.lang.reflect.Proxy;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * Demonstrates the Proxy Design Pattern (Structural Pattern).
- * 
- * Intent:
- * Provide a surrogate or placeholder for another object to control access to it.
- * 
- * Variants demonstrated:
- * 1. Virtual Proxy (Lazy Initialization): Defers creation and loading of resource-heavy
- *    objects until explicitly needed.
- * 2. Protection Proxy (Access Control): Enforces authentication/authorization rules
- *    before delegating to the sensitive target object.
- * 3. Caching Proxy (Performance): Stores query results locally in memory to eliminate
- *    redundant expensive database or network calls.
- * 4. Dynamic Proxy (java.lang.reflect.Proxy): Runtime bytecode proxy using an InvocationHandler
- *    for cross-cutting concerns (logging, method timing, and telemetry).
- */
 public class ProxyPatternDemo {
 
-    // =========================================================================
-    // 1. Virtual Proxy: Heavy Video Streaming Service
-    // =========================================================================
     public interface VideoMedia {
         void play();
         String getTitle();
@@ -39,13 +20,13 @@ public class ProxyPatternDemo {
         public RealHighDefVideo(String title, String fileName) {
             this.title = title;
             this.fileName = fileName;
-            loadFromDisk(); // Expensive simulated loading operation
+            loadFromDisk();
         }
 
         private void loadFromDisk() {
             System.out.printf("    [Disk I/O] Loading 4K raw video buffers for '%s' (%s)...%n", title, fileName);
             try {
-                Thread.sleep(80); // Simulate disk/network latency
+                Thread.sleep(80);
             } catch (InterruptedException ignored) {}
             System.out.printf("    [Disk I/O] Finished buffering '%s'.%n", title);
         }
@@ -64,7 +45,7 @@ public class ProxyPatternDemo {
     public static class LazyVideoProxy implements VideoMedia {
         private final String title;
         private final String fileName;
-        private RealHighDefVideo realVideo; // Instantiated only when needed
+        private RealHighDefVideo realVideo;
 
         public LazyVideoProxy(String title, String fileName) {
             this.title = title;
@@ -88,9 +69,6 @@ public class ProxyPatternDemo {
         }
     }
 
-    // =========================================================================
-    // 2. Protection Proxy: Document Management Service
-    // =========================================================================
     public enum UserRole {
         ADMIN,
         EDITOR,
@@ -182,9 +160,6 @@ public class ProxyPatternDemo {
         }
     }
 
-    // =========================================================================
-    // 3. Caching Proxy: Heavy Weather / Telemetry API
-    // =========================================================================
     public interface WeatherService {
         String getWeatherForecast(String city);
     }
@@ -192,7 +167,7 @@ public class ProxyPatternDemo {
     public static class RemoteWeatherService implements WeatherService {
         @Override
         public String getWeatherForecast(String city) {
-            // Simulate slow remote API query
+
             try {
                 Thread.sleep(60);
             } catch (InterruptedException ignored) {}
@@ -226,14 +201,11 @@ public class ProxyPatternDemo {
         }
 
         public void printCacheStats() {
-            System.out.printf("  [Cache Stats] Hits: %d, Misses: %d, Total Entries: %d%n", 
+            System.out.printf("  [Cache Stats] Hits: %d, Misses: %d, Total Entries: %d%n",
                     hits, misses, cache.size());
         }
     }
 
-    // =========================================================================
-    // 4. Dynamic Proxy: Telemetry & Logging via java.lang.reflect.Proxy
-    // =========================================================================
     public static class LoggingInvocationHandler implements InvocationHandler {
         private final Object target;
 
@@ -249,11 +221,11 @@ public class ProxyPatternDemo {
             try {
                 Object result = method.invoke(target, args);
                 long elapsedMicro = (System.nanoTime() - startTime) / 1000;
-                System.out.printf("  [Dynamic Proxy Interceptor] << Completed %s() in %d μs%n", 
+                System.out.printf("  [Dynamic Proxy Interceptor] << Completed %s() in %d μs%n",
                         method.getName(), elapsedMicro);
                 return result;
             } catch (Exception e) {
-                System.out.printf("  [Dynamic Proxy Interceptor] !! Exception during %s(): %s%n", 
+                System.out.printf("  [Dynamic Proxy Interceptor] !! Exception during %s(): %s%n",
                         method.getName(), e.getMessage());
                 throw e;
             }
@@ -269,31 +241,22 @@ public class ProxyPatternDemo {
         }
     }
 
-    // =========================================================================
-    // Main Demonstration
-    // =========================================================================
     public static void main(String[] args) {
         System.out.println("=========================================================");
         System.out.println("            PROXY DESIGN PATTERN DEMONSTRATION           ");
         System.out.println("=========================================================\n");
 
-        // ---------------------------------------------------------------------
-        // 1. Virtual Proxy Test
-        // ---------------------------------------------------------------------
         System.out.println("--- 1. Virtual Proxy (Lazy Loading) ---");
         System.out.println("Creating lazy video proxy (object creation is instant, no heavy I/O yet)...");
         VideoMedia video = new LazyVideoProxy("Interstellar Trailer", "interstellar_4k.mkv");
         System.out.println("Video title: " + video.getTitle());
 
         System.out.println("\nFirst call to play():");
-        video.play(); // Triggers initialization
+        video.play();
 
         System.out.println("\nSecond call to play():");
-        video.play(); // Uses already initialized instance
+        video.play();
 
-        // ---------------------------------------------------------------------
-        // 2. Protection Proxy Test
-        // ---------------------------------------------------------------------
         System.out.println("\n--- 2. Protection Proxy (Access Control) ---");
         DocumentService realDocService = new RealDocumentService();
 
@@ -318,21 +281,15 @@ public class ProxyPatternDemo {
         System.out.println("\nBob deletes doc-101:");
         bobProxy.deleteDocument("doc-101");
 
-        // ---------------------------------------------------------------------
-        // 3. Caching Proxy Test
-        // ---------------------------------------------------------------------
         System.out.println("\n--- 3. Caching Proxy (Performance Optimization) ---");
         CachingWeatherProxy weatherProxy = new CachingWeatherProxy(new RemoteWeatherService());
 
         System.out.println(weatherProxy.getWeatherForecast("London"));
         System.out.println(weatherProxy.getWeatherForecast("Tokyo"));
-        System.out.println(weatherProxy.getWeatherForecast("London")); // Cached!
-        System.out.println(weatherProxy.getWeatherForecast("Tokyo"));  // Cached!
+        System.out.println(weatherProxy.getWeatherForecast("London"));
+        System.out.println(weatherProxy.getWeatherForecast("Tokyo"));
         weatherProxy.printCacheStats();
 
-        // ---------------------------------------------------------------------
-        // 4. Dynamic Proxy Test
-        // ---------------------------------------------------------------------
         System.out.println("\n--- 4. Dynamic Proxy (Runtime Method Telemetry) ---");
         WeatherService telemetryProxy = LoggingInvocationHandler.createProxy(
                 new RemoteWeatherService(),

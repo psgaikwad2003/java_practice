@@ -2,20 +2,6 @@ package DesignPatterns;
 
 import java.util.*;
 
-/**
- * Demonstrates the Saga Orchestrator Pattern for Distributed Transactions.
- *
- * Concepts:
- * - In microservices, distributed ACID transactions (like 2-Phase Commit) don't scale.
- * - The Saga Pattern coordinates a sequence of local transactions across services.
- * - Each step T_i has a corresponding compensating transaction C_i that undoes its side effects.
- * - If step k fails, the Saga orchestrator invokes compensating transactions C_{k-1}, ..., C_1
- *   in reverse order to guarantee eventual consistency and leave the system in a clean state.
- *
- * Real-world correspondence:
- * - E-Commerce order checkout workflow:
- *   [Create Order] -> [Authorize Payment] -> [Reserve Inventory] -> [Dispatch Shipment]
- */
 public class SagaPatternDemo {
 
     public enum SagaStatus {
@@ -24,9 +10,6 @@ public class SagaPatternDemo {
         FAILED_COMPENSATION
     }
 
-    /**
-     * Shared context carried through the workflow.
-     */
     public static class OrderContext {
         public final String orderId;
         public final String customerId;
@@ -53,18 +36,12 @@ public class SagaPatternDemo {
         }
     }
 
-    /**
-     * Contract for each step in the Saga.
-     */
     public interface SagaStep<T> {
         String getName();
         boolean execute(T context);
         void compensate(T context);
     }
 
-    /**
-     * Central Saga Orchestrator.
-     */
     public static class SagaOrchestrator<T> {
         private final String sagaName;
         private final List<SagaStep<T>> steps = new ArrayList<>();
@@ -120,7 +97,6 @@ public class SagaPatternDemo {
         }
     }
 
-    // Step 1: Order Creation
     public static class OrderCreationStep implements SagaStep<OrderContext> {
         @Override
         public String getName() { return "OrderCreationStep"; }
@@ -139,7 +115,6 @@ public class SagaPatternDemo {
         }
     }
 
-    // Step 2: Payment Authorization
     public static class PaymentStep implements SagaStep<OrderContext> {
         @Override
         public String getName() { return "PaymentStep"; }
@@ -158,7 +133,6 @@ public class SagaPatternDemo {
         }
     }
 
-    // Step 3: Inventory Reservation (Can be instructed to fail for demo)
     public static class InventoryStep implements SagaStep<OrderContext> {
         private final boolean simulateOutOfStock;
 
@@ -187,7 +161,6 @@ public class SagaPatternDemo {
         }
     }
 
-    // Step 4: Shipping Dispatch
     public static class ShippingStep implements SagaStep<OrderContext> {
         @Override
         public String getName() { return "ShippingStep"; }
@@ -211,7 +184,6 @@ public class SagaPatternDemo {
         System.out.println("        DISTRIBUTED SAGA ORCHESTRATOR PATTERN DEMO           ");
         System.out.println("=============================================================");
 
-        // Workflow 1: Successful Order Processing
         System.out.println("\n--- Scenario 1: Happy Path (All Steps Pass) ---");
         OrderContext ctx1 = new OrderContext("ORD-9001", "CUST-101", 149.99, "LAPTOP-STAND");
         SagaOrchestrator<OrderContext> successfulSaga = new SagaOrchestrator<>("OrderCheckoutSaga");
@@ -226,14 +198,13 @@ public class SagaPatternDemo {
         System.out.printf("Summary: Order=%b, Payment=%b, Inventory=%b, Shipping=%b%n",
                 ctx1.orderCreated, ctx1.paymentAuthorized, ctx1.inventoryReserved, ctx1.shipmentDispatched);
 
-        // Workflow 2: Inventory Failure with Compensating Rollback
         System.out.println("\n--- Scenario 2: Downstream Failure (Automatic Rollback) ---");
         OrderContext ctx2 = new OrderContext("ORD-9002", "CUST-202", 899.00, "OUT-OF-STOCK-PHONE");
         SagaOrchestrator<OrderContext> failingSaga = new SagaOrchestrator<>("OrderCheckoutSagaWithFailure");
         failingSaga
             .addStep(new OrderCreationStep())
             .addStep(new PaymentStep())
-            .addStep(new InventoryStep(true)) // Will fail!
+            .addStep(new InventoryStep(true))
             .addStep(new ShippingStep());
 
         SagaStatus status2 = failingSaga.execute(ctx2);
