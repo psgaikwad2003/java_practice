@@ -1,24 +1,6 @@
 package DesignPatterns;
 
-/**
- * Demonstrates the Facade Design Pattern (Structural Pattern).
- * 
- * Intent: Provide a unified, simplified interface to a complex subsystem
- * of classes, interfaces, and algorithms. This shields clients from internal
- * complexity, reduces coupling, and adheres to the Principle of Least Knowledge
- * (Law of Demeter).
- * 
- * Included Examples:
- * 1. Multimedia Video Conversion Pipeline: Orchestrates audio/video decoders,
- *    bitrate compressors, and audio mixing into a one-line API.
- * 2. Smart Home Entertainment Automation: Coordinates lights, sound system,
- *    projector, and streaming player for movie and music sessions.
- */
 public class FacadePatternDemo {
-
-    // =========================================================================
-    // Subsystem 1: Video Transcoding and Conversion Subsystem
-    // =========================================================================
 
     public static class VideoFile {
         private final String fileName;
@@ -28,7 +10,7 @@ public class FacadePatternDemo {
         public VideoFile(String fileName) {
             this.fileName = fileName;
             this.format = fileName.contains(".") ? fileName.substring(fileName.lastIndexOf('.') + 1) : "unknown";
-            this.data = new byte[1024]; // Simulated raw payload
+            this.data = new byte[1024];
         }
 
         public String getFileName() { return fileName; }
@@ -93,10 +75,6 @@ public class FacadePatternDemo {
         }
     }
 
-    /**
-     * Facade: Wraps the complex 5-step video processing pipeline
-     * into simple, client-friendly methods.
-     */
     public static class VideoConverterFacade {
         private final AudioMixer audioMixer;
         private final WatermarkService watermarkService;
@@ -133,10 +111,6 @@ public class FacadePatternDemo {
             return new VideoFile(destinationFileName);
         }
     }
-
-    // =========================================================================
-    // Subsystem 2: Smart Home Entertainment Subsystem
-    // =========================================================================
 
     public static class SmartLighting {
         private int brightness = 100;
@@ -177,9 +151,6 @@ public class FacadePatternDemo {
         public void turnOff() { System.out.println("  [PopcornMaker] Kettle off."); }
     }
 
-    /**
-     * Facade: Provides simple one-touch operations for complex home entertainment.
-     */
     public static class HomeTheaterFacade {
         private final SmartLighting lighting;
         private final SurroundSoundSystem sound;
@@ -222,22 +193,16 @@ public class FacadePatternDemo {
         }
     }
 
-    // =========================================================================
-    // Demonstration and Verification
-    // =========================================================================
-
     public static void main(String[] args) {
         System.out.println("=========================================================");
         System.out.println("           FACADE DESIGN PATTERN DEMONSTRATION           ");
         System.out.println("=========================================================");
 
-        // Demo 1: Transcoding complex video via clean Facade
         VideoConverterFacade converterFacade = new VideoConverterFacade();
         VideoFile output1 = converterFacade.convertVideo("intro_cinematic.ogg", "mp4", "(c) 2026 Studio");
         System.out.printf("Client received transcoded artifact: %s (Format: %s)%n",
                 output1.getFileName(), output1.getFormat());
 
-        // Demo 2: Smart Home Automation Facade
         SmartLighting lights = new SmartLighting();
         SurroundSoundSystem sound = new SurroundSoundSystem();
         Projector projector = new Projector();

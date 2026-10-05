@@ -1,18 +1,6 @@
 package DesignPatterns;
 
-/**
- * Demonstrates the Factory Method and Abstract Factory Design Patterns.
- * 
- * 1. Factory Method: Defines an interface for creating an object, but lets subclasses
- *    decide which class to instantiate (Document Exporter Example).
- * 2. Abstract Factory: Provides an interface for creating families of related or
- *    dependent objects without specifying their concrete classes (Cross-Platform GUI Example).
- */
 public class FactoryPatternDemo {
-
-    // =========================================================================
-    // PART 1: Factory Method Pattern (Document Exporters)
-    // =========================================================================
 
     public interface Document {
         String formatContent(String rawText);
@@ -56,10 +44,9 @@ public class FactoryPatternDemo {
     }
 
     public abstract static class DocumentCreator {
-        // Factory Method
+
         public abstract Document createDocument();
 
-        // Core business logic relying on product interface
         public void export(String content) {
             Document doc = createDocument();
             System.out.printf("Exporting file type '%s':%n%s%n%n", doc.getExtension(), doc.formatContent(content));
@@ -87,10 +74,6 @@ public class FactoryPatternDemo {
         }
     }
 
-    // =========================================================================
-    // PART 2: Abstract Factory Pattern (Cross-Platform UI Widgets)
-    // =========================================================================
-
     public interface Button {
         void render();
         void onClick();
@@ -101,7 +84,6 @@ public class FactoryPatternDemo {
         void toggle();
     }
 
-    // Windows Theme
     public static class WindowsButton implements Button {
         @Override
         public void render() {
@@ -124,7 +106,6 @@ public class FactoryPatternDemo {
         }
     }
 
-    // MacOS Theme
     public static class MacButton implements Button {
         @Override
         public void render() {
@@ -147,7 +128,6 @@ public class FactoryPatternDemo {
         }
     }
 
-    // Abstract Factory Interface
     public interface GUIFactory {
         Button createButton();
         Checkbox createCheckbox();
@@ -175,7 +155,6 @@ public class FactoryPatternDemo {
         }
     }
 
-    // Client application configured with Abstract Factory
     public static class Application {
         private final Button button;
         private final Checkbox checkbox;
@@ -196,7 +175,6 @@ public class FactoryPatternDemo {
     public static void main(String[] args) {
         System.out.println("=== Factory Patterns Demonstration ===\n");
 
-        // 1. Factory Method Demo
         System.out.println("--- 1. Factory Method: Document Exporters ---");
         DocumentCreator pdfCreator = new PDFDocumentCreator();
         pdfCreator.export("Financial Quarterly Report 2026");
@@ -207,7 +185,6 @@ public class FactoryPatternDemo {
         DocumentCreator csvCreator = new CSVDocumentCreator();
         csvCreator.export("Transaction 499.99 Completed");
 
-        // 2. Abstract Factory Demo
         System.out.println("--- 2. Abstract Factory: Multi-Platform GUI ---");
         System.out.println("Initializing Application on Windows platform:");
         GUIFactory winFactory = new WindowsFactory();
