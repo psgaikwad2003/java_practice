@@ -2,33 +2,19 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * Demonstrates the Builder Design Pattern (Effective Java Item 2).
- * 
- * Benefits:
- * - Solves the Telescoping Constructor anti-pattern.
- * - Guarantees immutability by omitting setters on the target class.
- * - Provides fluent, readable object construction.
- * - Enables validation prior to object instantiation.
- */
 public class BuilderPatternDemo {
 
-    // =========================================================================
-    // 1. User Profile Example (Fluent Domain Object)
-    // =========================================================================
     public static class User {
-        // Required fields
+
         private final String firstName;
         private final String lastName;
         private final String email;
 
-        // Optional fields
         private final int age;
         private final String phone;
         private final String address;
         private final boolean newsletterSubscribed;
 
-        // Private constructor ensures construction only via Builder
         private User(Builder builder) {
             this.firstName = builder.firstName;
             this.lastName = builder.lastName;
@@ -56,14 +42,12 @@ public class BuilderPatternDemo {
                     newsletterSubscribed);
         }
 
-        // Static nested Builder class
         public static class Builder {
-            // Required parameters
+
             private final String firstName;
             private final String lastName;
             private final String email;
 
-            // Optional parameters with default values
             private int age = 0;
             private String phone = null;
             private String address = null;
@@ -113,9 +97,6 @@ public class BuilderPatternDemo {
         }
     }
 
-    // =========================================================================
-    // 2. HTTP Request Example (Complex Configuration Object)
-    // =========================================================================
     public static class HttpRequest {
         private final String url;
         private final String method;
@@ -182,12 +163,10 @@ public class BuilderPatternDemo {
         System.out.println("          Builder Design Pattern Demonstration    ");
         System.out.println("==================================================");
 
-        // Constructing user with only required fields
         User basicUser = new User.Builder("Prathamesh", "Gaikwad", "psgaikwad2003@gmail.com")
                 .build();
         System.out.println("Basic User:\n  " + basicUser);
 
-        // Constructing user with all optional fields using fluent chaining
         User fullUser = new User.Builder("Alice", "Smith", "alice.smith@example.com")
                 .age(28)
                 .phone("+1-555-0199")
@@ -196,7 +175,6 @@ public class BuilderPatternDemo {
                 .build();
         System.out.println("\nFull User:\n  " + fullUser);
 
-        // Constructing immutable HTTP Request
         HttpRequest request = new HttpRequest.HttpRequestBuilder("https://api.github.com/users")
                 .method("POST")
                 .addHeader("Authorization", "Bearer ghp_exampleToken123")
@@ -206,7 +184,6 @@ public class BuilderPatternDemo {
                 .build();
         System.out.println("\nHTTP Request Built via Builder:\n  " + request);
 
-        // Validation test
         System.out.println("\n=== Validation Check ===");
         try {
             new User.Builder("Bob", "Ross", "invalid-email-address").build();
