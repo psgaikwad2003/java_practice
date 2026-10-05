@@ -3,10 +3,9 @@ package Enums;
 public class EnumSwitchCaseDemo {
     public static void main(String[] args) {
         System.out.println("--- Enum in Switch Case / Expressions Demo ---");
-        
+
         Day day = Day.WEDNESDAY;
-        
-        // Traditional Switch Statement
+
         System.out.println("Traditional Switch:");
         switch (day) {
             case MONDAY:
@@ -24,7 +23,6 @@ public class EnumSwitchCaseDemo {
                 break;
         }
 
-        // Enhanced Switch Expression (Java 14+)
         System.out.println("\nEnhanced Switch Expression:");
         String typeOfDay = switch (day) {
             case MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY -> "Weekday";

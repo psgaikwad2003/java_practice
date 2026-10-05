@@ -3,10 +3,10 @@ package Enums;
 public class EnumPolymorphismDemo {
     public static void main(String[] args) {
         System.out.println("--- Enum Polymorphism (Constant-Specific Class Bodies) Demo ---");
-        
+
         double x = 10.0;
         double y = 5.0;
-        
+
         for (Operation op : Operation.values()) {
             System.out.printf("%f %s %f = %f%n", x, op, y, op.apply(x, y));
         }
@@ -38,6 +38,5 @@ enum Operation {
         return symbol;
     }
 
-    // Abstract method must be implemented by all constants
     public abstract double apply(double x, double y);
 }
