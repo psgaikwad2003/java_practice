@@ -2,20 +2,8 @@ package Algorithms;
 
 import java.util.Arrays;
 
-/**
- * Demonstrates Kadane's Algorithm and its variations for solving maximum subarray problems in linear time.
- * 
- * Features:
- * 1. Standard Kadane's Algorithm for Maximum Subarray Sum: O(n) time, O(1) space.
- * 2. Kadane's with Subarray Boundaries: Identifies the exact start and end indices.
- * 3. Maximum Circular Subarray Sum: Handles wrapped subarrays.
- * 4. Minimum Subarray Sum: Companion dual for minimum ranges.
- */
 public class KadaneAlgorithmDemo {
 
-    /**
-     * Result container representing maximum subarray sum and its range.
-     */
     public record SubarrayResult(int maxSum, int startIndex, int endIndex, int[] subarray) {
         @Override
         public String toString() {
@@ -24,13 +12,6 @@ public class KadaneAlgorithmDemo {
         }
     }
 
-    /**
-     * Classic Kadane's algorithm to find maximum contiguous subarray sum.
-     * Works correctly even if all numbers in the array are negative.
-     *
-     * @param nums array of integers
-     * @return maximum subarray sum
-     */
     public static int maxSubArraySum(int[] nums) {
         if (nums == null || nums.length == 0) {
             throw new IllegalArgumentException("Array cannot be null or empty");
@@ -46,12 +27,6 @@ public class KadaneAlgorithmDemo {
         return maxSoFar;
     }
 
-    /**
-     * Finds the maximum contiguous subarray sum and captures the exact start and end indices.
-     *
-     * @param nums array of integers
-     * @return SubarrayResult containing max sum, start index, end index, and copied subarray
-     */
     public static SubarrayResult findMaxSubarray(int[] nums) {
         if (nums == null || nums.length == 0) {
             throw new IllegalArgumentException("Array cannot be null or empty");
@@ -82,12 +57,6 @@ public class KadaneAlgorithmDemo {
         return new SubarrayResult(maxSoFar, start, end, sub);
     }
 
-    /**
-     * Calculates the maximum subarray sum in a circular array (elements wrap around).
-     *
-     * @param nums array of integers
-     * @return maximum circular subarray sum
-     */
     public static int maxCircularSubarraySum(int[] nums) {
         if (nums == null || nums.length == 0) {
             throw new IllegalArgumentException("Array cannot be null or empty");
@@ -102,16 +71,13 @@ public class KadaneAlgorithmDemo {
         for (int num : nums) {
             totalSum += num;
 
-            // Standard Kadane for maximum
             currentMax = Math.max(num, currentMax + num);
             maxKadane = Math.max(maxKadane, currentMax);
 
-            // Kadane inverted for minimum
             currentMin = Math.min(num, currentMin + num);
             minKadane = Math.min(minKadane, currentMin);
         }
 
-        // If all elements are negative, maxKadane is the answer (totalSum - minKadane would be 0 for empty array)
         if (maxKadane < 0) {
             return maxKadane;
         }
@@ -119,13 +85,6 @@ public class KadaneAlgorithmDemo {
         return Math.max(maxKadane, totalSum - minKadane);
     }
 
-    /**
-     * Calculates the maximum product contiguous subarray.
-     * Keeps track of both maximum and minimum products due to negative signs flipping parity.
-     *
-     * @param nums array of integers
-     * @return maximum contiguous subarray product
-     */
     public static int maxProductSubArray(int[] nums) {
         if (nums == null || nums.length == 0) {
             throw new IllegalArgumentException("Array cannot be null or empty");
@@ -152,12 +111,6 @@ public class KadaneAlgorithmDemo {
         return result;
     }
 
-    /**
-     * Maximum Subarray Sum with at most one element deleted.
-     * Uses two DP states:
-     * - noDelete: max subarray sum ending at current index without any deletion
-     * - oneDelete: max subarray sum ending at current index with exactly one deletion
-     */
     public static int maxSubarrayWithOneDeletion(int[] nums) {
         if (nums == null || nums.length == 0) {
             throw new IllegalArgumentException("Array cannot be null or empty");
@@ -202,13 +155,11 @@ public class KadaneAlgorithmDemo {
             System.out.println();
         }
 
-        // Specific circular wrap-around demonstration
         int[] circularTest = {5, -3, 5};
         System.out.println("Circular Showcase: " + Arrays.toString(circularTest));
         System.out.println("  Linear Max: " + maxSubArraySum(circularTest));
         System.out.println("  Circular Max: " + maxCircularSubarraySum(circularTest) + " (wraps 5 + 5 = 10)");
 
-        // Product subarray & one deletion demo
         int[] prodArray = {2, 3, -2, 4, -1};
         System.out.println("\nProduct Subarray Showcase: " + Arrays.toString(prodArray));
         System.out.println("  Max Product: " + maxProductSubArray(prodArray));

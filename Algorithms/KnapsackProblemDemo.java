@@ -3,28 +3,14 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-/**
- * Demonstrates 0/1 Knapsack and Fractional Knapsack dynamic programming & greedy solutions.
- *
- * Enhancements:
- * 1. 2D DP Table Knapsack with item selection backtracking.
- * 2. 1D Array Space-Optimized Knapsack: O(W) auxiliary space.
- * 3. Fractional Knapsack using Greedy approach (value-to-weight ratio).
- */
 public class KnapsackProblemDemo {
 
-    /**
-     * Item representation with name, weight, and profit.
-     */
     public record Item(String name, int weight, double profit) {
         public double ratio() {
             return profit / weight;
         }
     }
 
-    /**
-     * Result of 0/1 Knapsack containing max profit and selected items.
-     */
     public record KnapsackResult(int maxProfit, List<String> selectedItems) {
         @Override
         public String toString() {
@@ -32,9 +18,6 @@ public class KnapsackProblemDemo {
         }
     }
 
-    /**
-     * 2D DP table approach that computes max profit and reconstructs selected items.
-     */
     public static KnapsackResult knapSackWithItems(int capacity, int[] weights, int[] profits, String[] itemNames) {
         int n = profits.length;
         int[][] dp = new int[n + 1][capacity + 1];
@@ -49,7 +32,6 @@ public class KnapsackProblemDemo {
             }
         }
 
-        // Backtrack to find chosen items
         List<String> items = new ArrayList<>();
         int res = dp[n][capacity];
         int w = capacity;
@@ -65,10 +47,6 @@ public class KnapsackProblemDemo {
         return new KnapsackResult(dp[n][capacity], items);
     }
 
-    /**
-     * Space-optimized 0/1 Knapsack using a 1D array traversed backwards.
-     * Time Complexity: O(n * W), Space Complexity: O(W).
-     */
     public static int knapSackSpaceOptimized(int capacity, int[] weights, int[] profits) {
         int[] dp = new int[capacity + 1];
 
@@ -81,10 +59,6 @@ public class KnapsackProblemDemo {
         return dp[capacity];
     }
 
-    /**
-     * Fractional Knapsack solved via Greedy strategy (can take fractions of items).
-     * Time Complexity: O(n log n) due to sorting by value-to-weight ratio.
-     */
     public static double fractionalKnapsack(int capacity, List<Item> items) {
         List<Item> sorted = new ArrayList<>(items);
         sorted.sort((a, b) -> Double.compare(b.ratio(), a.ratio()));
