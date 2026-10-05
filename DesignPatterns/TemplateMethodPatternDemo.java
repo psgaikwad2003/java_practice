@@ -4,36 +4,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-/**
- * Demonstrates the Template Method Design Pattern (Behavioral Pattern).
- * 
- * Intent: Define the skeleton of an algorithm in an operation, deferring some
- * steps to subclasses. Template Method lets subclasses redefine certain steps of
- * an algorithm without changing the algorithm's overarching structure.
- * 
- * Follows the "Hollywood Principle": "Don't call us, we'll call you."
- * 
- * Included Examples:
- * 1. ETL Data Processing Pipeline: Skeleton for connecting, extracting,
- *    validating, transforming, loading, and auditing datasets (CSV vs. JSON API).
- * 2. CI/CD Build and Deployment Workflow: Skeleton for checking out code,
- *    resolving dependencies, compiling, running test suites, and deploying.
- */
 public class TemplateMethodPatternDemo {
 
-    // =========================================================================
-    // Example 1: ETL (Extract, Transform, Load) Data Processing Framework
-    // =========================================================================
-
-    /**
-     * Abstract Template defining the invariant ETL execution lifecycle.
-     */
     public abstract static class DataProcessingPipeline {
 
-        /**
-         * The Template Method. Marked 'final' so subclasses cannot alter
-         * the fundamental algorithm structure.
-         */
         public final void processData(String sourceUri, String targetWarehouse) {
             System.out.printf("%n=== Starting ETL Pipeline for [%s] -> [%s] ===%n", sourceUri, targetWarehouse);
             openDataSource(sourceUri);
@@ -58,20 +32,17 @@ public class TemplateMethodPatternDemo {
             System.out.println("=== ETL Pipeline Finished Successfully ===\n");
         }
 
-        // --- Abstract Steps: Subclasses MUST implement these ---
         protected abstract void openDataSource(String uri);
         protected abstract List<String> extractRecords();
         protected abstract List<String> transformRecords(List<String> records);
         protected abstract void loadRecords(String targetWarehouse, List<String> transformedRecords);
 
-        // --- Concrete Default / Clean-up Steps ---
         protected void closeDataSource() {
             System.out.println("  [Base] Connection to data source closed cleanly.");
         }
 
-        // --- Hook Methods: Subclasses CAN override these to tweak behavior ---
         protected boolean isValidationEnabled() {
-            return true; // default: validate records
+            return true;
         }
 
         protected List<String> validateRecords(List<String> records) {
@@ -88,7 +59,7 @@ public class TemplateMethodPatternDemo {
         }
 
         protected boolean shouldGenerateAuditReport() {
-            return true; // default: audit on
+            return true;
         }
 
         protected void generateAuditLog(String source, int recordCount) {
@@ -97,9 +68,6 @@ public class TemplateMethodPatternDemo {
         }
     }
 
-    /**
-     * Concrete Pipeline 1: CSV File Ingestion Pipeline.
-     */
     public static class CsvDataPipeline extends DataProcessingPipeline {
         private String filePath;
 
@@ -139,9 +107,6 @@ public class TemplateMethodPatternDemo {
         }
     }
 
-    /**
-     * Concrete Pipeline 2: JSON REST API Ingestion Pipeline.
-     */
     public static class JsonApiDataPipeline extends DataProcessingPipeline {
         private String endpointUrl;
 
@@ -180,22 +145,14 @@ public class TemplateMethodPatternDemo {
             }
         }
 
-        // Custom hook override: skip audit for lightweight API stream
         @Override
         protected boolean shouldGenerateAuditReport() {
             return false;
         }
     }
 
-    // =========================================================================
-    // Example 2: CI/CD Build and Deployment Workflow
-    // =========================================================================
-
     public abstract static class BuildPipeline {
 
-        /**
-         * The Template Method for building and deploying software.
-         */
         public final void runPipeline() {
             System.out.println("\n--- [CI/CD] Starting Automated Build Pipeline ---");
             checkoutCode();
@@ -222,7 +179,6 @@ public class TemplateMethodPatternDemo {
         protected abstract void packageArtifact();
         protected abstract void deploy();
 
-        // Hook method
         protected boolean isDeployApproved() {
             return true;
         }
@@ -255,23 +211,17 @@ public class TemplateMethodPatternDemo {
         }
     }
 
-    // =========================================================================
-    // Demonstration and Verification
-    // =========================================================================
-
     public static void main(String[] args) {
         System.out.println("=========================================================");
         System.out.println("       TEMPLATE METHOD DESIGN PATTERN DEMONSTRATION       ");
         System.out.println("=========================================================");
 
-        // --- Demo 1: ETL Pipeline Ingestion ---
         DataProcessingPipeline csvPipeline = new CsvDataPipeline();
         csvPipeline.processData("/var/data/employees.csv", "Enterprise_DB.Employees");
 
         DataProcessingPipeline apiPipeline = new JsonApiDataPipeline();
         apiPipeline.processData("https://api.store.internal/v1/orders", "Kafka_Order_Topic");
 
-        // --- Demo 2: CI/CD Build Workflow ---
         BuildPipeline javaPipeline = new JavaMicroservicePipeline();
         javaPipeline.runPipeline();
 

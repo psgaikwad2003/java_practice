@@ -4,33 +4,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-/**
- * Demonstrates the Visitor Design Pattern (Behavioral Pattern).
- * 
- * Intent: Represent an operation to be performed on the elements of an object
- * structure. Visitor lets you define a new operation without changing the classes
- * of the elements on which it operates, achieving Double Dispatch in Java.
- * 
- * Key Participants:
- * 1. Visitor: Declares a Visit operation for each class of ConcreteElement in the structure.
- * 2. ConcreteVisitor: Implements each operation; accumulates state while traversing.
- * 3. Element: Defines an Accept operation taking a visitor as an argument.
- * 4. ConcreteElement: Implements Accept via double dispatch (e.g., visitor.visit(this)).
- * 5. ObjectStructure: Can enumerate its elements and allow visitors to traverse.
- * 
- * Included Examples:
- * 1. Document AST (Abstract Syntax Tree) Processing: Exports document nodes into
- *    Markdown, HTML5, and computes document metrics (word count, code lines, table cells).
- * 2. E-Commerce Order Fulfillment: Evaluates diversified product items (Physical, Digital,
- *    Perishable) across tax calculation, tariff, and shipping logistics visitors.
- */
 public class VisitorPatternDemo {
 
-    // =========================================================================
-    // Example 1: Document AST Hierarchy & Multi-Format Exporters
-    // =========================================================================
-
-    // Forward declarations of concrete document elements for the Visitor interface
     public interface DocumentVisitor {
         void visit(HeadingNode heading);
         void visit(ParagraphNode paragraph);
@@ -38,16 +13,10 @@ public class VisitorPatternDemo {
         void visit(TableNode table);
     }
 
-    /**
-     * Element interface representing nodes in the document tree.
-     */
     public interface DocumentNode {
         void accept(DocumentVisitor visitor);
     }
 
-    /**
-     * Concrete Element: Heading.
-     */
     public static class HeadingNode implements DocumentNode {
         private final int level;
         private final String text;
@@ -62,13 +31,10 @@ public class VisitorPatternDemo {
 
         @Override
         public void accept(DocumentVisitor visitor) {
-            visitor.visit(this); // Double dispatch
+            visitor.visit(this);
         }
     }
 
-    /**
-     * Concrete Element: Paragraph.
-     */
     public static class ParagraphNode implements DocumentNode {
         private final String content;
 
@@ -84,9 +50,6 @@ public class VisitorPatternDemo {
         }
     }
 
-    /**
-     * Concrete Element: Code Snippet / Block.
-     */
     public static class CodeSnippetNode implements DocumentNode {
         private final String language;
         private final List<String> codeLines;
@@ -105,9 +68,6 @@ public class VisitorPatternDemo {
         }
     }
 
-    /**
-     * Concrete Element: Table.
-     */
     public static class TableNode implements DocumentNode {
         private final List<String> headers;
         private final List<List<String>> rows;
@@ -126,9 +86,6 @@ public class VisitorPatternDemo {
         }
     }
 
-    /**
-     * Concrete Visitor 1: Renders the Document to clean Markdown.
-     */
     public static class MarkdownExportVisitor implements DocumentVisitor {
         private final StringBuilder sb = new StringBuilder();
 
@@ -169,9 +126,6 @@ public class VisitorPatternDemo {
         }
     }
 
-    /**
-     * Concrete Visitor 2: Renders the Document to semantic HTML5.
-     */
     public static class HtmlExportVisitor implements DocumentVisitor {
         private final StringBuilder sb = new StringBuilder();
 
@@ -216,9 +170,6 @@ public class VisitorPatternDemo {
         }
     }
 
-    /**
-     * Concrete Visitor 3: Calculates analytical metrics across the document without modifying elements.
-     */
     public static class DocumentMetricsVisitor implements DocumentVisitor {
         private int totalWords = 0;
         private int totalHeadings = 0;
@@ -262,10 +213,6 @@ public class VisitorPatternDemo {
         }
     }
 
-    // =========================================================================
-    // Example 2: E-Commerce Shopping Cart & Tax / Logistics Visitors
-    // =========================================================================
-
     public interface OrderVisitor {
         void visit(PhysicalItem physicalItem);
         void visit(DigitalItem digitalItem);
@@ -278,9 +225,6 @@ public class VisitorPatternDemo {
         double getPrice();
     }
 
-    /**
-     * Concrete Element: Standard Physical Merchandise.
-     */
     public static class PhysicalItem implements OrderItem {
         private final String name;
         private final double price;
@@ -302,9 +246,6 @@ public class VisitorPatternDemo {
         }
     }
 
-    /**
-     * Concrete Element: Digital Download / Software License.
-     */
     public static class DigitalItem implements OrderItem {
         private final String name;
         private final double price;
@@ -326,9 +267,6 @@ public class VisitorPatternDemo {
         }
     }
 
-    /**
-     * Concrete Element: Perishable Grocery with cold storage requirements.
-     */
     public static class PerishableGroceryItem implements OrderItem {
         private final String name;
         private final double price;
@@ -353,15 +291,12 @@ public class VisitorPatternDemo {
         }
     }
 
-    /**
-     * Concrete Visitor 1: Sales Tax and Tariff Calculation Visitor.
-     */
     public static class TaxCalculationVisitor implements OrderVisitor {
         private double totalTax = 0.0;
 
         @Override
         public void visit(PhysicalItem physicalItem) {
-            // Standard physical goods: 8.5% sales tax
+
             double tax = physicalItem.getPrice() * 0.085;
             totalTax += tax;
             System.out.printf("  [Tax] %s ($%.2f): Standard VAT 8.5%% = $%.2f%n",
@@ -370,7 +305,7 @@ public class VisitorPatternDemo {
 
         @Override
         public void visit(DigitalItem digitalItem) {
-            // Digital goods: 5.0% digital services tax
+
             double tax = digitalItem.getPrice() * 0.05;
             totalTax += tax;
             System.out.printf("  [Tax] %s ($%.2f): Digital Service Tax 5.0%% = $%.2f%n",
@@ -379,7 +314,7 @@ public class VisitorPatternDemo {
 
         @Override
         public void visit(PerishableGroceryItem groceryItem) {
-            // Essential grocery foods are tax exempt (0%)
+
             System.out.printf("  [Tax] %s ($%.2f): Essential Grocery = $0.00 (Exempt)%n",
                     groceryItem.getName(), groceryItem.getPrice());
         }
@@ -387,15 +322,12 @@ public class VisitorPatternDemo {
         public double getTotalTax() { return totalTax; }
     }
 
-    /**
-     * Concrete Visitor 2: Shipping & Logistics Freight Calculation.
-     */
     public static class ShippingLogisticsVisitor implements OrderVisitor {
         private double totalShipping = 0.0;
 
         @Override
         public void visit(PhysicalItem physicalItem) {
-            // $5.00 base + $2.50 per kg
+
             double cost = 5.00 + (physicalItem.getWeightKg() * 2.50);
             totalShipping += cost;
             System.out.printf("  [Shipping] %s (%.1f kg): Parcel Ground = $%.2f%n",
@@ -404,17 +336,17 @@ public class VisitorPatternDemo {
 
         @Override
         public void visit(DigitalItem digitalItem) {
-            // Instant digital transmission: $0.00 delivery fee
+
             System.out.printf("  [Shipping] %s (%.1f GB): Instant Digital Delivery = $0.00%n",
                     digitalItem.getName(), digitalItem.getDownloadSizeGb());
         }
 
         @Override
         public void visit(PerishableGroceryItem groceryItem) {
-            // $4.00 base + $3.00/kg + cold container surcharge if refrigeration needed
+
             double cost = 4.00 + (groceryItem.getWeightKg() * 3.00);
             if (groceryItem.isRequiresRefrigeration()) {
-                cost += 6.50; // Cold-chain insulation fee
+                cost += 6.50;
             }
             totalShipping += cost;
             System.out.printf("  [Shipping] %s (%.1f kg, ColdChain: %s): Freight = $%.2f%n",
@@ -424,16 +356,11 @@ public class VisitorPatternDemo {
         public double getTotalShipping() { return totalShipping; }
     }
 
-    // =========================================================================
-    // Demonstration & Test Runner
-    // =========================================================================
-
     public static void main(String[] args) {
         System.out.println("=================================================================");
         System.out.println("        VISITOR PATTERN DEMO - DOUBLE DISPATCH ARCHITECTURE      ");
         System.out.println("=================================================================");
 
-        // --- Demo 1: Document AST Structure & Multi-Visitor Processing ---
         System.out.println("\n--- SCENARIO 1: DOCUMENT AST MULTI-FORMAT EXPORTERS & METRICS ---");
 
         List<DocumentNode> documentNodes = List.of(
@@ -459,7 +386,6 @@ public class VisitorPatternDemo {
                 )
         );
 
-        // 1. Export to Markdown
         System.out.println("[Visitor 1: Markdown Export]");
         MarkdownExportVisitor markdownVisitor = new MarkdownExportVisitor();
         for (DocumentNode node : documentNodes) {
@@ -467,7 +393,6 @@ public class VisitorPatternDemo {
         }
         System.out.print(markdownVisitor.getRenderedOutput());
 
-        // 2. Export to HTML5
         System.out.println("[Visitor 2: HTML5 Export]");
         HtmlExportVisitor htmlVisitor = new HtmlExportVisitor();
         for (DocumentNode node : documentNodes) {
@@ -475,7 +400,6 @@ public class VisitorPatternDemo {
         }
         System.out.print(htmlVisitor.getRenderedOutput());
 
-        // 3. Compute Metrics
         System.out.println("[Visitor 3: Document Analytical Metrics]");
         DocumentMetricsVisitor metricsVisitor = new DocumentMetricsVisitor();
         for (DocumentNode node : documentNodes) {
@@ -483,7 +407,6 @@ public class VisitorPatternDemo {
         }
         metricsVisitor.printReport();
 
-        // --- Demo 2: E-Commerce Shopping Cart Multi-Domain Visitors ---
         System.out.println("\n--- SCENARIO 2: E-COMMERCE CART TAX & SHIPPING LOGISTICS ---");
 
         List<OrderItem> shoppingCart = List.of(
@@ -496,7 +419,6 @@ public class VisitorPatternDemo {
         double subtotal = shoppingCart.stream().mapToDouble(OrderItem::getPrice).sum();
         System.out.printf("Cart Items: %d items | Subtotal: $%.2f%n%n", shoppingCart.size(), subtotal);
 
-        // Calculate Taxes via TaxCalculationVisitor
         System.out.println("[Applying TaxCalculationVisitor]:");
         TaxCalculationVisitor taxVisitor = new TaxCalculationVisitor();
         for (OrderItem item : shoppingCart) {
@@ -504,7 +426,6 @@ public class VisitorPatternDemo {
         }
         System.out.printf("Total Calculated Tax: $%.2f%n%n", taxVisitor.getTotalTax());
 
-        // Calculate Shipping via ShippingLogisticsVisitor
         System.out.println("[Applying ShippingLogisticsVisitor]:");
         ShippingLogisticsVisitor shippingVisitor = new ShippingLogisticsVisitor();
         for (OrderItem item : shoppingCart) {
