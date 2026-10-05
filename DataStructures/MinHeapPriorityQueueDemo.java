@@ -1,20 +1,5 @@
 import java.util.*;
 
-/**
- * Custom Generic Min-Heap (Priority Queue) implementation from scratch.
- *
- * Characteristics:
- * - Backed by a dynamic array representing a complete binary tree.
- * - Parent-Child relationships:
- *     parent(i) = (i - 1) / 2
- *     leftChild(i) = 2 * i + 1
- *     rightChild(i) = 2 * i + 2
- * - Complexity:
- *     - Insert: O(log n)
- *     - Extract Min: O(log n)
- *     - Peek: O(1)
- *     - Build Heap from array: O(n) Floyd's algorithm
- */
 public class MinHeapPriorityQueueDemo {
 
     public static class MinHeap<T extends Comparable<T>> {
@@ -41,16 +26,13 @@ public class MinHeapPriorityQueueDemo {
             this.comparator = comparator;
         }
 
-        /**
-         * Floyd's O(n) linear-time heap construction.
-         */
         @SuppressWarnings("unchecked")
         public static <E extends Comparable<E>> MinHeap<E> buildHeap(E[] elements) {
             MinHeap<E> minHeap = new MinHeap<>(elements.length);
             for (E elem : elements) {
                 minHeap.heap[minHeap.size++] = elem;
             }
-            // Sift down all non-leaf nodes starting from the bottom
+
             for (int i = (minHeap.size / 2) - 1; i >= 0; i--) {
                 minHeap.heapifyDown(i);
             }
@@ -88,7 +70,7 @@ public class MinHeapPriorityQueueDemo {
 
             T minVal = (T) heap[0];
             heap[0] = heap[size - 1];
-            heap[size - 1] = null; // Prevent memory leak
+            heap[size - 1] = null;
             size--;
 
             if (size > 0) {
@@ -98,13 +80,6 @@ public class MinHeapPriorityQueueDemo {
             return minVal;
         }
 
-        /**
-         * Replaces the minimum root element with a new value in a single O(log n) pass.
-         * More efficient than calling extractMin() followed by insert().
-         *
-         * @param newValue the value to insert at root
-         * @return the previous minimum value
-         */
         @SuppressWarnings("unchecked")
         public T replaceTop(T newValue) {
             if (isEmpty()) {
@@ -116,9 +91,6 @@ public class MinHeapPriorityQueueDemo {
             return oldMin;
         }
 
-        /**
-         * In-place Heap Sort algorithm (O(n log n) time, O(1) auxiliary space).
-         */
         public static <E extends Comparable<E>> void heapSort(E[] arr) {
             if (arr == null || arr.length <= 1) return;
             int n = arr.length;
@@ -152,22 +124,10 @@ public class MinHeapPriorityQueueDemo {
             }
         }
 
-        /**
-         * Checks if the heap contains the specified element.
-         *
-         * @param value element to search for
-         * @return true if found, false otherwise
-         */
         public boolean contains(T value) {
             return indexOf(value) != -1;
         }
 
-        /**
-         * Removes a single instance of the specified element from the heap, if present.
-         *
-         * @param value element to be removed
-         * @return true if an element was removed
-         */
         public boolean remove(T value) {
             int index = indexOf(value);
             if (index == -1) return false;
@@ -256,9 +216,6 @@ public class MinHeapPriorityQueueDemo {
         }
     }
 
-    /**
-     * Application: Find K largest elements using Min-Heap of size K.
-     */
     public static List<Integer> findKLargest(int[] nums, int k) {
         if (nums == null || k <= 0 || k > nums.length) {
             return Collections.emptyList();
@@ -281,12 +238,9 @@ public class MinHeapPriorityQueueDemo {
         return result;
     }
 
-    /**
-     * Priority Task item for demonstration.
-     */
     public static class Task implements Comparable<Task> {
         private final String name;
-        private final int priority; // Lower integer = higher priority
+        private final int priority;
 
         public Task(String name, int priority) {
             this.name = name;
@@ -309,7 +263,6 @@ public class MinHeapPriorityQueueDemo {
         System.out.println("     CUSTOM GENERIC MIN-HEAP DEMO         ");
         System.out.println("==========================================");
 
-        // Demo 1: Basic Insert & Extract-Min
         System.out.println("\n[1] Basic Insertions & Priority Extractions:");
         MinHeap<Integer> heap = new MinHeap<>();
         int[] values = {15, 10, 20, 8, 12, 25, 5};
@@ -323,7 +276,6 @@ public class MinHeapPriorityQueueDemo {
         }
         System.out.println();
 
-        // Demo 2: Linear-time O(n) Floyd Heapify
         System.out.println("\n[2] Floyd's O(n) Batch Build Heap:");
         Integer[] rawData = {40, 10, 30, 50, 20, 15, 5};
         MinHeap<Integer> builtHeap = MinHeap.buildHeap(rawData);
@@ -333,14 +285,12 @@ public class MinHeapPriorityQueueDemo {
         }
         System.out.println();
 
-        // Demo 3: K-Largest Elements using size-K Min-Heap
         int[] numbers = {3, 2, 1, 5, 6, 4, 9, 8, 7};
         int k = 4;
         System.out.println("\n[3] Find Top " + k + " Largest Elements:");
         System.out.println("    Input: " + Arrays.toString(numbers));
         System.out.println("    Top " + k + " elements: " + findKLargest(numbers, k));
 
-        // Demo 4: Custom Priority Queue Simulation
         System.out.println("\n[4] Operating System Task Scheduler Simulation:");
         MinHeap<Task> scheduler = new MinHeap<>();
         scheduler.insert(new Task("Render UI Frame", 3));
@@ -352,7 +302,6 @@ public class MinHeapPriorityQueueDemo {
             System.out.println("    Executing: " + scheduler.extractMin());
         }
 
-        // Demo 5: Arbitrary Element Removal & Contains
         System.out.println("\n[5] Arbitrary Element Removal and Contains Check:");
         MinHeap<Integer> removalHeap = new MinHeap<>();
         int[] vals = {50, 30, 20, 15, 10, 8, 16};
@@ -361,7 +310,6 @@ public class MinHeapPriorityQueueDemo {
         System.out.println("    Removing 20: " + removalHeap.remove(20));
         System.out.println("    Contains 20 after removal? " + removalHeap.contains(20));
 
-        // Demo 6: Max-Heap using Reverse Comparator
         System.out.println("\n[6] Max-Heap using Custom Reverse Comparator:");
         MinHeap<Integer> maxHeap = new MinHeap<>(Comparator.<Integer>reverseOrder());
         for (int v : new int[]{12, 45, 19, 99, 3}) maxHeap.insert(v);
@@ -371,7 +319,6 @@ public class MinHeapPriorityQueueDemo {
         }
         System.out.println();
 
-        // Demo 7: Single-pass replaceTop
         System.out.println("\n[7] Single-Pass replaceTop Optimization:");
         MinHeap<Integer> topHeap = new MinHeap<>();
         for (int v : new int[]{10, 20, 30, 40}) topHeap.insert(v);
@@ -379,7 +326,6 @@ public class MinHeapPriorityQueueDemo {
         int oldMin = topHeap.replaceTop(25);
         System.out.println("    Replaced top " + oldMin + " with 25. New peek: " + topHeap.peek());
 
-        // Demo 8: In-place Heap Sort
         Integer[] unsorted = {64, 25, 12, 22, 11, 90};
         System.out.println("\n[8] In-Place Heap Sort:");
         System.out.println("    Original: " + Arrays.toString(unsorted));
