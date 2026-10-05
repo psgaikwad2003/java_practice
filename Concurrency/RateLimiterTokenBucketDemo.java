@@ -2,21 +2,6 @@ import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.ReentrantLock;
 
-/**
- * Demonstrates a Thread-Safe Token Bucket Rate Limiter.
- *
- * Algorithm Concept:
- * - A bucket has a maximum capacity of tokens (burst capacity).
- * - Tokens refill into the bucket at a constant rate (refillTokensPerSecond).
- * - Instead of a background refill thread, tokens are calculated lazily on each request
- *   based on the elapsed time since the last refill (highly efficient, zero background CPU).
- * - Requests consume 1 or more tokens. If not enough tokens are available, the request
- *   is either rejected immediately (tryAcquire) or paused until tokens refill (acquire).
- *
- * Industry relevance:
- * - Used in API Gateways (Spring Cloud Gateway, NGINX, Stripe, AWS API Gateway).
- * - Protects downstream databases and microservices from traffic spikes.
- */
 public class RateLimiterTokenBucketDemo {
 
     public static class TokenBucketRateLimiter {
@@ -27,7 +12,6 @@ public class RateLimiterTokenBucketDemo {
         private long lastRefillNanos;
         private final ReentrantLock lock = new ReentrantLock();
 
-        // Telemetry counters
         private long totalRequests = 0;
         private long acceptedRequests = 0;
         private long throttledRequests = 0;
@@ -38,21 +22,14 @@ public class RateLimiterTokenBucketDemo {
             }
             this.capacity = capacity;
             this.refillTokensPerSecond = refillTokensPerSecond;
-            this.availableTokens = capacity; // Start with a full bucket
+            this.availableTokens = capacity;
             this.lastRefillNanos = System.nanoTime();
         }
 
-        /**
-         * Non-blocking attempt to acquire 1 token.
-         * Returns true if acquired, false if rate limit exceeded.
-         */
         public boolean tryAcquire() {
             return tryAcquire(1);
         }
 
-        /**
-         * Non-blocking attempt to acquire 'tokens' amount.
-         */
         public boolean tryAcquire(int tokens) {
             if (tokens <= 0) return true;
             if (tokens > capacity) return false;
@@ -73,14 +50,6 @@ public class RateLimiterTokenBucketDemo {
             }
         }
 
-        /**
-         * Timed acquire attempt: Waits up to the specified timeout for tokens to become available.
-         *
-         * @param tokens amount of tokens to acquire
-         * @param timeout maximum time to wait
-         * @param unit time unit
-         * @return true if acquired within timeout, false otherwise
-         */
         public boolean tryAcquire(int tokens, long timeout, TimeUnit unit) throws InterruptedException {
             if (tokens <= 0) return true;
             if (tokens > capacity) return false;
@@ -122,9 +91,6 @@ public class RateLimiterTokenBucketDemo {
             }
         }
 
-        /**
-         * Blocking acquire: Waits until enough tokens become available.
-         */
         public void acquire(int tokens) throws InterruptedException {
             if (tokens <= 0) return;
 
@@ -137,10 +103,9 @@ public class RateLimiterTokenBucketDemo {
                         availableTokens -= tokens;
                         totalRequests++;
                         acceptedRequests++;
-                        return; // Acquired successfully
+                        return;
                     }
 
-                    // Calculate required wait time
                     double missingTokens = tokens - availableTokens;
                     waitNanos = (long) ((missingTokens / refillTokensPerSecond) * 1_000_000_000L);
                 } finally {
@@ -153,10 +118,6 @@ public class RateLimiterTokenBucketDemo {
             }
         }
 
-        /**
-         * Lazily adds tokens according to the elapsed duration.
-         * Must be called while holding the lock.
-         */
         private void refill() {
             long now = System.nanoTime();
             long elapsedNanos = now - lastRefillNanos;
@@ -201,7 +162,6 @@ public class RateLimiterTokenBucketDemo {
         System.out.println(" TOKEN BUCKET RATE LIMITER CONCURRENCY    ");
         System.out.println("==========================================");
 
-        // Capacity: 5 tokens (allows burst of 5 requests), Refill: 2 tokens / sec
         TokenBucketRateLimiter rateLimiter = new TokenBucketRateLimiter(5, 2.0);
 
         System.out.println("\n[1] Burst Traffic Simulation:");
@@ -213,7 +173,6 @@ public class RateLimiterTokenBucketDemo {
                     rateLimiter.getAvailableTokens());
         }
 
-        // Wait 1.5 seconds to accumulate ~3 tokens
         System.out.println("\n[2] Waiting 1.5 seconds for token refill...");
         Thread.sleep(1500);
         System.out.printf("    Available after refill: %.2f tokens%n", rateLimiter.getAvailableTokens());
@@ -223,9 +182,8 @@ public class RateLimiterTokenBucketDemo {
         System.out.println("    Retry 1 allowed: " + retry1);
         System.out.println("    Retry 2 allowed: " + retry2);
 
-        // Demo 3: Multi-threaded Concurrent Hammer Test
         System.out.println("\n[3] Multi-Threaded Stress Test (10 concurrent threads):");
-        TokenBucketRateLimiter sharedLimiter = new TokenBucketRateLimiter(3, 5.0); // 3 burst, 5 req/sec
+        TokenBucketRateLimiter sharedLimiter = new TokenBucketRateLimiter(3, 5.0);
         ExecutorService executor = Executors.newFixedThreadPool(10);
         CountDownLatch startLatch = new CountDownLatch(1);
         AtomicInteger acceptedCount = new AtomicInteger(0);
@@ -235,7 +193,7 @@ public class RateLimiterTokenBucketDemo {
             final int requestId = i + 1;
             executor.submit(() -> {
                 try {
-                    startLatch.await(); // Synchronize all threads to fire at the exact same millisecond
+                    startLatch.await();
                     if (sharedLimiter.tryAcquire()) {
                         acceptedCount.incrementAndGet();
                         System.out.println("    [Thread-" + Thread.currentThread().threadId() + "] Req #" + requestId + ": SUCCESS");
@@ -249,7 +207,6 @@ public class RateLimiterTokenBucketDemo {
             });
         }
 
-        // Fire all threads simultaneously
         startLatch.countDown();
         executor.shutdown();
         executor.awaitTermination(3, TimeUnit.SECONDS);
@@ -259,10 +216,9 @@ public class RateLimiterTokenBucketDemo {
         System.out.println("    Accepted: " + acceptedCount.get() + " (Permitted by initial burst capacity)");
         System.out.println("    Throttled: " + rejectedCount.get());
 
-        // Demo 4: Timed tryAcquire with timeout
         System.out.println("\n[4] Timed tryAcquire Demo:");
-        TokenBucketRateLimiter timedLimiter = new TokenBucketRateLimiter(1, 2.0); // 1 token, 2 tokens/sec
-        timedLimiter.tryAcquire(); // Drain
+        TokenBucketRateLimiter timedLimiter = new TokenBucketRateLimiter(1, 2.0);
+        timedLimiter.tryAcquire();
         System.out.println("    Tokens drained. Attempting timed acquire with 600ms timeout...");
         boolean acquiredWithinTimeout = timedLimiter.tryAcquire(1, 600, TimeUnit.MILLISECONDS);
         System.out.println("    Acquired within 600ms? " + acquiredWithinTimeout);

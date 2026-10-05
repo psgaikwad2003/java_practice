@@ -3,25 +3,8 @@ package Concurrency;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.*;
 
-/**
- * Demonstrates Non-Blocking / Lock-Free Concurrent Data Structures using Compare-And-Swap (CAS).
- *
- * Implemented Patterns:
- * 1. Treiber Stack: Classic lock-free LIFO stack using AtomicReference with CAS retry loops.
- * 2. Michael-Scott Non-Blocking Queue: Lock-free FIFO queue using sentinel nodes and helper CAS operations.
- * 3. The ABA Problem & Solution: Why naive CAS can fail if memory addresses are recycled, and how
- *    AtomicStampedReference (version/stamp tagging) completely mitigates it.
- * 4. High-concurrency multi-threaded benchmark comparing Lock-Free vs Synchronized access.
- *
- * Complexity:
- * - Time: O(1) expected per operation (lock-free guarantee).
- * - Space: O(N) memory allocation for linked nodes.
- */
 public class LockFreeDataStructuresDemo {
 
-    /**
-     * 1. Treiber Lock-Free Stack.
-     */
     public static class TreiberStack<E> {
         private static class Node<E> {
             final E item;
@@ -68,9 +51,6 @@ public class LockFreeDataStructuresDemo {
         }
     }
 
-    /**
-     * 2. Michael-Scott Lock-Free Queue.
-     */
     public static class MichaelScottQueue<E> {
         private static class Node<E> {
             final E value;
@@ -99,12 +79,12 @@ public class LockFreeDataStructuresDemo {
 
                 if (curTail == tail.get()) {
                     if (tailNext != null) {
-                        // Tail lagged behind; advance it for other threads
+
                         tail.compareAndSet(curTail, tailNext);
                     } else {
-                        // Try linking new node to tail.next
+
                         if (curTail.next.compareAndSet(null, newNode)) {
-                            // Advance tail to new node
+
                             tail.compareAndSet(curTail, newNode);
                             return;
                         }
@@ -122,9 +102,9 @@ public class LockFreeDataStructuresDemo {
                 if (curHead == head.get()) {
                     if (curHead == curTail) {
                         if (headNext == null) {
-                            return null; // queue is empty
+                            return null;
                         }
-                        // Tail is lagging behind head
+
                         tail.compareAndSet(curTail, headNext);
                     } else {
                         if (headNext == null) continue;
@@ -138,9 +118,6 @@ public class LockFreeDataStructuresDemo {
         }
     }
 
-    /**
-     * 3. ABA Problem Resolution with AtomicStampedReference.
-     */
     public static void demonstrateABASolution() {
         System.out.println("\n--- Demonstrating ABA Problem Prevention with AtomicStampedReference ---");
         String originalRef = "State_A";
@@ -149,20 +126,15 @@ public class LockFreeDataStructuresDemo {
 
         System.out.println("Initial Value: " + stampedRef.getReference() + ", Stamp: " + stampedRef.getStamp());
 
-        // Simulate Thread 1 intending to swap A -> C if still at stamp 1
         int observedStamp = stampedRef.getStamp();
         String observedRef = stampedRef.getReference();
 
-        // Simulate Thread 2 doing ABA transition in between:
-        // A -> B
         stampedRef.compareAndSet("State_A", "State_B", stampedRef.getStamp(), stampedRef.getStamp() + 1);
         System.out.println("Step 1 (A -> B): Value=" + stampedRef.getReference() + ", Stamp=" + stampedRef.getStamp());
 
-        // B -> A (Reference is back to "State_A", but stamp has incremented to 3!)
         stampedRef.compareAndSet("State_B", "State_A", stampedRef.getStamp(), stampedRef.getStamp() + 1);
         System.out.println("Step 2 (B -> A): Value=" + stampedRef.getReference() + ", Stamp=" + stampedRef.getStamp());
 
-        // Now Thread 1 attempts its CAS using the original observed stamp (1)
         boolean success = stampedRef.compareAndSet(observedRef, "State_C", observedStamp, observedStamp + 1);
         System.out.println("Thread 1 CAS attempt (A -> C with stamp=" + observedStamp + "): " +
                 (success ? "SUCCESS" : "FAILED (Prevented ABA corruption!)"));
@@ -174,7 +146,6 @@ public class LockFreeDataStructuresDemo {
         System.out.println("     LOCK-FREE DATA STRUCTURES (TREIBER & MICHAEL-SCOTT)     ");
         System.out.println("=============================================================");
 
-        // Test 1: Multi-threaded Treiber Stack Concurrency
         System.out.println("\n--- Test 1: Concurrent Treiber Stack ---");
         TreiberStack<Integer> stack = new TreiberStack<>();
         int threadCount = 4;
@@ -182,7 +153,6 @@ public class LockFreeDataStructuresDemo {
         CountDownLatch startLatch = new CountDownLatch(1);
         CountDownLatch finishLatch = new CountDownLatch(threadCount * 2);
 
-        // Producers
         for (int t = 0; t < threadCount; t++) {
             final int offset = t * itemsPerThread;
             Thread.ofPlatform().start(() -> {
@@ -198,7 +168,6 @@ public class LockFreeDataStructuresDemo {
             });
         }
 
-        // Consumers
         AtomicInteger consumedCount = new AtomicInteger(0);
         for (int t = 0; t < threadCount; t++) {
             Thread.ofPlatform().start(() -> {
@@ -230,7 +199,6 @@ public class LockFreeDataStructuresDemo {
                 consumedCount.get(), threadCount * 2, duration);
         System.out.println("Stack size at end: " + stack.size());
 
-        // Test 2: Michael-Scott Queue
         System.out.println("\n--- Test 2: Michael-Scott Lock-Free Queue ---");
         MichaelScottQueue<String> queue = new MichaelScottQueue<>();
         queue.enqueue("Message-1");
@@ -243,7 +211,6 @@ public class LockFreeDataStructuresDemo {
         System.out.println("Dequeued: " + queue.dequeue());
         System.out.println("Dequeued (empty): " + queue.dequeue());
 
-        // Test 3: ABA resolution
         demonstrateABASolution();
 
         System.out.println("\nLock-free concurrency verification completed successfully.");
