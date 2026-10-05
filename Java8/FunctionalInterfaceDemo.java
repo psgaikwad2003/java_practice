@@ -2,15 +2,12 @@ import java.util.*;
 import java.util.function.*;
 import java.util.stream.*;
 
-
 public class FunctionalInterfaceDemo {
 
-    
     @FunctionalInterface
     interface StringProcessor {
         String process(String input);
 
-        
         default StringProcessor andThenProcess(StringProcessor after) {
             return input -> after.process(this.process(input));
         }
@@ -21,10 +18,6 @@ public class FunctionalInterfaceDemo {
         R apply(A a, B b, C c);
     }
 
-    /**
-     * Functional interface allowing checked exceptions, with an uncheck adapter
-     * to seamlessly use exception-throwing lambdas inside Stream pipelines.
-     */
     @FunctionalInterface
     interface CheckedFunction<T, R, E extends Throwable> {
         R apply(T t) throws E;
@@ -40,7 +33,6 @@ public class FunctionalInterfaceDemo {
         }
     }
 
-    
     static class Employee {
         String name;
         String dept;
@@ -118,22 +110,14 @@ public class FunctionalInterfaceDemo {
         StringProcessor upper = String::toUpperCase;
         StringProcessor addBrackets = s -> "[" + s + "]";
 
-        
         StringProcessor pipeline = trim.andThenProcess(upper).andThenProcess(addBrackets);
         System.out.println("  Result: " + pipeline.process("  hello world  "));
 
-        
         TriFunction<String, String, Double, Employee> factory = Employee::new;
         Employee emp = factory.apply("Alice", "Eng", 95000.0);
         System.out.println("  Created: " + emp + "\n");
     }
 
-    /**
-     * Decorates a Function with thread-safe memoization caching computed results.
-     *
-     * @param fn the function to memoize
-     * @return memoized function
-     */
     public static <T, R> Function<T, R> memoize(Function<T, R> fn) {
         java.util.concurrent.ConcurrentMap<T, R> cache = new java.util.concurrent.ConcurrentHashMap<>();
         return key -> cache.computeIfAbsent(key, fn);
@@ -153,7 +137,6 @@ public class FunctionalInterfaceDemo {
         Predicate<Employee> highEarner = e -> e.salary > 80000;
         Predicate<Employee> nameStartsA = e -> e.name.startsWith("A");
 
-        
         List<Employee> engHighEarners = team.stream()
             .filter(isEng.and(highEarner))
             .collect(Collectors.toList());
@@ -174,15 +157,12 @@ public class FunctionalInterfaceDemo {
         Function<Integer, Integer> addTen = x -> x + 10;
         Function<Integer, String> toLabel = x -> "Value=" + x;
 
-        
         Function<Integer, String> pipeline = doubleIt.andThen(addTen).andThen(toLabel);
-        System.out.println("  andThen(5)  : " + pipeline.apply(5)); 
+        System.out.println("  andThen(5)  : " + pipeline.apply(5));
 
-        
         Function<Integer, Integer> composed = doubleIt.compose(addTen);
-        System.out.println("  compose(5)  : " + composed.apply(5)); 
+        System.out.println("  compose(5)  : " + composed.apply(5));
 
-        
         UnaryOperator<String> shout = s -> s.toUpperCase() + "!";
         System.out.println("  shout       : " + shout.apply("hello") + "\n");
     }
@@ -195,7 +175,6 @@ public class FunctionalInterfaceDemo {
         Consumer<String> logAndPrint = print.andThen(println);
         logAndPrint.accept("Processing order #42");
 
-        
         Map<String, Integer> scores = new LinkedHashMap<>();
         scores.put("Math", 95); scores.put("Physics", 88); scores.put("CS", 97);
 
@@ -207,7 +186,7 @@ public class FunctionalInterfaceDemo {
 
     static void demoSupplier() {
         System.out.println("── 5. Supplier — Lazy Init ─────────────");
-        
+
         Supplier<List<Integer>> lazyPrimes = () -> {
             System.out.println("  (Computing primes...)");
             List<Integer> primes = new ArrayList<>();
@@ -222,7 +201,7 @@ public class FunctionalInterfaceDemo {
         };
 
         System.out.println("  Supplier created (no computation yet)");
-        List<Integer> result = lazyPrimes.get(); 
+        List<Integer> result = lazyPrimes.get();
         System.out.println("  First 10 primes: " + result + "\n");
     }
 
@@ -230,15 +209,12 @@ public class FunctionalInterfaceDemo {
         System.out.println("── 6. Method References ────────────────");
         List<String> names = Arrays.asList("carol", "alice", "bob");
 
-        
         names.stream().map(FunctionalInterfaceDemo::capitalize).forEach(s -> System.out.print("  " + s));
         System.out.println();
 
-        
         names.sort(String::compareToIgnoreCase);
         System.out.println("  Sorted: " + names);
 
-        
         List<Employee> emps = Arrays.asList("X", "Y").stream()
             .map(n -> new Employee(n, "Eng", 70000))
             .collect(Collectors.toList());
@@ -260,7 +236,6 @@ public class FunctionalInterfaceDemo {
             new Employee("Frank", "HR", 73000)
         );
 
-        
         Function<List<Employee>, List<Employee>> filterEng =
             list -> list.stream().filter(e -> "Eng".equals(e.dept)).collect(Collectors.toList());
 

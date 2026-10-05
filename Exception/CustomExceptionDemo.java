@@ -125,7 +125,7 @@ public class CustomExceptionDemo {
         try {
             throw new NullPointerException("Database cursor returned null row");
         } catch (Exception cause) {
-            // Pass cause so exception chaining is properly preserved
+
             throw new ResourceNotFoundException("User", userId, cause);
         }
     }
