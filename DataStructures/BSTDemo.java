@@ -1,7 +1,6 @@
 import java.util.LinkedList;
 import java.util.Queue;
 
-
 public class BSTDemo {
 
     static class TreeNode {
@@ -39,8 +38,8 @@ public class BSTDemo {
     private boolean searchRecursive(TreeNode current, int val) {
         if (current == null) return false;
         if (current.val == val) return true;
-        return val < current.val 
-            ? searchRecursive(current.left, val) 
+        return val < current.val
+            ? searchRecursive(current.left, val)
             : searchRecursive(current.right, val);
     }
 
@@ -91,8 +90,7 @@ public class BSTDemo {
         bst.inOrder();
         bst.levelOrder();
 
-        System.out.println("\nSearch 40: " + bst.search(40)); 
-        System.out.println("Search 90: " + bst.search(90)); 
+        System.out.println("\nSearch 40: " + bst.search(40));
+        System.out.println("Search 90: " + bst.search(90));
     }
 }
-// Updated for demonstration

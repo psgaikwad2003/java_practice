@@ -5,18 +5,6 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
-/**
- * Demonstrates a space-efficient probabilistic Bloom Filter.
- * 
- * Guarantees:
- * - No False Negatives: If mightContain returns false, the item is definitely NOT in the set.
- * - Possible False Positives: If mightContain returns true, the item MIGHT be in the set.
- * 
- * Features:
- * - Optimal bit size (m) and hash function count (k) calculation based on capacity and target error rate.
- * - Kirsch-Mitzenmacher double-hashing optimization to simulate k independent hash functions.
- * - Empirical false positive rate testing against theoretical predictions.
- */
 public class BloomFilterDemo {
 
     private final BitSet bitSet;
@@ -24,30 +12,18 @@ public class BloomFilterDemo {
     private final int numHashFunctions;
     private int insertedElements;
 
-    /**
-     * Constructs a Bloom Filter configured for expected insertions and desired false positive probability.
-     *
-     * @param expectedInsertions expected number of elements (n)
-     * @param falsePositiveRate desired false positive rate (e.g. 0.01 for 1%)
-     */
     public BloomFilterDemo(int expectedInsertions, double falsePositiveRate) {
         if (expectedInsertions <= 0 || falsePositiveRate <= 0.0 || falsePositiveRate >= 1.0) {
             throw new IllegalArgumentException("Invalid Bloom Filter parameters");
         }
 
-        // m = - (n * ln(p)) / (ln(2)^2)
         this.bitSetSize = (int) Math.ceil(-1 * expectedInsertions * Math.log(falsePositiveRate) / (Math.log(2) * Math.log(2)));
-        // k = (m / n) * ln(2)
+
         this.numHashFunctions = Math.max(1, (int) Math.round(((double) bitSetSize / expectedInsertions) * Math.log(2)));
         this.bitSet = new BitSet(bitSetSize);
         this.insertedElements = 0;
     }
 
-    /**
-     * Adds an element into the Bloom Filter.
-     *
-     * @param element the string element
-     */
     public void add(String element) {
         if (element == null) return;
         int[] hashes = getHashes(element);
@@ -57,33 +33,24 @@ public class BloomFilterDemo {
         insertedElements++;
     }
 
-    /**
-     * Checks if the element might be in the set.
-     *
-     * @param element the string element
-     * @return true if the element might be present, false if it definitely is not
-     */
     public boolean mightContain(String element) {
         if (element == null) return false;
         int[] hashes = getHashes(element);
         for (int hash : hashes) {
             if (!bitSet.get(hash)) {
-                return false; // Definitely not present
+                return false;
             }
         }
-        return true; // Might be present
+        return true;
     }
 
-    /**
-     * Kirsch-Mitzenmacher optimization: generates k hash values using two 32-bit hashes.
-     */
     private int[] getHashes(String element) {
         int[] result = new int[numHashFunctions];
         int hash1 = element.hashCode();
         int hash2 = fnv1aHash(element);
 
         for (int i = 0; i < numHashFunctions; i++) {
-            // Combined hash: (hash1 + i * hash2) % m
+
             int combined = (hash1 + i * hash2) % bitSetSize;
             if (combined < 0) {
                 combined += bitSetSize;
@@ -93,9 +60,6 @@ public class BloomFilterDemo {
         return result;
     }
 
-    /**
-     * 32-bit FNV-1a alternative hash function for hash independence.
-     */
     private int fnv1aHash(String data) {
         final int FNV_PRIME = 16777619;
         int hash = (int) 2166136261L;
@@ -122,22 +86,12 @@ public class BloomFilterDemo {
         return insertedElements;
     }
 
-    /**
-     * Calculates the theoretical false positive probability given the current number of inserted items.
-     * Formula: (1 - e^(-k * n / m))^k
-     */
     public double currentFalsePositiveRate() {
         if (bitSetSize == 0 || insertedElements == 0) return 0.0;
         double exponent = -1.0 * numHashFunctions * insertedElements / bitSetSize;
         return Math.pow(1.0 - Math.exp(exponent), numHashFunctions);
     }
 
-    /**
-     * Performs a bitwise OR union of two compatible Bloom Filters.
-     * The resulting filter represents the union of elements from both filters.
-     *
-     * @param other another Bloom Filter with the exact same size and hash count
-     */
     public void union(BloomFilterDemo other) {
         if (other == null) return;
         if (this.bitSetSize != other.bitSetSize || this.numHashFunctions != other.numHashFunctions) {
@@ -151,7 +105,7 @@ public class BloomFilterDemo {
         System.out.println("=== Bloom Filter Probabilistic Data Structure Demo ===\n");
 
         int expectedItems = 5000;
-        double targetFPRate = 0.01; // 1%
+        double targetFPRate = 0.01;
 
         BloomFilterDemo bloomFilter = new BloomFilterDemo(expectedItems, targetFPRate);
 
@@ -161,7 +115,6 @@ public class BloomFilterDemo {
         System.out.printf("  Optimal Bits (m):    %d (%.2f KB)%n", bloomFilter.getBitSetSize(), bloomFilter.getBitSetSize() / 8192.0);
         System.out.printf("  Hash Functions (k):  %d%n%n", bloomFilter.getNumHashFunctions());
 
-        // 1. Insert known items
         Set<String> groundTruth = new HashSet<>();
         for (int i = 0; i < expectedItems; i++) {
             String item = "user-" + i + "@example.com";
@@ -174,7 +127,6 @@ public class BloomFilterDemo {
                 bloomFilter.getBitsSetCount(), bloomFilter.getBitSetSize(),
                 (100.0 * bloomFilter.getBitsSetCount() / bloomFilter.getBitSetSize()));
 
-        // 2. Test False Negatives (Must ALWAYS be 0)
         int falseNegatives = 0;
         for (String item : groundTruth) {
             if (!bloomFilter.mightContain(item)) {
@@ -183,7 +135,6 @@ public class BloomFilterDemo {
         }
         System.out.printf("Verification: False Negatives count = %d (Should strictly be 0)%n", falseNegatives);
 
-        // 3. Test False Positives on unseen random UUIDs
         int testCount = 10000;
         int falsePositives = 0;
         for (int i = 0; i < testCount; i++) {
@@ -200,7 +151,6 @@ public class BloomFilterDemo {
         System.out.printf("  Theoretical FP Rate: %.4f%%%n", bloomFilter.currentFalsePositiveRate() * 100);
         System.out.printf("  Target FP Rate was:  %.4f%%%n", targetFPRate * 100);
 
-        // 4. Test Bloom Filter Union (Merging two sets)
         System.out.println("\n[4] Bloom Filter Union Demo:");
         BloomFilterDemo bf1 = new BloomFilterDemo(1000, 0.01);
         BloomFilterDemo bf2 = new BloomFilterDemo(1000, 0.01);
