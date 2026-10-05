@@ -1,8 +1,6 @@
-
 public class binarySearch {
     public static void main(String[] args) {
 
-        
         int[] arr = {2, 5, 8, 12, 16, 23, 38, 56, 72, 91};
         int target = 23;
 
@@ -21,7 +19,6 @@ public class binarySearch {
             System.out.println("Element not found.");
         }
 
-        
         int missing = 50;
         int result2 = binarySearch(arr, missing);
         System.out.println("\nSearching for: " + missing);
@@ -42,7 +39,7 @@ public class binarySearch {
         int high = arr.length - 1;
 
         while (low <= high) {
-            
+
             int mid = low + (high - low) / 2;
 
             if (arr[mid] == target) {
@@ -53,10 +50,9 @@ public class binarySearch {
                 high = mid - 1;
             }
         }
-        return -1; 
+        return -1;
     }
 
-    
     static int binarySearchRecursive(int[] arr, int low, int high, int target) {
         if (arr == null || low > high) {
             return -1;
@@ -71,4 +67,3 @@ public class binarySearch {
         return binarySearchRecursive(arr, mid + 1, high, target);
     }
 }
-//complete 

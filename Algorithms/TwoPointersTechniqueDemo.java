@@ -4,22 +4,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-/**
- * Demonstrates the Two-Pointers algorithmic paradigm with four classic LeetCode problems:
- * 1. Two Sum II (Input Array Is Sorted): O(n) time, O(1) space.
- * 2. 3Sum (All unique triplets summing to zero): O(n^2) time, O(1) auxiliary space.
- * 3. Container With Most Water: O(n) time, O(1) space.
- * 4. Trapping Rain Water: O(n) time, O(1) space.
- */
 public class TwoPointersTechniqueDemo {
 
-    /**
-     * 1. Two Sum in a sorted array (1-indexed result).
-     *
-     * @param numbers sorted array in non-decreasing order
-     * @param target target sum
-     * @return 1-based indices [index1, index2], or empty if no pair exists
-     */
     public static int[] twoSumSorted(int[] numbers, int target) {
         if (numbers == null || numbers.length < 2) return new int[0];
         int left = 0;
@@ -38,13 +24,6 @@ public class TwoPointersTechniqueDemo {
         return new int[0];
     }
 
-    /**
-     * 2. 3Sum: Finds all unique triplets [a, b, c] such that a + b + c = 0.
-     * Skips duplicates to ensure result contains only distinct triplets.
-     *
-     * @param nums array of integers
-     * @return list of unique triplets
-     */
     public static List<List<Integer>> threeSum(int[] nums) {
         List<List<Integer>> result = new ArrayList<>();
         if (nums == null || nums.length < 3) return result;
@@ -52,7 +31,7 @@ public class TwoPointersTechniqueDemo {
         Arrays.sort(nums);
 
         for (int i = 0; i < nums.length - 2; i++) {
-            // Skip duplicate outer elements
+
             if (i > 0 && nums[i] == nums[i - 1]) continue;
 
             int left = i + 1;
@@ -62,7 +41,7 @@ public class TwoPointersTechniqueDemo {
                 int sum = nums[i] + nums[left] + nums[right];
                 if (sum == 0) {
                     result.add(List.of(nums[i], nums[left], nums[right]));
-                    // Skip duplicates for left and right
+
                     while (left < right && nums[left] == nums[left + 1]) left++;
                     while (left < right && nums[right] == nums[right - 1]) right--;
                     left++;
@@ -77,13 +56,6 @@ public class TwoPointersTechniqueDemo {
         return result;
     }
 
-    /**
-     * 3. Container With Most Water.
-     * Calculates the maximum area of water a container can hold between two vertical lines.
-     *
-     * @param height heights of vertical lines
-     * @return maximum water container area
-     */
     public static int maxWaterArea(int[] height) {
         if (height == null || height.length < 2) return 0;
         int maxArea = 0;
@@ -104,13 +76,6 @@ public class TwoPointersTechniqueDemo {
         return maxArea;
     }
 
-    /**
-     * 4. Trapping Rain Water using Two Pointers.
-     * Time: O(n), Space: O(1) optimal.
-     *
-     * @param height elevation map
-     * @return total units of trapped rain water
-     */
     public static int trapRainWater(int[] height) {
         if (height == null || height.length < 3) return 0;
         int left = 0;
@@ -139,14 +104,6 @@ public class TwoPointersTechniqueDemo {
         return totalWater;
     }
 
-    /**
-     * 5. Remove Duplicates from Sorted Array II (LeetCode #80).
-     * Modifies array in-place so that each unique element appears at most twice.
-     * Time: O(n), Space: O(1).
-     *
-     * @param nums sorted input array
-     * @return the number of valid elements in modified array
-     */
     public static int removeDuplicatesAllowTwo(int[] nums) {
         if (nums == null) return 0;
         if (nums.length <= 2) return nums.length;
@@ -164,39 +121,33 @@ public class TwoPointersTechniqueDemo {
     public static void main(String[] args) {
         System.out.println("=== Two Pointers Technique Demonstrations ===\n");
 
-        // 1. Two Sum Sorted
         int[] sortedArr = {2, 7, 11, 15};
         int target = 9;
         System.out.println("1. Two Sum II (Sorted):");
         System.out.println("   Array: " + Arrays.toString(sortedArr) + ", Target: " + target);
         System.out.println("   Result (1-indexed): " + Arrays.toString(twoSumSorted(sortedArr, target)));
 
-        // 2. 3Sum
         int[] threeSumArr = {-1, 0, 1, 2, -1, -4};
         System.out.println("\n2. 3Sum (Unique triplets summing to 0):");
         System.out.println("   Array: " + Arrays.toString(threeSumArr));
         System.out.println("   Triplets: " + threeSum(threeSumArr));
 
-        // 3. Container With Most Water
         int[] containers = {1, 8, 6, 2, 5, 4, 8, 3, 7};
         System.out.println("\n3. Container With Most Water:");
         System.out.println("   Heights: " + Arrays.toString(containers));
         System.out.println("   Max Water Area: " + maxWaterArea(containers));
 
-        // 4. Trapping Rain Water
         int[] elevation = {0, 1, 0, 2, 1, 0, 1, 3, 2, 1, 2, 1};
         System.out.println("\n4. Trapping Rain Water:");
         System.out.println("   Elevation: " + Arrays.toString(elevation));
         System.out.println("   Trapped Water: " + trapRainWater(elevation) + " units");
 
-        // 5. Remove Duplicates II
         int[] dupArr = {1, 1, 1, 2, 2, 3};
         System.out.println("\n5. Remove Duplicates Allowing At Most Two Occurrences:");
         System.out.println("   Original: " + Arrays.toString(dupArr));
         int newLen = removeDuplicatesAllowTwo(dupArr);
         System.out.println("   New Length: " + newLen + ", Valid Elements: " + Arrays.toString(Arrays.copyOf(dupArr, newLen)));
 
-        // 6. Dutch National Flag Sort Colors
         int[] colors = {2, 0, 2, 1, 1, 0};
         System.out.println("\n6. Sort Colors (Dutch National Flag 0, 1, 2):");
         System.out.println("   Before: " + Arrays.toString(colors));
@@ -204,13 +155,6 @@ public class TwoPointersTechniqueDemo {
         System.out.println("   After:  " + Arrays.toString(colors));
     }
 
-    /**
-     * 6. Dutch National Flag problem (LeetCode #75 - Sort Colors).
-     * Sorts an array containing only 0s, 1s, and 2s in-place in one pass.
-     * Time: O(n), Space: O(1).
-     *
-     * @param nums array containing values 0, 1, or 2
-     */
     public static void sortColors(int[] nums) {
         if (nums == null || nums.length <= 1) return;
         int low = 0, mid = 0, high = nums.length - 1;

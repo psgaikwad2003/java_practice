@@ -2,25 +2,8 @@ package Algorithms;
 
 import java.util.*;
 
-/**
- * Demonstrates Tarjan's Algorithm for:
- * 1. Strongly Connected Components (SCC) in Directed Graphs.
- * 2. Critical Connections (Bridges) in Undirected Graphs (edges whose removal increases components).
- * 3. Articulation Points (Cut Vertices) in Undirected Graphs (nodes whose removal increases components).
- *
- * Real-world use case:
- * - Identifying single points of failure (SPOF) in distributed networks and cloud topologies.
- * - Decomposing large directed dependency graphs into maximal cyclic clusters.
- *
- * Complexity:
- * - Time: O(V + E) single DFS traversal.
- * - Space: O(V + E) for adjacency list, stack, and discovery arrays.
- */
 public class TarjanSCCAndBridgesDemo {
 
-    /**
-     * Directed Graph for Strongly Connected Components (SCC).
-     */
     public static class DirectedGraph {
         private final int n;
         private final List<List<Integer>> adj;
@@ -68,7 +51,6 @@ public class TarjanSCCAndBridgesDemo {
                 }
             }
 
-            // If u is the root of an SCC
             if (ids[u] == low[u]) {
                 List<Integer> scc = new ArrayList<>();
                 while (true) {
@@ -83,9 +65,6 @@ public class TarjanSCCAndBridgesDemo {
         }
     }
 
-    /**
-     * Undirected Graph for Bridges and Articulation Points.
-     */
     public static class NetworkGraph {
         private final int n;
         private final List<List<Integer>> adj;
@@ -188,7 +167,6 @@ public class TarjanSCCAndBridgesDemo {
         System.out.println("   TARJAN'S ALGORITHMS: SCCs, BRIDGES & ARTICULATION POINTS  ");
         System.out.println("=============================================================");
 
-        // Part 1: Strongly Connected Components (Directed Graph)
         System.out.println("\n--- Part 1: Directed Graph SCC Detection ---");
         DirectedGraph dg = new DirectedGraph(8);
         dg.addEdge(0, 1);
@@ -208,19 +186,17 @@ public class TarjanSCCAndBridgesDemo {
             System.out.printf("  SCC #%d: %s%n", (i + 1), sccs.get(i));
         }
 
-        // Part 2: Bridges and Articulation Points in Network Topology
         System.out.println("\n--- Part 2: Network Infrastructure Critical Analysis ---");
-        // Nodes: 0 (Gateway), 1 (Core Router), 2 (App Server 1), 3 (App Server 2),
-        //        4 (Database Switch), 5 (Primary DB), 6 (Replica DB)
+
         NetworkGraph network = new NetworkGraph(7);
         network.addEdge(0, 1);
         network.addEdge(1, 2);
         network.addEdge(2, 3);
-        network.addEdge(3, 1); // 1-2-3 form a cycle
-        network.addEdge(1, 4); // Bridge connecting to DB subnet
+        network.addEdge(3, 1);
+        network.addEdge(1, 4);
         network.addEdge(4, 5);
         network.addEdge(5, 6);
-        network.addEdge(6, 4); // 4-5-6 form a cycle
+        network.addEdge(6, 4);
 
         List<NetworkGraph.Bridge> bridges = network.findBridges();
         System.out.println("Critical Network Bridges (Severing disconnects topology):");

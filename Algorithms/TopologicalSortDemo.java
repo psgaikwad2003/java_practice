@@ -1,23 +1,7 @@
 import java.util.*;
 
-/**
- * Demonstrates Topological Sorting for Directed Acyclic Graphs (DAGs).
- *
- * Algorithms implemented:
- * 1. Kahn's Algorithm (BFS approach using in-degrees).
- * 2. DFS-based Algorithm (using recursion stack & post-order reversal).
- * 3. Cycle Detection in directed graphs.
- * 4. Real-world scenario: Build dependency resolver for software packages.
- *
- * Complexity:
- * - Time: O(V + E) where V is vertices and E is edges.
- * - Space: O(V + E) for adjacency list and recursion/queue storage.
- */
 public class TopologicalSortDemo {
 
-    /**
-     * Graph representation using an adjacency list.
-     */
     public static class DirectedGraph {
         private final int vertices;
         private final List<List<Integer>> adj;
@@ -42,10 +26,6 @@ public class TopologicalSortDemo {
             return adj.get(u);
         }
 
-        /**
-         * Prints the adjacency list representation of the graph to standard output.
-         * Useful for debugging and visualizing the graph structure.
-         */
         public void printAdjacencyList() {
             System.out.println("Graph Adjacency List ("+vertices+" vertices):");
             for (int u = 0; u < vertices; u++) {
@@ -53,13 +33,7 @@ public class TopologicalSortDemo {
                 System.out.println(adj.get(u).isEmpty() ? "(no outgoing edges)" : adj.get(u));
             }
         }
-        /**
-         * Kahn's Algorithm (BFS based).
-         * Returns topological order, or empty list if a cycle is detected.
-         *
-         * @return a topologically sorted list of vertex indices, or empty list if a cycle exists
-         * @implNote Time Complexity: O(V + E)
-         */
+
         public List<Integer> topologicalSortKahn() {
             int[] inDegree = new int[vertices];
             for (int u = 0; u < vertices; u++) {
@@ -88,27 +62,22 @@ public class TopologicalSortDemo {
                 }
             }
 
-            // If topological sort contains all vertices, no cycle exists
             if (order.size() != vertices) {
-                return Collections.emptyList(); // Cycle detected!
+                return Collections.emptyList();
             }
 
             return order;
         }
 
-        /**
-         * DFS-based Topological Sort.
-         * Returns topological order, or empty list if a cycle is detected.
-         */
         public List<Integer> topologicalSortDFS() {
-            // 0 = unvisited, 1 = visiting (in recursion stack), 2 = visited
+
             int[] state = new int[vertices];
             Deque<Integer> stack = new ArrayDeque<>();
 
             for (int i = 0; i < vertices; i++) {
                 if (state[i] == 0) {
                     if (hasCycleDFS(i, state, stack)) {
-                        return Collections.emptyList(); // Cycle found
+                        return Collections.emptyList();
                     }
                 }
             }
@@ -121,26 +90,23 @@ public class TopologicalSortDemo {
         }
 
         private boolean hasCycleDFS(int u, int[] state, Deque<Integer> stack) {
-            state[u] = 1; // Mark as visiting
+            state[u] = 1;
 
             for (int v : adj.get(u)) {
                 if (state[v] == 1) {
-                    return true; // Back-edge found -> cycle!
+                    return true;
                 }
                 if (state[v] == 0 && hasCycleDFS(v, state, stack)) {
                     return true;
                 }
             }
 
-            state[u] = 2; // Mark as visited
-            stack.push(u); // Push to stack in post-order
+            state[u] = 2;
+            stack.push(u);
             return false;
         }
     }
 
-    /**
-     * Real-world application: Build Dependency Resolver.
-     */
     public static class BuildDependencyResolver {
         private final Map<String, List<String>> dependencies = new HashMap<>();
 
@@ -199,11 +165,6 @@ public class TopologicalSortDemo {
         System.out.println("     TOPOLOGICAL SORTING DEMONSTRATION    ");
         System.out.println("==========================================");
 
-        // DAG Graph:
-        // 5 -> 2, 5 -> 0
-        // 4 -> 0, 4 -> 1
-        // 2 -> 3
-        // 3 -> 1
         DirectedGraph dag = new DirectedGraph(6);
         dag.addEdge(5, 2);
         dag.addEdge(5, 0);
@@ -220,7 +181,6 @@ public class TopologicalSortDemo {
         List<Integer> dfsOrder = dag.topologicalSortDFS();
         System.out.println("    Order: " + dfsOrder);
 
-        // Cyclic Graph test: 0 -> 1 -> 2 -> 0
         DirectedGraph cyclicGraph = new DirectedGraph(3);
         cyclicGraph.addEdge(0, 1);
         cyclicGraph.addEdge(1, 2);
@@ -230,13 +190,9 @@ public class TopologicalSortDemo {
         List<Integer> cyclicOrder = cyclicGraph.topologicalSortKahn();
         System.out.println("    Kahn Result on Cyclic Graph: " + (cyclicOrder.isEmpty() ? "Cycle Detected (No valid topological order)" : cyclicOrder));
 
-        // Real-world application: Build Dependency Resolution
         System.out.println("\n[4] Real-World Build Task Dependency Resolution:");
         BuildDependencyResolver resolver = new BuildDependencyResolver();
-        // core -> common
-        // api -> core
-        // service -> core, service -> database
-        // ui -> service, ui -> api
+
         resolver.addDependency("core", "common");
         resolver.addDependency("api", "core");
         resolver.addDependency("service", "core");
