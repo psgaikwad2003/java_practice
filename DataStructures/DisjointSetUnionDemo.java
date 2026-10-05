@@ -1,21 +1,5 @@
 import java.util.*;
 
-/**
- * Demonstrates the Disjoint Set Union (DSU / Union-Find) data structure.
- *
- * Optimizations:
- * 1. Path Compression: Flattens the tree during find operations.
- * 2. Union by Rank: Attaches smaller depth tree under the root of the deeper tree.
- *
- * Applications:
- * - Cycle detection in undirected graphs.
- * - Kruskal's Minimum Spanning Tree (MST) algorithm.
- * - Dynamic network connectivity.
- *
- * Complexity:
- * - Time: Nearly O(1) amortized, specifically O(alpha(n)) per operation (Inverse Ackermann).
- * - Space: O(n) for parent and rank arrays.
- */
 public class DisjointSetUnionDemo {
 
     public static class DSU {
@@ -31,37 +15,27 @@ public class DisjointSetUnionDemo {
             this.componentCount = n;
 
             for (int i = 0; i < n; i++) {
-                parent[i] = i; // Each node is its own representative
+                parent[i] = i;
                 rank[i] = 0;
                 size[i] = 1;
             }
         }
 
-        /**
-         * Finds the representative root of the set containing element i.
-         * Applies Path Compression.
-         */
         public int find(int i) {
             if (parent[i] != i) {
-                parent[i] = find(parent[i]); // Path compression
+                parent[i] = find(parent[i]);
             }
             return parent[i];
         }
 
-        /**
-         * Merges the sets containing elements i and j.
-         * Applies Union by Rank.
-         * Returns true if a new merge occurred, false if already in the same set.
-         */
         public boolean union(int i, int j) {
             int rootI = find(i);
             int rootJ = find(j);
 
             if (rootI == rootJ) {
-                return false; // Already in the same component
+                return false;
             }
 
-            // Union by Rank
             if (rank[rootI] < rank[rootJ]) {
                 parent[rootI] = rootJ;
                 size[rootJ] += size[rootI];
@@ -91,9 +65,6 @@ public class DisjointSetUnionDemo {
         }
     }
 
-    /**
-     * Graph Edge for Kruskal's MST Algorithm.
-     */
     public static class Edge implements Comparable<Edge> {
         int src;
         int dest;
@@ -116,21 +87,18 @@ public class DisjointSetUnionDemo {
         }
     }
 
-    /**
-     * Kruskal's Minimum Spanning Tree Algorithm using DSU.
-     */
     public static List<Edge> kruskalMST(int vertices, List<Edge> edges) {
         List<Edge> mst = new ArrayList<>();
-        Collections.sort(edges); // Sort edges by ascending weight
+        Collections.sort(edges);
 
         DSU dsu = new DSU(vertices);
 
         for (Edge edge : edges) {
-            // If endpoints belong to different components, including edge creates no cycle
+
             if (dsu.union(edge.src, edge.dest)) {
                 mst.add(edge);
                 if (mst.size() == vertices - 1) {
-                    break; // Spanning tree complete
+                    break;
                 }
             }
         }
@@ -143,7 +111,6 @@ public class DisjointSetUnionDemo {
         System.out.println("   DISJOINT SET UNION (DSU / UNION-FIND)  ");
         System.out.println("==========================================");
 
-        // Demo 1: Basic Union and Connectivity
         int n = 7;
         DSU dsu = new DSU(n);
         System.out.println("\n[1] Dynamic Connectivity Simulation on " + n + " Nodes:");
@@ -160,14 +127,13 @@ public class DisjointSetUnionDemo {
         System.out.println("    Component count: " + dsu.getComponentCount() + " (Expected: 3)");
         System.out.println("    Size of component containing node 0: " + dsu.getSizeOfComponent(0) + " (Expected: 3)");
 
-        // Demo 2: Cycle Detection in Undirected Graph
         System.out.println("\n[2] Undirected Graph Cycle Detection:");
         DSU cycleDetector = new DSU(4);
         int[][] edges = {
             {0, 1},
             {1, 2},
             {2, 3},
-            {3, 0} // Creates cycle!
+            {3, 0}
         };
 
         boolean hasCycle = false;
@@ -184,7 +150,6 @@ public class DisjointSetUnionDemo {
             System.out.println("    No cycles detected.");
         }
 
-        // Demo 3: Kruskal's Minimum Spanning Tree (MST)
         System.out.println("\n[3] Kruskal's Minimum Spanning Tree (MST):");
         int mstVertices = 4;
         List<Edge> graphEdges = new ArrayList<>();

@@ -3,17 +3,6 @@ package DataStructures;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-/**
- * Demonstrates a generic, robust Doubly Linked List implementation using sentinel nodes.
- * 
- * Features:
- * - O(1) insertions and removals at both ends (addFirst, addLast, removeFirst, removeLast).
- * - O(N) index-based operations with bidirectional traversal optimization (search from nearest end).
- * - In-place list reversal: O(N) time, O(1) extra space.
- * - Bidirectional iteration support (forward and descending).
- *
- * @param <T> the type of elements held in this list
- */
 public class DoublyLinkedListDemo<T> implements Iterable<T> {
 
     private static class Node<T> {
@@ -26,8 +15,8 @@ public class DoublyLinkedListDemo<T> implements Iterable<T> {
         }
     }
 
-    private final Node<T> head; // dummy sentinel head
-    private final Node<T> tail; // dummy sentinel tail
+    private final Node<T> head;
+    private final Node<T> tail;
     private int size;
 
     public DoublyLinkedListDemo() {
@@ -76,12 +65,6 @@ public class DoublyLinkedListDemo<T> implements Iterable<T> {
         return unlink(tail.prev);
     }
 
-    /**
-     * Inserts an element at the specified index.
-     *
-     * @param index index at which the specified element is to be inserted (0 <= index <= size)
-     * @param element element to be inserted
-     */
     public void insertAt(int index, T element) {
         if (index < 0 || index > size) {
             throw new IndexOutOfBoundsException("Index: " + index + ", Size: " + size);
@@ -96,12 +79,6 @@ public class DoublyLinkedListDemo<T> implements Iterable<T> {
         }
     }
 
-    /**
-     * Removes the element at the specified index.
-     *
-     * @param index index of the element to be removed (0 <= index < size)
-     * @return the removed element
-     */
     public T removeAt(int index) {
         checkElementIndex(index);
         return unlink(getNode(index));
@@ -138,7 +115,7 @@ public class DoublyLinkedListDemo<T> implements Iterable<T> {
     }
 
     private Node<T> getNode(int index) {
-        // Optimize search from head or tail depending on index proximity
+
         if (index < (size >> 1)) {
             Node<T> curr = head.next;
             for (int i = 0; i < index; i++) {
@@ -165,9 +142,6 @@ public class DoublyLinkedListDemo<T> implements Iterable<T> {
         return false;
     }
 
-    /**
-     * Reverses the doubly linked list in-place by swapping next and prev pointers of elements.
-     */
     public void reverse() {
         if (size <= 1) return;
 
@@ -215,11 +189,6 @@ public class DoublyLinkedListDemo<T> implements Iterable<T> {
         };
     }
 
-    /**
-     * Returns an iterator over the elements in this list in reverse (tail to head) sequence.
-     *
-     * @return a reverse iterator
-     */
     public Iterator<T> descendingIterator() {
         return new Iterator<>() {
             private Node<T> current = tail.prev;
@@ -239,11 +208,6 @@ public class DoublyLinkedListDemo<T> implements Iterable<T> {
         };
     }
 
-    /**
-     * Converts the linked list into an array of Objects.
-     *
-     * @return an Object array containing all elements in forward order
-     */
     public Object[] toArray() {
         Object[] result = new Object[size];
         int i = 0;
@@ -271,20 +235,17 @@ public class DoublyLinkedListDemo<T> implements Iterable<T> {
 
         DoublyLinkedListDemo<String> list = new DoublyLinkedListDemo<>();
 
-        // Insertion tests
         list.addLast("Beta");
         list.addFirst("Alpha");
         list.addLast("Gamma");
         list.addLast("Delta");
         System.out.println("After initial adds: " + list + " (Size: " + list.size() + ")");
 
-        // Access tests
         System.out.println("Element at index 0: " + list.get(0));
         System.out.println("Element at index 2: " + list.get(2));
         System.out.println("Contains 'Gamma'? " + list.contains("Gamma"));
         System.out.println("Contains 'Zeta'? " + list.contains("Zeta"));
 
-        // Removal tests
         System.out.println("\nRemoved first: " + list.removeFirst());
         System.out.println("Removed last: " + list.removeLast());
         System.out.println("After removals: " + list);
@@ -293,23 +254,19 @@ public class DoublyLinkedListDemo<T> implements Iterable<T> {
         list.addFirst("Prime");
         System.out.println("Added 'Prime' and 'Omega': " + list);
 
-        // Value removal
         boolean removed = list.removeValue("Beta");
         System.out.println("Removed 'Beta' by value? " + removed + " -> " + list);
 
-        // Reversal test
         System.out.println("\nReversing list in-place...");
         list.reverse();
         System.out.println("Reversed list: " + list);
 
-        // Index-based insertion and removal tests
         System.out.println("\n=== Index Insertion & Removal Tests ===");
         list.insertAt(1, "InsertedAt1");
         System.out.println("After insertAt(1, 'InsertedAt1'): " + list);
         String removedAt1 = list.removeAt(1);
         System.out.println("Removed at index 1: " + removedAt1 + " -> " + list);
 
-        // Descending Iterator test
         System.out.print("\nDescending Iteration: ");
         Iterator<String> descIt = list.descendingIterator();
         while (descIt.hasNext()) {
@@ -317,7 +274,6 @@ public class DoublyLinkedListDemo<T> implements Iterable<T> {
         }
         System.out.println();
 
-        // toArray test
         Object[] arr = list.toArray();
         System.out.println("toArray() length: " + arr.length + ", content: " + java.util.Arrays.toString(arr));
     }
