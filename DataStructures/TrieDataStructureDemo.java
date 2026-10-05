@@ -32,12 +32,6 @@ public class TrieDataStructureDemo {
         return (pCrawl != null && pCrawl.isEndOfWord);
     }
 
-    /**
-     * Returns true if there is any word in the trie that starts with the given prefix.
-     *
-     * @param prefix the prefix to query
-     * @return true if prefix exists
-     */
     static boolean startsWith(String prefix) {
         if (prefix == null || root == null) return false;
         TrieNode pCrawl = root;
@@ -50,12 +44,6 @@ public class TrieDataStructureDemo {
         return pCrawl != null;
     }
 
-    /**
-     * Deletes a key from the trie, pruning child branches that have become unused.
-     *
-     * @param key word to delete
-     * @return true if word was present and successfully deleted
-     */
     static boolean delete(String key) {
         if (key == null || root == null) return false;
         return deleteHelper(root, key, 0);
@@ -76,7 +64,6 @@ public class TrieDataStructureDemo {
 
         boolean deleted = deleteHelper(child, key, depth + 1);
 
-        // If child node is not end-of-word and has no children, prune it
         if (deleted && !child.isEndOfWord && hasNoChildren(child)) {
             current.children[index] = null;
         }
@@ -91,12 +78,6 @@ public class TrieDataStructureDemo {
         return true;
     }
 
-    /**
-     * Returns all words stored in the Trie that begin with the given prefix (Autocomplete).
-     *
-     * @param prefix the prefix query
-     * @return list of matching complete words
-     */
     static java.util.List<String> wordsWithPrefix(String prefix) {
         java.util.List<String> results = new java.util.ArrayList<>();
         if (prefix == null || root == null) return results;
@@ -126,9 +107,6 @@ public class TrieDataStructureDemo {
         }
     }
 
-    /**
-     * Counts the total number of words present in the Trie.
-     */
     static int countWords() {
         return countWordsHelper(root);
     }
@@ -142,12 +120,6 @@ public class TrieDataStructureDemo {
         return count;
     }
 
-    /**
-     * Searches for a pattern where '.' can match any single arbitrary character.
-     *
-     * @param pattern wildcard pattern to search
-     * @return true if there is a match in the Trie
-     */
     static boolean searchPattern(String pattern) {
         if (pattern == null || root == null) return false;
         return searchPatternHelper(root, pattern, 0);
@@ -174,10 +146,6 @@ public class TrieDataStructureDemo {
         }
     }
 
-    /**
-     * Computes the Longest Common Prefix (LCP) of words present in the Trie.
-     * Traverses the Trie down until a node has more than one child or marks end of a word.
-     */
     static String longestCommonPrefix() {
         if (root == null) return "";
         StringBuilder lcp = new StringBuilder();
@@ -228,9 +196,9 @@ public class TrieDataStructureDemo {
         System.out.println("Prefix 'an' -> " + wordsWithPrefix("an"));
 
         System.out.println("\n--- Wildcard Search (.) ---");
-        System.out.println("searchPattern('th.r.'): " + searchPattern("th.r.")); // matches "there"
-        System.out.println("searchPattern('b..'): " + searchPattern("b.."));     // matches "bye"
-        System.out.println("searchPattern('..'): " + searchPattern(".."));       // matches "by"
+        System.out.println("searchPattern('th.r.'): " + searchPattern("th.r."));
+        System.out.println("searchPattern('b..'): " + searchPattern("b.."));
+        System.out.println("searchPattern('..'): " + searchPattern(".."));
 
         System.out.println("\n--- Deletion Tests ---");
         System.out.println("Deleting 'their': " + delete("their"));
@@ -238,12 +206,11 @@ public class TrieDataStructureDemo {
         System.out.println("Search 'the' after deleting 'their': " + search("the"));
         System.out.println("Word count after deletion: " + countWords());
 
-        // LCP Demo with dedicated prefix root
         TrieNode tempRoot = root;
         root = new TrieNode();
         for (String word : new String[]{"interspecies", "interstellar", "interstate"}) insert(word);
         System.out.println("\n--- Longest Common Prefix Demo ---");
         System.out.println("LCP of [interspecies, interstellar, interstate]: \"" + longestCommonPrefix() + "\"");
-        root = tempRoot; // restore
+        root = tempRoot;
     }
 }

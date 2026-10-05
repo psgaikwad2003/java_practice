@@ -2,18 +2,11 @@ import java.util.Arrays;
 
 public class reverseArray {
 
-    /**
-     * Reverses an integer array in-place using the two-pointer technique.
-     * Time Complexity: O(n), Space Complexity: O(1)
-     */
     public static void reverse(int[] arr) {
         if (arr == null || arr.length <= 1) return;
         reverse(arr, 0, arr.length - 1);
     }
 
-    /**
-     * Reverses a specific subarray in-place between start and end indices (inclusive).
-     */
     public static void reverse(int[] arr, int start, int end) {
         if (arr == null) return;
         while (start < end) {
@@ -25,9 +18,6 @@ public class reverseArray {
         }
     }
 
-    /**
-     * Generic in-place reversal for object arrays.
-     */
     public static <T> void reverse(T[] arr) {
         if (arr == null || arr.length <= 1) return;
         int start = 0;
@@ -41,20 +31,16 @@ public class reverseArray {
         }
     }
 
-    /**
-     * Rotates an array to the right by k positions using the three-reversal algorithm.
-     */
     public static void rotateRight(int[] arr, int k) {
         if (arr == null || arr.length <= 1) return;
         int n = arr.length;
         k = k % n;
         if (k < 0) k += n;
 
-        // 1. Reverse the entire array
         reverse(arr, 0, n - 1);
-        // 2. Reverse the first k elements
+
         reverse(arr, 0, k - 1);
-        // 3. Reverse the remaining elements
+
         reverse(arr, k, n - 1);
     }
 
