@@ -7,35 +7,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 
-/**
- * Demonstrates the Mediator Design Pattern (Behavioral Pattern).
- * 
- * Intent: Define an object that encapsulates how a set of objects interact.
- * Mediator promotes loose coupling by keeping objects from referring to each
- * other explicitly, allowing their interaction to be varied independently.
- * 
- * Key Participants:
- * 1. Mediator: Declares an interface for communicating with Colleague objects.
- * 2. ConcreteMediator: Implements cooperative behavior by coordinating Colleague objects;
- *    knows and maintains its colleagues.
- * 3. Colleague classes: Each colleague communicates with its mediator whenever it
- *    would have otherwise communicated with another colleague directly.
- * 
- * Included Examples:
- * 1. Air Traffic Control (ATC) Tower: Coordinates runway clearances, takeoffs,
- *    landings, and emergency priority handling among diverse aircraft.
- * 2. Enterprise Chatroom & Compliance Mediator: Mediates direct/channel messages,
- *    automates policy compliance/profanity filtering, and user routing.
- */
 public class MediatorPatternDemo {
 
-    // =========================================================================
-    // Example 1: Air Traffic Control (ATC) System
-    // =========================================================================
-
-    /**
-     * Mediator Interface for Air Traffic Coordination.
-     */
     public interface AirTrafficControlTower {
         void registerAircraft(Aircraft aircraft);
         boolean requestTakeoff(Aircraft aircraft);
@@ -44,9 +17,6 @@ public class MediatorPatternDemo {
         void broadcastHazardAlert(String alert, Aircraft sender);
     }
 
-    /**
-     * Abstract Colleague representing any aircraft communicating with the tower.
-     */
     public abstract static class Aircraft {
         protected final String callsign;
         protected AirTrafficControlTower tower;
@@ -123,9 +93,6 @@ public class MediatorPatternDemo {
         public abstract void receiveAlert(String message);
     }
 
-    /**
-     * Concrete Colleague: Commercial Passenger Jet.
-     */
     public static class CommercialAirliner extends Aircraft {
         private final int passengerCount;
 
@@ -140,9 +107,6 @@ public class MediatorPatternDemo {
         }
     }
 
-    /**
-     * Concrete Colleague: Heavy Cargo Plane.
-     */
     public static class CargoPlane extends Aircraft {
         private final double payloadTons;
 
@@ -157,9 +121,6 @@ public class MediatorPatternDemo {
         }
     }
 
-    /**
-     * Concrete Colleague: Medical Rescue Helicopter.
-     */
     public static class RescueHelicopter extends Aircraft {
         public RescueHelicopter(String callsign, boolean isAirborne) {
             super(callsign, isAirborne);
@@ -171,9 +132,6 @@ public class MediatorPatternDemo {
         }
     }
 
-    /**
-     * Concrete Mediator: Airport Tower coordinating flight queues and runway access.
-     */
     public static class RegionalAirportTower implements AirTrafficControlTower {
         private final String airportCode;
         private final List<Aircraft> registeredAircraft = new ArrayList<>();
@@ -212,7 +170,7 @@ public class MediatorPatternDemo {
 
         @Override
         public synchronized boolean requestLanding(Aircraft aircraft) {
-            // Emergency flights preempt all other traffic immediately
+
             if (aircraft.hasEmergency()) {
                 System.out.printf("[Tower %s] *** EMERGENCY OVERRIDE *** Clear runway for distress flight %s!%n",
                         airportCode, aircraft.getCallsign());
@@ -243,7 +201,7 @@ public class MediatorPatternDemo {
         }
 
         private void processPendingQueues() {
-            // Landing takes priority over departure for fuel safety
+
             if (!landingQueue.isEmpty()) {
                 Aircraft nextLanding = landingQueue.poll();
                 System.out.printf("[Tower %s] Calling next from landing queue: %s.%n", airportCode, nextLanding.getCallsign());
@@ -269,22 +227,12 @@ public class MediatorPatternDemo {
         }
     }
 
-    // =========================================================================
-    // Example 2: Enterprise Workspace & Moderation Chat Mediator
-    // =========================================================================
-
-    /**
-     * Mediator Interface for Chat & Collaboration.
-     */
     public interface ChatMediator {
         void registerMember(ChatMember member);
         void sendChannelMessage(String message, ChatMember sender);
         void sendDirectMessage(String message, ChatMember sender, String recipientName);
     }
 
-    /**
-     * Abstract Colleague for workspace collaboration.
-     */
     public abstract static class ChatMember {
         protected final String username;
         protected ChatMediator mediator;
@@ -318,9 +266,6 @@ public class MediatorPatternDemo {
         public abstract void receiveMessage(String from, String channel, String content);
     }
 
-    /**
-     * Concrete Colleague: Software Engineer Member.
-     */
     public static class DeveloperMember extends ChatMember {
         public DeveloperMember(String username) {
             super(username);
@@ -332,9 +277,6 @@ public class MediatorPatternDemo {
         }
     }
 
-    /**
-     * Concrete Colleague: System Automated Bot.
-     */
     public static class BotMember extends ChatMember {
         public BotMember(String username) {
             super(username);
@@ -342,7 +284,7 @@ public class MediatorPatternDemo {
 
         @Override
         public void receiveMessage(String from, String channel, String content) {
-            // Bots process notifications silently unless explicitly triggered
+
             if (content.contains("build") || content.contains("deploy")) {
                 System.out.printf("  [CI-BOT @%s] Trigger acknowledged for '%s' from @%s%n",
                         username, content, from);
@@ -350,9 +292,6 @@ public class MediatorPatternDemo {
         }
     }
 
-    /**
-     * Concrete Mediator: Enterprise Slack-like workspace with automated compliance filter.
-     */
     public static class WorkspaceMediator implements ChatMediator {
         private final String workspaceName;
         private final Map<String, ChatMember> members = new HashMap<>();
@@ -410,16 +349,11 @@ public class MediatorPatternDemo {
         }
     }
 
-    // =========================================================================
-    // Demonstration & Test Runner
-    // =========================================================================
-
     public static void main(String[] args) {
         System.out.println("=================================================================");
         System.out.println("      MEDIATOR PATTERN DEMO - DECOUPLING OBJECT INTERACTIONS     ");
         System.out.println("=================================================================");
 
-        // --- Demo 1: Air Traffic Control (ATC) System ---
         System.out.println("\n--- SCENARIO 1: AIR TRAFFIC CONTROL TOWER MEDIATION ---");
         RegionalAirportTower tower = new RegionalAirportTower("SFO");
 
@@ -446,7 +380,6 @@ public class MediatorPatternDemo {
         rescue1.declareEmergency("Critical organ transport on board with low reserve fuel");
         rescue1.requestLanding();
 
-        // --- Demo 2: Enterprise Workspace & Moderation Chatroom ---
         System.out.println("\n--- SCENARIO 2: ENTERPRISE CHATROOM & COMPLIANCE MEDIATOR ---");
         WorkspaceMediator slack = new WorkspaceMediator("TechCorp-HQ");
 

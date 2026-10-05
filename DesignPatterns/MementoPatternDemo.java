@@ -10,43 +10,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Demonstrates the Memento Design Pattern (Behavioral Pattern).
- * 
- * Intent: Without violating encapsulation, capture and externalize an object's
- * internal state so that the object can be restored to this state later.
- * 
- * Key Participants:
- * 1. Originator: Creates a memento containing a snapshot of its internal state
- *    and uses the memento to restore its state.
- * 2. Memento: Stores the internal state of the Originator. Protects against access
- *    by objects other than the Originator (private inner implementation).
- * 3. Caretaker: Responsible for memento safekeeping (history stacks, checkpoint stores);
- *    never examines or modifies the memento contents.
- * 
- * Included Examples:
- * 1. IDE Code/Text Editor: Full multi-level Undo & Redo history, tracking text buffers,
- *    cursor line/column coordinates, and styling metadata.
- * 2. RPG Game State / Checkpoint Manager: Savepoint checkpoints, inventory state,
- *    boss fight progression, and rollback recovery.
- */
 public class MementoPatternDemo {
 
-    // =========================================================================
-    // Example 1: Code & Text Editor with Multi-Level Undo / Redo Stacks
-    // =========================================================================
-
-    /**
-     * Memento Interface: Narrow interface presented to the Caretaker (metadata only).
-     */
     public interface DocumentMemento {
         String getSummary();
         LocalDateTime getTimestamp();
     }
 
-    /**
-     * Originator: The Text Editor whose state changes as users type and format text.
-     */
     public static class TextEditorOriginator {
         private StringBuilder content;
         private int cursorLine;
@@ -102,16 +72,10 @@ public class MementoPatternDemo {
             System.out.println("  ---------------------------------------------");
         }
 
-        /**
-         * Creates a snapshot Memento of current internal state.
-         */
         public DocumentMemento saveSnapshot(String description) {
             return new EditorMementoImpl(content.toString(), cursorLine, cursorColumn, currentFont, fontSize, description);
         }
 
-        /**
-         * Restores internal state from a given Memento.
-         */
         public void restoreSnapshot(DocumentMemento memento) {
             if (!(memento instanceof EditorMementoImpl impl)) {
                 throw new IllegalArgumentException("Unknown memento implementation: " + memento);
@@ -125,10 +89,6 @@ public class MementoPatternDemo {
                     impl.description, impl.getTimestamp().format(DateTimeFormatter.ofPattern("HH:mm:ss.SSS")));
         }
 
-        /**
-         * Concrete Memento: Private inner class ensuring strict encapsulation.
-         * The outer Originator has full access to private fields, while the outside world cannot tamper with them.
-         */
         private static class EditorMementoImpl implements DocumentMemento {
             private final String savedContent;
             private final int savedCursorLine;
@@ -161,9 +121,6 @@ public class MementoPatternDemo {
         }
     }
 
-    /**
-     * Caretaker: Manages Undo and Redo stacks for the text editor.
-     */
     public static class EditorHistoryManager {
         private final TextEditorOriginator editor;
         private final Deque<DocumentMemento> undoStack = new ArrayDeque<>();
@@ -178,10 +135,10 @@ public class MementoPatternDemo {
         public void recordCheckpoint(String description) {
             DocumentMemento snapshot = editor.saveSnapshot(description);
             if (undoStack.size() >= maxHistoryDepth) {
-                undoStack.removeLast(); // drop oldest snapshot
+                undoStack.removeLast();
             }
             undoStack.push(snapshot);
-            redoStack.clear(); // Any new user edit invalidates redo history
+            redoStack.clear();
             System.out.printf("[History] Saved checkpoint: \"%s\" (Undo stack depth: %d)%n",
                     description, undoStack.size());
         }
@@ -192,7 +149,6 @@ public class MementoPatternDemo {
                 return false;
             }
 
-            // Save current state to redo stack before applying previous state
             DocumentMemento currentSnapshot = editor.saveSnapshot("Pre-Undo state");
             redoStack.push(currentSnapshot);
 
@@ -218,13 +174,6 @@ public class MementoPatternDemo {
         }
     }
 
-    // =========================================================================
-    // Example 2: RPG Game State Savepoint & Rollback Recovery
-    // =========================================================================
-
-    /**
-     * Originator: Player character game state.
-     */
     public static class GameCharacterOriginator {
         private String name;
         private int level;
@@ -291,9 +240,6 @@ public class MementoPatternDemo {
                     savepoint.savepointName, savepoint.savedAt.format(DateTimeFormatter.ofPattern("HH:mm:ss")));
         }
 
-        /**
-         * Memento Object for Game State.
-         */
         public static class GameSavepointMemento {
             private final String savepointName;
             private final int level;
@@ -320,9 +266,6 @@ public class MementoPatternDemo {
         }
     }
 
-    /**
-     * Caretaker: Game Save Slot & Checkpoint Manager.
-     */
     public static class GameCheckpointManager {
         private final Map<String, GameCharacterOriginator.GameSavepointMemento> saveSlots = new HashMap<>();
 
@@ -336,24 +279,17 @@ public class MementoPatternDemo {
         }
     }
 
-    // =========================================================================
-    // Demonstration & Test Runner
-    // =========================================================================
-
     public static void main(String[] args) {
         System.out.println("=================================================================");
         System.out.println("       MEMENTO PATTERN DEMO - STATE SNAPSHOTS & RESTORATION      ");
         System.out.println("=================================================================");
 
-        // --- Demo 1: Code/Text Editor Undo/Redo Engine ---
         System.out.println("\n--- SCENARIO 1: IDE TEXT EDITOR MULTI-LEVEL UNDO/REDO ---");
         TextEditorOriginator editor = new TextEditorOriginator();
         EditorHistoryManager history = new EditorHistoryManager(editor, 10);
 
-        // State 0: Initial empty
         history.recordCheckpoint("Blank Document");
 
-        // Action 1: Type class definition
         editor.type("public class PaymentGateway {");
         editor.addNewLine();
         editor.type("    public void processPayment() {}");
@@ -361,7 +297,6 @@ public class MementoPatternDemo {
 
         editor.printCurrentState();
 
-        // Action 2: Add validation logic & change styling
         editor.addNewLine();
         editor.type("    // Validating card security digits");
         editor.setFormatting("Fira Code", 16);
@@ -369,28 +304,23 @@ public class MementoPatternDemo {
 
         editor.printCurrentState();
 
-        // Action 3: Accidental deletion
         System.out.println("\n[Action] Accidental deletion of code by user:");
         editor.clear();
         editor.type("// Oops, accidental clear!");
         editor.printCurrentState();
 
-        // Perform Undo
         System.out.println("\n[Action] User presses Ctrl+Z (Undo):");
         history.undo();
         editor.printCurrentState();
 
-        // Perform another Undo
         System.out.println("\n[Action] User presses Ctrl+Z again (Undo):");
         history.undo();
         editor.printCurrentState();
 
-        // Perform Redo
         System.out.println("\n[Action] User presses Ctrl+Y (Redo):");
         history.redo();
         editor.printCurrentState();
 
-        // --- Demo 2: RPG Game Checkpoints & Boss Battle Rollback ---
         System.out.println("\n--- SCENARIO 2: RPG CHECKPOINTS & ROLLBACK ON DEFEAT ---");
         GameCharacterOriginator hero = new GameCharacterOriginator("Geralt");
         GameCheckpointManager checkpointManager = new GameCheckpointManager();
@@ -398,7 +328,6 @@ public class MementoPatternDemo {
         System.out.println("\n[Initial Hero State]");
         hero.displayStatus();
 
-        // Hero prepares before entering dungeon
         hero.advanceQuest("Explore Cursed Ruins", 2);
         hero.acquireLoot("Silver Relic Sword");
         hero.acquireLoot("Ancient Shield");
@@ -407,12 +336,11 @@ public class MementoPatternDemo {
         checkpointManager.saveCheckpoint("Dungeon_Entrance", hero.createSavepoint("Checkpoint: Before Dungeon Gate"));
         hero.displayStatus();
 
-        // Hero engages in fierce dragon boss fight
         System.out.println("\n[Action] Entering Boss Arena against Elder Dragon:");
         hero.castSpell("Quen Shield", 20);
         hero.takeDamage(60);
         hero.castSpell("Igni Flame", 25);
-        hero.takeDamage(45); // Lethal or critical hit
+        hero.takeDamage(45);
 
         System.out.println("\n[Action] Hero suffers catastrophic defeat!");
         hero.displayStatus();
