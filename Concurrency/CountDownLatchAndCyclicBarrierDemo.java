@@ -3,26 +3,7 @@ import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
-/**
- * Demonstrates and contrasts Java's two primary thread coordination barriers:
- * CountDownLatch vs CyclicBarrier (java.util.concurrent).
- *
- * Comparison:
- * +------------------------+-------------------------------+-------------------------------+
- * | Feature                | CountDownLatch                | CyclicBarrier                 |
- * +------------------------+-------------------------------+-------------------------------+
- * | Reusability            | One-shot (cannot reset)       | Cyclic (automatically resets) |
- * | Waiting Threads        | Coordinator waits for workers | Workers wait for each other   |
- * | Count Modification     | Decremented via countDown()   | Decremented via await()       |
- * | Barrier Action Hook    | None                          | Optional Runnable on release  |
- * | Primary Use Case       | Service startup, task splits  | Multi-phase batch algorithms  |
- * +------------------------+-------------------------------+-------------------------------+
- */
 public class CountDownLatchAndCyclicBarrierDemo {
-
-    // =========================================================================
-    // PART 1: CountDownLatch - Microservice Startup & Readiness Probe
-    // =========================================================================
 
     public static class ServiceComponent {
         private final String name;
@@ -93,7 +74,6 @@ public class CountDownLatchAndCyclicBarrierDemo {
                 });
             }
 
-            // Orchestrator waits with a timeout safeguard
             System.out.println("\nMain Orchestrator: Waiting for all services to report ready (timeout: 3s)...");
             boolean allCompleted = startupLatch.await(3, TimeUnit.SECONDS);
             long totalDuration = System.currentTimeMillis() - startTime;
@@ -117,10 +97,6 @@ public class CountDownLatchAndCyclicBarrierDemo {
         }
     }
 
-    // =========================================================================
-    // PART 2: CyclicBarrier - Multi-Phase Parallel Matrix Computation
-    // =========================================================================
-
     public static class SimulationWorker implements Runnable {
         private final int workerId;
         private final int totalPhases;
@@ -141,7 +117,7 @@ public class CountDownLatchAndCyclicBarrierDemo {
         public void run() {
             try {
                 for (int phase = 1; phase <= totalPhases; phase++) {
-                    // 1. Worker performs phase computation
+
                     int workTime = 50 + (workerId * 25);
                     Thread.sleep(workTime);
 
@@ -152,10 +128,8 @@ public class CountDownLatchAndCyclicBarrierDemo {
                     System.out.printf("  [Worker-%d] Finished Phase %d computation (val=%d). Awaiting barrier...%n",
                             workerId, phase, partialResult);
 
-                    // 2. Worker reaches barrier and waits for all other workers
                     barrier.await();
 
-                    // 3. Worker resumes immediately after barrier releases
                     System.out.printf("  [Worker-%d] Released past Barrier for Phase %d!%n", workerId, phase);
                 }
             } catch (InterruptedException | BrokenBarrierException e) {
@@ -176,7 +150,6 @@ public class CountDownLatchAndCyclicBarrierDemo {
         AtomicInteger globalSum = new AtomicInteger(0);
         AtomicInteger barrierCycleCounter = new AtomicInteger(1);
 
-        // Barrier Action executed automatically by the last arriving thread
         Runnable barrierAction = () -> {
             int currentPhase = barrierCycleCounter.getAndIncrement();
             System.out.println("\n  -------------------------------------------------------------");
