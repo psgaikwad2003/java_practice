@@ -2,24 +2,6 @@ package Algorithms;
 
 import java.util.*;
 
-/**
- * Demonstrates the A* (A-Star) Pathfinding Algorithm on 2D Grids.
- *
- * A* combines the strengths of Dijkstra's algorithm (guaranteeing the shortest path)
- * and Greedy Best-First Search (using heuristics to guide search towards the goal).
- *
- * Evaluation Function:
- *   f(n) = g(n) + h(n)
- * where:
- *   - g(n) is the exact cost from the start node to current node n.
- *   - h(n) is the estimated (heuristic) cost from n to the goal.
- *   - f(n) is the estimated total path cost through node n.
- *
- * Supported Heuristics:
- * 1. Manhattan Distance  : Optimal for 4-directional grid movement.
- * 2. Euclidean Distance  : Direct straight-line distance.
- * 3. Octile / Diagonal   : Optimal for 8-directional grid movement.
- */
 public class AStarPathfindingDemo {
 
     public enum HeuristicType {
@@ -59,9 +41,9 @@ public class AStarPathfindingDemo {
     public static class Node implements Comparable<Node> {
         public final int r;
         public final int c;
-        public double gCost; // Cost from start
-        public double hCost; // Heuristic estimate to target
-        public double fCost; // g + h
+        public double gCost;
+        public double hCost;
+        public double fCost;
         public Node parent;
 
         public Node(int r, int c, double gCost, double hCost, Node parent) {
@@ -77,7 +59,7 @@ public class AStarPathfindingDemo {
         public int compareTo(Node other) {
             int cmp = Double.compare(this.fCost, other.fCost);
             if (cmp == 0) {
-                // Tie-breaker: pick node closer to goal (lower hCost)
+
                 return Double.compare(this.hCost, other.hCost);
             }
             return cmp;
@@ -101,13 +83,12 @@ public class AStarPathfindingDemo {
     }
 
     public static class AStarSolver {
-        private final int[][] grid; // 0 = walkable, 1 = obstacle
+        private final int[][] grid;
         private final int rows;
         private final int cols;
 
-        // 4-directional offsets (orthogonals)
         private static final int[][] DIRS_4 = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
-        // 8-directional offsets (orthogonals + diagonals)
+
         private static final int[][] DIRS_8 = {
             {-1, 0}, {1, 0}, {0, -1}, {0, 1},
             {-1, -1}, {-1, 1}, {1, -1}, {1, 1}
@@ -150,13 +131,11 @@ public class AStarPathfindingDemo {
                 closedSet[current.r][current.c] = true;
                 nodesExplored++;
 
-                // Target reached?
                 if (current.r == target.r && current.c == target.c) {
                     targetNode = current;
                     break;
                 }
 
-                // Explore neighbors
                 for (int[] dir : directions) {
                     int nr = current.r + dir[0];
                     int nc = current.c + dir[1];
@@ -165,7 +144,6 @@ public class AStarPathfindingDemo {
                         continue;
                     }
 
-                    // Cost: 1.0 for orthogonal step, sqrt(2) ~ 1.414 for diagonal step
                     boolean isDiagonal = (dir[0] != 0 && dir[1] != 0);
                     double stepCost = isDiagonal ? 1.4142 : 1.0;
                     double tentativeG = current.gCost + stepCost;
@@ -182,7 +160,6 @@ public class AStarPathfindingDemo {
                 return new PathResult(Collections.emptyList(), 0, nodesExplored, false, closedSet);
             }
 
-            // Reconstruct path backwards from target
             List<Point> path = new ArrayList<>();
             Node curr = targetNode;
             while (curr != null) {
@@ -204,23 +181,19 @@ public class AStarPathfindingDemo {
 
             switch (type) {
                 case MANHATTAN:
-                    // D * (dx + dy)
+
                     return dr + dc;
                 case EUCLIDEAN:
-                    // sqrt(dx^2 + dy^2)
+
                     return Math.hypot(dr, dc);
                 case OCTILE:
-                    // D * (dx + dy) + (D2 - 2 * D) * min(dx, dy)
-                    // D = 1.0, D2 = 1.4142
+
                     return (dr + dc) + (1.4142 - 2.0) * Math.min(dr, dc);
                 default:
                     return dr + dc;
             }
         }
 
-        /**
-         * Renders the grid with start (S), goal (G), walls (#), path (*), and explored nodes (.).
-         */
         public void renderGrid(Point start, Point target, PathResult result) {
             Set<Point> pathSet = new HashSet<>(result.path);
 
@@ -256,7 +229,6 @@ public class AStarPathfindingDemo {
         System.out.println("      A* (A-Star) Pathfinding Algorithm Demonstration    ");
         System.out.println("==========================================================\n");
 
-        // 0 = Free cell, 1 = Wall / Obstacle
         int[][] mazeGrid = {
             {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
             {0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0},
@@ -273,7 +245,6 @@ public class AStarPathfindingDemo {
         Point start = new Point(0, 0);
         Point goal = new Point(8, 11);
 
-        // Scenario 1: 4-Directional Movement with Manhattan Heuristic
         System.out.println("Scenario 1: 4-Directional Movement (Manhattan Heuristic)");
         System.out.println("Start: " + start + " -> Goal: " + goal);
         PathResult res4 = solver.findPath(start, goal, HeuristicType.MANHATTAN, false);
@@ -281,14 +252,12 @@ public class AStarPathfindingDemo {
                 res4.found, res4.pathCost, res4.path.size(), res4.nodesExplored);
         solver.renderGrid(start, goal, res4);
 
-        // Scenario 2: 8-Directional Movement with Octile Heuristic
         System.out.println("Scenario 2: 8-Directional Movement (Octile Heuristic)");
         PathResult res8 = solver.findPath(start, goal, HeuristicType.OCTILE, true);
         System.out.printf("Path Found: %b | Total Cost: %.2f | Path Steps: %d | Nodes Explored: %d%n",
                 res8.found, res8.pathCost, res8.path.size(), res8.nodesExplored);
         solver.renderGrid(start, goal, res8);
 
-        // Scenario 3: Trapped / Unreachable Goal
         System.out.println("Scenario 3: Unreachable Goal (Surrounded by Obstacles)");
         int[][] trappedGrid = {
             {0, 0, 0, 0},

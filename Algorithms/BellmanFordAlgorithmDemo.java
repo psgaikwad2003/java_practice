@@ -2,21 +2,6 @@ package Algorithms;
 
 import java.util.*;
 
-/**
- * Demonstrates the Bellman-Ford Algorithm for Single-Source Shortest Paths (SSSP).
- *
- * Capabilities:
- * 1. Computes shortest path from a source vertex to all other vertices in a directed/undirected graph.
- * 2. Accommodates negative edge weights (which Dijkstra's algorithm cannot handle).
- * 3. Detects negative-weight cycles and reconstructs the cycle path.
- * 4. Practical Real-World Application: Currency Arbitrage Detection using logarithmic transformation
- *    where finding a negative cycle identifies an infinite profit opportunity:
- *    R1 * R2 * ... * Rn > 1  <=>  -ln(R1) - ln(R2) - ... - ln(Rn) < 0
- *
- * Complexity:
- * - Time: O(V * E)
- * - Space: O(V)
- */
 public class BellmanFordAlgorithmDemo {
 
     public static class Edge {
@@ -81,9 +66,6 @@ public class BellmanFordAlgorithmDemo {
             return Collections.unmodifiableList(edges);
         }
 
-        /**
-         * Executes the Bellman-Ford algorithm from a single source.
-         */
         public BellmanFordResult solve(int source) {
             double[] dist = new double[vertices];
             int[] parent = new int[vertices];
@@ -91,7 +73,6 @@ public class BellmanFordAlgorithmDemo {
             Arrays.fill(parent, -1);
             dist[source] = 0.0;
 
-            // Step 1: Relax edges up to (V - 1) times
             for (int i = 0; i < vertices - 1; i++) {
                 boolean updated = false;
                 for (Edge edge : edges) {
@@ -101,11 +82,10 @@ public class BellmanFordAlgorithmDemo {
                         updated = true;
                     }
                 }
-                // Early termination optimization if graph converged
+
                 if (!updated) break;
             }
 
-            // Step 2: Check for negative-weight cycles (V-th iteration)
             int cycleStartNode = -1;
             for (Edge edge : edges) {
                 if (dist[edge.src] != Double.POSITIVE_INFINITY && dist[edge.src] + edge.weight < dist[edge.dest]) {
@@ -118,13 +98,12 @@ public class BellmanFordAlgorithmDemo {
 
             List<Integer> cycle = new ArrayList<>();
             if (cycleStartNode != -1) {
-                // To guarantee we are inside the cycle, walk back V steps
+
                 int curr = cycleStartNode;
                 for (int i = 0; i < vertices; i++) {
                     curr = parent[curr];
                 }
 
-                // Trace the cycle
                 int start = curr;
                 cycle.add(start);
                 curr = parent[start];
@@ -141,9 +120,6 @@ public class BellmanFordAlgorithmDemo {
         }
     }
 
-    /**
-     * Real-world financial currency arbitrage detection.
-     */
     public static class CurrencyArbitrageDetector {
         private final String[] currencies;
         private final double[][] exchangeRates;
@@ -155,7 +131,7 @@ public class BellmanFordAlgorithmDemo {
 
         public void detectArbitrage() {
             int n = currencies.length;
-            // Build graph where edge weight = -ln(exchangeRate)
+
             Graph g = new Graph(n);
             for (int i = 0; i < n; i++) {
                 for (int j = 0; j < n; j++) {
@@ -197,7 +173,6 @@ public class BellmanFordAlgorithmDemo {
         System.out.println("       BELLMAN-FORD SSSP & NEGATIVE CYCLE DEMO               ");
         System.out.println("=============================================================");
 
-        // Test 1: Standard Graph with Negative Weights (No Cycle)
         System.out.println("\n--- Test 1: SSSP with Negative Edge Weights ---");
         Graph g1 = new Graph(5);
         g1.addEdge(0, 1, -1);
@@ -216,13 +191,12 @@ public class BellmanFordAlgorithmDemo {
                     i, res1.dist[i], res1.reconstructPath(i));
         }
 
-        // Test 2: Graph with Negative Cycle
         System.out.println("\n--- Test 2: Graph with Negative Weight Cycle ---");
         Graph g2 = new Graph(4);
         g2.addEdge(0, 1, 1);
         g2.addEdge(1, 2, -1);
         g2.addEdge(2, 3, -1);
-        g2.addEdge(3, 1, -1); // 1 -> 2 -> 3 -> 1 weight = -3 (Negative Cycle)
+        g2.addEdge(3, 1, -1);
 
         BellmanFordResult res2 = g2.solve(0);
         System.out.println("Has negative cycle: " + res2.hasNegativeCycle);
@@ -230,16 +204,15 @@ public class BellmanFordAlgorithmDemo {
             System.out.println("Detected Negative Cycle: " + res2.negativeCycle);
         }
 
-        // Test 3: Currency Arbitrage
         System.out.println("\n--- Test 3: Forex Arbitrage Detection Engine ---");
         String[] currencies = {"USD", "EUR", "GBP", "JPY"};
-        // Exchange rate table: [from][to]
+
         double[][] rates = {
-            // USD,   EUR,    GBP,    JPY
-            { 1.00,  0.92,   0.79,  155.20 }, // USD
-            { 1.09,  1.00,   0.86,  169.10 }, // EUR
-            { 1.27,  1.17,   1.00,  196.40 }, // GBP
-            { 0.0065, 0.0060, 0.0052, 1.00 } // JPY (slightly distorted to trigger arbitrage)
+
+            { 1.00,  0.92,   0.79,  155.20 },
+            { 1.09,  1.00,   0.86,  169.10 },
+            { 1.27,  1.17,   1.00,  196.40 },
+            { 0.0065, 0.0060, 0.0052, 1.00 }
         };
 
         CurrencyArbitrageDetector detector = new CurrencyArbitrageDetector(currencies, rates);

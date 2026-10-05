@@ -3,12 +3,6 @@ import java.util.List;
 
 public class ArmstrongNumber {
 
-    /**
-     * Counts the number of digits in a positive integer.
-     *
-     * @param num the number to count digits for
-     * @return the number of digits (returns 1 for 0)
-     */
     public static int countDigits(long num) {
         if (num == 0) return 1;
         int count = 0;
@@ -20,13 +14,6 @@ public class ArmstrongNumber {
         return count;
     }
 
-    /**
-     * Fast integer exponentiation to avoid floating-point inaccuracies from Math.pow.
-     *
-     * @param base the base
-     * @param exp  the exponent (non-negative)
-     * @return base raised to exp
-     */
     public static long intPow(long base, int exp) {
         long result = 1;
         long b = base;
@@ -41,14 +28,6 @@ public class ArmstrongNumber {
         return result;
     }
 
-    /**
-     * Checks if a number is an Armstrong (Narcissistic) number for any N digits.
-     * A number is Armstrong if the sum of its own digits each raised to the power
-     * of the number of digits equals the number itself.
-     *
-     * @param number the number to check (must be non-negative)
-     * @return true if number is an Armstrong number, false otherwise
-     */
     public static boolean isArmstrong(long number) {
         if (number < 0) return false;
 
@@ -65,13 +44,6 @@ public class ArmstrongNumber {
         return sum == number;
     }
 
-    /**
-     * Finds all Armstrong numbers within an inclusive range [start, end].
-     *
-     * @param start the start of the range
-     * @param end   the end of the range
-     * @return a list of Armstrong numbers in [start, end]
-     */
     public static List<Long> findArmstrongNumbers(long start, long end) {
         List<Long> list = new ArrayList<>();
         for (long i = Math.max(0, start); i <= end; i++) {
@@ -82,12 +54,6 @@ public class ArmstrongNumber {
         return list;
     }
 
-    /**
-     * Finds the next Armstrong number strictly greater than the given value.
-     *
-     * @param from the starting value (exclusive)
-     * @return the smallest Armstrong number greater than from
-     */
     public static long nextArmstrong(long from) {
         long candidate = Math.max(0, from) + 1;
         while (!isArmstrong(candidate)) {
@@ -96,13 +62,6 @@ public class ArmstrongNumber {
         return candidate;
     }
 
-    /**
-     * Returns a formatted mathematical breakdown explaining why the number is or isn't Armstrong.
-     * Example: "153 = 1^3 + 5^3 + 3^3 = 1 + 125 + 27 = 153 (Armstrong)"
-     *
-     * @param number the number to explain
-     * @return explanatory string
-     */
     public static String getArmstrongBreakdown(long number) {
         if (number < 0) return number + " is negative, hence not an Armstrong number.";
         int power = countDigits(number);
