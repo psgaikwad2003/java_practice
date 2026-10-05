@@ -4,18 +4,6 @@ import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
 
-/**
- * Demonstrates a Least Frequently Used (LFU) Cache with O(1) time complexity
- * for both get and put operations.
- * 
- * Features:
- * - Evicts the key with the lowest access frequency.
- * - Ties in frequency are broken using LRU (Least Recently Used) order.
- * - Tracks minFrequency for immediate O(1) victim identification.
- *
- * @param <K> key type
- * @param <V> value type
- */
 public class LFUCacheDemo<K, V> {
 
     private final int capacity;
@@ -36,19 +24,11 @@ public class LFUCacheDemo<K, V> {
         this.frequencyLists.put(1, new LinkedHashSet<>());
     }
 
-    /**
-     * Retrieves value associated with key and increments its frequency.
-     * Time: O(1)
-     *
-     * @param key the lookup key
-     * @return the value or null if not found
-     */
     public V get(K key) {
         if (!values.containsKey(key)) {
             return null;
         }
 
-        // Increment count and update frequency lists
         int count = counts.get(key);
         counts.put(key, count + 1);
 
@@ -61,22 +41,15 @@ public class LFUCacheDemo<K, V> {
         return values.get(key);
     }
 
-    /**
-     * Inserts or updates key-value pair. Evicts LFU (and LRU on tie) if at capacity.
-     * Time: O(1)
-     *
-     * @param key key
-     * @param value value
-     */
     public void put(K key, V value) {
         if (values.containsKey(key)) {
             values.put(key, value);
-            get(key); // reuse get to increment frequency
+            get(key);
             return;
         }
 
         if (values.size() >= capacity) {
-            // Evict least frequently used (and oldest in that frequency set)
+
             LinkedHashSet<K> minList = frequencyLists.get(minFrequency);
             K evictKey = minList.iterator().next();
             minList.remove(evictKey);
@@ -84,7 +57,6 @@ public class LFUCacheDemo<K, V> {
             counts.remove(evictKey);
         }
 
-        // Insert new entry
         values.put(key, value);
         counts.put(key, 1);
         minFrequency = 1;
@@ -129,9 +101,8 @@ public class LFUCacheDemo<K, V> {
         System.out.println("Get key 4 (present): " + cache.get(4));
 
         System.out.println("\n4. Accessing key 4 and inserting key 5...");
-        cache.get(4); // Freq 4 becomes 2
-        // Current freqs: Key 1: 3, Key 2: 2, Key 4: 2.
-        // Between Key 2 and Key 4 (both freq 2), Key 2 was accessed earlier -> Key 2 is evicted!
+        cache.get(4);
+
         cache.put(5, "Five");
         System.out.println("State: " + cache);
         System.out.println("Get key 2 (evicted by tie-breaking LRU): " + cache.get(2));
