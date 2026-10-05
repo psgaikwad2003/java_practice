@@ -1,7 +1,6 @@
 import java.util.ArrayList;
 import java.util.List;
 
-
 public class CloningDemo {
 
     static class Address implements Cloneable {
@@ -33,21 +32,18 @@ public class CloningDemo {
         Address address;
         List<String> skills;
 
-        
         public Person(String name, Address address, List<String> skills) {
             this.name = name;
             this.address = address;
             this.skills = skills;
         }
 
-        
         public Person(Person other) {
             this.name = other.name;
             this.address = other.address != null ? other.address.clone() : null;
             this.skills = other.skills != null ? new ArrayList<>(other.skills) : new ArrayList<>();
         }
 
-        
         public Person shallowCopy() {
             return new Person(this.name, this.address, this.skills);
         }
@@ -73,7 +69,6 @@ public class CloningDemo {
 
         System.out.println("Original before modification : " + original);
 
-        
         shallow.address.city = "San Francisco";
         shallow.skills.add("Docker");
 
@@ -83,4 +78,3 @@ public class CloningDemo {
         System.out.println("Deep Copy (isolated & safe!)   : " + deep);
     }
 }
-// Updated for demonstration

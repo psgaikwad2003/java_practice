@@ -4,20 +4,6 @@ import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.function.Supplier;
 
-/**
- * Demonstrates the Circuit Breaker Pattern for fault-tolerant microservice architectures.
- *
- * States:
- * 1. CLOSED: Normal operation. Requests pass to downstream service.
- *    Failures are recorded in a sliding window. If failure rate exceeds threshold, trips to OPEN.
- * 2. OPEN: Downstream is presumed broken. Requests fail fast without calling remote service,
- *    immediately executing a fallback. After a cooldown window, transitions to HALF_OPEN.
- * 3. HALF_OPEN: Probe state allowing a limited number of trial requests. If trial requests succeed,
- *    circuit resets to CLOSED. If any fail, circuit re-opens.
- *
- * Real-world correspondence:
- * - Netflix Hystrix / Resilience4j CircuitBreaker.
- */
 public class CircuitBreakerPatternDemo {
 
     public enum State {
@@ -26,7 +12,7 @@ public class CircuitBreakerPatternDemo {
 
     public static class CircuitBreakerConfig {
         public final int slidingWindowSize;
-        public final double failureRateThreshold; // e.g., 0.50 (50%)
+        public final double failureRateThreshold;
         public final long cooldownPeriodMs;
         public final int halfOpenTrialCalls;
 
@@ -45,7 +31,7 @@ public class CircuitBreakerPatternDemo {
 
         private State state = State.CLOSED;
         private long lastStateChangedTimestamp = System.currentTimeMillis();
-        private final Deque<Boolean> callHistory = new ArrayDeque<>(); // true = success, false = failure
+        private final Deque<Boolean> callHistory = new ArrayDeque<>();
         private int halfOpenSuccesses = 0;
 
         public CircuitBreaker(String name, CircuitBreakerConfig config) {
@@ -54,7 +40,7 @@ public class CircuitBreakerPatternDemo {
         }
 
         public synchronized State getState() {
-            // Check if OPEN cooldown has elapsed
+
             if (state == State.OPEN) {
                 long elapsed = System.currentTimeMillis() - lastStateChangedTimestamp;
                 if (elapsed >= config.cooldownPeriodMs) {
@@ -80,7 +66,7 @@ public class CircuitBreakerPatternDemo {
             State currentState = getState();
 
             if (currentState == State.OPEN) {
-                // Short-circuit execution!
+
                 System.out.println("  [!] Circuit OPEN: fast-failing to fallback.");
                 return fallback.get();
             }
@@ -125,7 +111,7 @@ public class CircuitBreakerPatternDemo {
 
         private void evaluateFailureRate() {
             if (callHistory.size() < config.slidingWindowSize) {
-                return; // Not enough calls to evaluate threshold yet
+                return;
             }
 
             long failures = callHistory.stream().filter(s -> !s).count();
@@ -144,11 +130,9 @@ public class CircuitBreakerPatternDemo {
         System.out.println("       FAULT-TOLERANT CIRCUIT BREAKER PATTERN DEMO           ");
         System.out.println("=============================================================");
 
-        // Config: window=6 calls, 50% threshold, 300ms cooldown, 2 trials in HALF_OPEN
         CircuitBreakerConfig config = new CircuitBreakerConfig(6, 0.50, 300, 2);
         CircuitBreaker cb = new CircuitBreaker("PaymentGatewayService", config);
 
-        // Flaky external payment gateway simulator
         boolean[] shouldFail = {false, false, true, true, true, true, false, false, false};
         int[] callIndex = new int[]{0};
 
@@ -176,7 +160,7 @@ public class CircuitBreakerPatternDemo {
         Thread.sleep(350);
 
         System.out.println("\n--- Phase 4: Probing in HALF_OPEN State ---");
-        // Next 2 calls will be evaluated as trials
+
         for (int i = 0; i < 2; i++) {
             String res = cb.execute(remotePaymentCall, fallbackPayment);
             System.out.printf("Trial #%d Result: %s (CB State: %s)%n", i + 1, res, cb.getState());
