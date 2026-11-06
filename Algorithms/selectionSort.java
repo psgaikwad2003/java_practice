@@ -1,20 +1,5 @@
 import java.util.Arrays;
 
-/**
- * Selection Sort Algorithm Suite
- *
- * Implements multiple variations of the selection-sort paradigm:
- * 1. Standard Selection Sort - Minimizes swaps (at most n-1 swaps total)
- * 2. Bidirectional Selection Sort (Double Selection) - Finds both min and max per pass (halves iterations)
- * 3. Stable Selection Sort - Uses array shifting rather than direct swapping to maintain stability
- * 4. Recursive Selection Sort
- * 5. Descending Order Selection Sort
- *
- * Complexity:
- * - Time: O(n^2) in all cases (Best, Average, Worst)
- * - Swaps: O(n) (optimal write performance)
- * - Space: O(1) auxiliary
- */
 public class selectionSort {
 
     public static class SortMetrics {
@@ -28,9 +13,6 @@ public class selectionSort {
         }
     }
 
-    // -------------------------------------------------------------
-    // 1. Standard Selection Sort (Swap Minimization)
-    // -------------------------------------------------------------
     public static SortMetrics sort(int[] arr) {
         SortMetrics metrics = new SortMetrics();
         if (arr == null || arr.length <= 1) return metrics;
@@ -47,7 +29,6 @@ public class selectionSort {
                 }
             }
 
-            // Only swap if min element is not already at current position
             if (minIndex != i) {
                 swap(arr, i, minIndex);
                 metrics.swaps++;
@@ -57,10 +38,6 @@ public class selectionSort {
         return metrics;
     }
 
-    // -------------------------------------------------------------
-    // 2. Bidirectional Selection Sort (Double Selection Sort)
-    // Simultaneously finds min and max in a single pass
-    // -------------------------------------------------------------
     public static SortMetrics bidirectionalSelectionSort(int[] arr) {
         SortMetrics metrics = new SortMetrics();
         if (arr == null || arr.length <= 1) return metrics;
@@ -83,17 +60,14 @@ public class selectionSort {
                 }
             }
 
-            // Move minimum to the start
             if (minIndex != start) {
                 swap(arr, start, minIndex);
                 metrics.swaps++;
-                // If the maximum element was at start, its position changed to minIndex
                 if (maxIndex == start) {
                     maxIndex = minIndex;
                 }
             }
 
-            // Move maximum to the end
             if (maxIndex != end) {
                 swap(arr, end, maxIndex);
                 metrics.swaps++;
@@ -106,10 +80,6 @@ public class selectionSort {
         return metrics;
     }
 
-    // -------------------------------------------------------------
-    // 3. Stable Selection Sort
-    // Shifts elements rightward instead of swapping to preserve stability
-    // -------------------------------------------------------------
     public static void stableSelectionSort(int[] arr) {
         if (arr == null || arr.length <= 1) return;
 
@@ -122,7 +92,6 @@ public class selectionSort {
                 }
             }
 
-            // Shift elements right and insert minimum at index i
             int key = arr[minIndex];
             while (minIndex > i) {
                 arr[minIndex] = arr[minIndex - 1];
@@ -132,9 +101,6 @@ public class selectionSort {
         }
     }
 
-    // -------------------------------------------------------------
-    // 4. Recursive Selection Sort
-    // -------------------------------------------------------------
     public static void selectionSortRecursive(int[] arr, int startIndex) {
         if (arr == null || startIndex >= arr.length - 1) return;
 
@@ -152,9 +118,6 @@ public class selectionSort {
         selectionSortRecursive(arr, startIndex + 1);
     }
 
-    // -------------------------------------------------------------
-    // 5. Descending Order Selection Sort
-    // -------------------------------------------------------------
     public static void selectionSortDescending(int[] arr) {
         if (arr == null || arr.length <= 1) return;
 
@@ -179,47 +142,28 @@ public class selectionSort {
     }
 
     public static void main(String[] args) {
-        System.out.println("=============================================================");
-        System.out.println("              SELECTION SORT ALGORITHM SUITE                 ");
-        System.out.println("=============================================================");
-
-        // Demo 1: Original array
         int[] numbers = {64, 25, 12, 22, 11};
-        System.out.println("\nDemo 1: Standard Selection Sort (Original Test Input)");
         System.out.println("Array before sorting: " + Arrays.toString(numbers));
         SortMetrics metrics1 = sort(numbers);
         System.out.println("Array after sorting : " + Arrays.toString(numbers));
-        System.out.println("Performance metrics : " + metrics1 + " (Max n-1 swaps guaranteed)");
+        System.out.println("Metrics             : " + metrics1);
 
-        // Demo 2: Bidirectional Selection Sort (Double Selection)
         int[] dualArr = {29, 10, 14, 37, 13, 89, 4, 33};
-        System.out.println("\nDemo 2: Bidirectional Dual-Pivot Selection Sort");
-        System.out.println("Initial array: " + Arrays.toString(dualArr));
+        System.out.println("\nBidirectional input: " + Arrays.toString(dualArr));
         SortMetrics metrics2 = bidirectionalSelectionSort(dualArr);
-        System.out.println("Sorted array : " + Arrays.toString(dualArr));
-        System.out.println("Performance  : " + metrics2 + " (Half the outer iterations!)");
+        System.out.println("Bidirectional sorted: " + Arrays.toString(dualArr));
+        System.out.println("Metrics             : " + metrics2);
 
-        // Demo 3: Stable Selection Sort
         int[] duplicateArr = {4, 5, 3, 2, 4, 1};
-        System.out.println("\nDemo 3: Stable Selection Sort (Preserves Duplicate Order)");
-        System.out.println("Initial array: " + Arrays.toString(duplicateArr));
         stableSelectionSort(duplicateArr);
-        System.out.println("Sorted array : " + Arrays.toString(duplicateArr));
+        System.out.println("\nStable sorted       : " + Arrays.toString(duplicateArr));
 
-        // Demo 4: Recursive Selection Sort
         int[] recArr = {90, 70, 50, 80, 60, 10, 40};
-        System.out.println("\nDemo 4: Recursive Selection Sort");
-        System.out.println("Initial array: " + Arrays.toString(recArr));
         selectionSortRecursive(recArr, 0);
-        System.out.println("Sorted array : " + Arrays.toString(recArr));
+        System.out.println("Recursive sorted    : " + Arrays.toString(recArr));
 
-        // Demo 5: Descending Order Selection Sort
         int[] descArr = {5, 2, 9, 1, 5, 6};
-        System.out.println("\nDemo 5: Descending Selection Sort");
-        System.out.println("Initial array: " + Arrays.toString(descArr));
         selectionSortDescending(descArr);
-        System.out.println("Sorted array : " + Arrays.toString(descArr));
-
-        System.out.println("\n=============================================================");
+        System.out.println("Descending sorted   : " + Arrays.toString(descArr));
     }
 }

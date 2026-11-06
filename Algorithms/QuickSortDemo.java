@@ -3,28 +3,10 @@ import java.util.Arrays;
 import java.util.Deque;
 import java.util.Random;
 
-/**
- * QuickSort Algorithm Suite
- *
- * Implements modern partitioning and optimization schemes:
- * 1. Randomized Lomuto Partition - Guards against worst-case O(n^2) on sorted inputs
- * 2. Hoare's Partition Scheme - Bidirectional scanning with ~3x fewer swaps
- * 3. Median-of-Three Partitioning - Robust pivot selection (low, mid, high)
- * 4. 3-Way Partitioning (Dutch National Flag) - O(n) linear performance on duplicate-heavy inputs
- * 5. Iterative QuickSort - Stack-based implementation preventing recursion stack overflow
- *
- * Complexity:
- * - Time: Best O(n log n), Average O(n log n), Worst O(n^2) (mitigated by randomized/median-of-three)
- * - 3-Way Duplicate Time: O(n)
- * - Space: O(log n) call stack (in-place)
- */
 public class QuickSortDemo {
 
     private static final Random RANDOM = new Random();
 
-    // -------------------------------------------------------------
-    // 1. Randomized Lomuto Partition QuickSort
-    // -------------------------------------------------------------
     public static void sortLomuto(int[] arr) {
         if (arr == null || arr.length <= 1) return;
         quickSortLomuto(arr, 0, arr.length - 1);
@@ -55,9 +37,6 @@ public class QuickSortDemo {
         return i + 1;
     }
 
-    // -------------------------------------------------------------
-    // 2. Hoare's Partition QuickSort (Fewer Swaps than Lomuto)
-    // -------------------------------------------------------------
     public static void sortHoare(int[] arr) {
         if (arr == null || arr.length <= 1) return;
         quickSortHoare(arr, 0, arr.length - 1);
@@ -90,10 +69,6 @@ public class QuickSortDemo {
         }
     }
 
-    // -------------------------------------------------------------
-    // 3. Median-of-Three Partition QuickSort
-    // Selects median among arr[low], arr[mid], arr[high]
-    // -------------------------------------------------------------
     public static void sortMedianOfThree(int[] arr) {
         if (arr == null || arr.length <= 1) return;
         quickSortMedian(arr, 0, arr.length - 1);
@@ -102,7 +77,6 @@ public class QuickSortDemo {
     private static void quickSortMedian(int[] arr, int low, int high) {
         if (low >= high) return;
 
-        // Base case for small subarrays
         if (high - low <= 2) {
             manualSortSmall(arr, low, high);
             return;
@@ -110,12 +84,10 @@ public class QuickSortDemo {
 
         int mid = low + (high - low) / 2;
 
-        // Sort low, mid, high to find median
         if (arr[low] > arr[mid]) swap(arr, low, mid);
         if (arr[low] > arr[high]) swap(arr, low, high);
         if (arr[mid] > arr[high]) swap(arr, mid, high);
 
-        // Place median at high - 1 as sentinel pivot
         swap(arr, mid, high - 1);
         int pivot = arr[high - 1];
 
@@ -129,7 +101,7 @@ public class QuickSortDemo {
             swap(arr, i, j);
         }
 
-        swap(arr, i, high - 1); // Restore pivot
+        swap(arr, i, high - 1);
         quickSortMedian(arr, low, i - 1);
         quickSortMedian(arr, i + 1, high);
     }
@@ -141,16 +113,12 @@ public class QuickSortDemo {
             if (arr[low] > arr[high]) swap(arr, low, high);
             return;
         }
-        // size == 3
         if (arr[low] > arr[high - 1]) swap(arr, low, high - 1);
         if (arr[low] > arr[high]) swap(arr, low, high);
         if (arr[high - 1] > arr[high]) swap(arr, high - 1, high);
     }
 
-    // -------------------------------------------------------------
-    // 4. 3-Way Partitioning (Dutch National Flag Algorithm)
-    // Optimal O(n) for arrays with large numbers of duplicate keys
-    // -------------------------------------------------------------
+    // 3-way Dutch National Flag partition for duplicate-heavy data
     public static void sort3Way(int[] arr) {
         if (arr == null || arr.length <= 1) return;
         quickSort3Way(arr, 0, arr.length - 1);
@@ -160,9 +128,9 @@ public class QuickSortDemo {
         if (low >= high) return;
 
         int pivot = arr[low];
-        int lt = low;      // arr[low..lt-1] < pivot
-        int gt = high;     // arr[gt+1..high] > pivot
-        int i = low + 1;   // arr[lt..i-1] == pivot
+        int lt = low;
+        int gt = high;
+        int i = low + 1;
 
         while (i <= gt) {
             if (arr[i] < pivot) {
@@ -177,14 +145,10 @@ public class QuickSortDemo {
             }
         }
 
-        // arr[lt..gt] are all equal to pivot
         quickSort3Way(arr, low, lt - 1);
         quickSort3Way(arr, gt + 1, high);
     }
 
-    // -------------------------------------------------------------
-    // 5. Iterative QuickSort (Stack-based, No Recursion)
-    // -------------------------------------------------------------
     public static void sortIterative(int[] arr) {
         if (arr == null || arr.length <= 1) return;
 
@@ -199,7 +163,6 @@ public class QuickSortDemo {
             if (low < high) {
                 int pi = randomizedLomutoPartition(arr, low, high);
 
-                // Push sub-arrays to stack
                 if (pi - 1 > low) {
                     stack.push(low);
                     stack.push(pi - 1);
@@ -219,45 +182,25 @@ public class QuickSortDemo {
     }
 
     public static void main(String[] args) {
-        System.out.println("=============================================================");
-        System.out.println("                 QUICKSORT ALGORITHM SUITE                   ");
-        System.out.println("=============================================================");
-
-        // Demo 1: Original Test Case
         int[] arr = {10, 7, 8, 9, 1, 5};
-        System.out.println("\nDemo 1: Randomized Lomuto QuickSort (Original Array)");
         System.out.println("Unsorted array: " + Arrays.toString(arr));
         sortLomuto(arr);
-        System.out.println("Sorted array  : " + Arrays.toString(arr));
+        System.out.println("Lomuto sorted : " + Arrays.toString(arr));
 
-        // Demo 2: Hoare's Partitioning
         int[] hoareArr = {84, 12, 45, 96, 33, 18, 77, 2, 59};
-        System.out.println("\nDemo 2: Hoare's Partition Scheme (Bidirectional Scanning)");
-        System.out.println("Unsorted array: " + Arrays.toString(hoareArr));
         sortHoare(hoareArr);
-        System.out.println("Sorted array  : " + Arrays.toString(hoareArr));
+        System.out.println("\nHoare sorted  : " + Arrays.toString(hoareArr));
 
-        // Demo 3: Median-of-Three Partitioning on Pre-sorted Array
         int[] sortedArr = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
-        System.out.println("\nDemo 3: Median-of-Three Partitioning (Resistant to Pre-Sorted Worst Case)");
-        System.out.println("Input array   : " + Arrays.toString(sortedArr));
         sortMedianOfThree(sortedArr);
-        System.out.println("Sorted array  : " + Arrays.toString(sortedArr));
+        System.out.println("\nMedian-of-3   : " + Arrays.toString(sortedArr));
 
-        // Demo 4: 3-Way Partitioning on Duplicate-Heavy Array (Dutch National Flag)
         int[] dupArr = {2, 0, 2, 1, 1, 0, 2, 1, 0, 2, 0, 1};
-        System.out.println("\nDemo 4: 3-Way QuickSort (Dutch National Flag on Duplicate Elements)");
-        System.out.println("Unsorted array: " + Arrays.toString(dupArr));
         sort3Way(dupArr);
-        System.out.println("3-Way sorted  : " + Arrays.toString(dupArr) + " (O(n) linear performance)");
+        System.out.println("\n3-Way sorted  : " + Arrays.toString(dupArr));
 
-        // Demo 5: Iterative QuickSort
         int[] iterArr = {55, 4, 92, 18, 7, 63, 21, 39, 100, 3};
-        System.out.println("\nDemo 5: Iterative QuickSort (Explicit Stack, Stack-Overflow Safe)");
-        System.out.println("Unsorted array: " + Arrays.toString(iterArr));
         sortIterative(iterArr);
-        System.out.println("Sorted array  : " + Arrays.toString(iterArr));
-
-        System.out.println("\n=============================================================");
+        System.out.println("\nIterative sort: " + Arrays.toString(iterArr));
     }
 }
