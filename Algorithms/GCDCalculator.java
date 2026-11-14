@@ -1,4 +1,5 @@
 import java.util.Arrays;
+import java.util.OptionalLong;
 
 public class GCDCalculator {
 
@@ -17,6 +18,29 @@ public class GCDCalculator {
         a = Math.abs(a);
         b = Math.abs(b);
         return (b == 0) ? a : gcdRecursive(b, a % b);
+    }
+
+    // Stein's Binary GCD Algorithm (shift-based O(log(min(a,b))))
+    public static long binaryGcdStein(long a, long b) {
+        a = Math.abs(a);
+        b = Math.abs(b);
+        if (a == 0) return b;
+        if (b == 0) return a;
+
+        int shift = Long.numberOfTrailingZeros(a | b);
+        a >>= Long.numberOfTrailingZeros(a);
+
+        do {
+            b >>= Long.numberOfTrailingZeros(b);
+            if (a > b) {
+                long temp = a;
+                a = b;
+                b = temp;
+            }
+            b -= a;
+        } while (b != 0);
+
+        return a << shift;
     }
 
     public static long gcd(long... numbers) {
@@ -44,65 +68,33 @@ public class GCDCalculator {
         return new ExtendedGCDResult(gcd, x, y);
     }
 
-    public static long lcm(long a, long b) {
-        if (a == 0 || b == 0) return 0;
-        return Math.abs(a / gcd(a, b) * b);
+    public static OptionalLong modInverse(long a, long m) {
+        ExtendedGCDResult res = extendedGCD(a, m);
+        if (res.gcd() != 1) {
+            return OptionalLong.empty(); // Coprime required
+        }
+        long inv = (res.x() % m + m) % m;
+        return OptionalLong.of(inv);
     }
 
-    public static long modInverse(long a, long m) {
-        if (m <= 1) {
-            throw new IllegalArgumentException("Modulus m must be greater than 1.");
-        }
-        ExtendedGCDResult result = extendedGCD(a, m);
-        if (result.gcd() != 1) {
-            throw new ArithmeticException(String.format("Modular inverse does not exist: %d and %d are not coprime (gcd = %d).", a, m, result.gcd()));
-        }
-        return (result.x() % m + m) % m;
+    public static boolean areCoprime(long a, long b) {
+        return gcd(a, b) == 1;
     }
 
     public static void main(String[] args) {
-        System.out.println("=== Greatest Common Divisor (GCD) Calculations ===");
+        System.out.println("=== Greatest Common Divisor (Euclidean & Stein) ===");
 
-        long a = 81, b = 153;
-        System.out.printf("GCD of %d and %d (Iterative): %d%n", a, b, gcd(a, b));
-        System.out.printf("GCD of %d and %d (Recursive): %d%n", a, b, gcdRecursive(a, b));
+        long a = 48, b = 18;
+        System.out.printf("Euclidean GCD(%d, %d) = %d%n", a, b, gcd(a, b));
+        System.out.printf("Stein Binary GCD(%d, %d) = %d%n", a, b, binaryGcdStein(a, b));
 
-        System.out.println("\n=== Handling Edge Cases (Zero & Negatives) ===");
-        System.out.println("GCD of 0 and 25: " + gcd(0, 25));
-        System.out.println("GCD of -48 and 18: " + gcd(-48, 18));
-        System.out.println("GCD of 0 and 0: " + gcd(0, 0));
-
-        System.out.println("\n=== GCD of Multiple Numbers ===");
-        long[] numbers = {48, 72, 108, 144};
-        System.out.println("Numbers: " + java.util.Arrays.toString(numbers));
-        System.out.println("GCD: " + gcd(numbers));
-
-        System.out.println("\n=== Least Common Multiple (LCM) ===");
-        System.out.printf("LCM(%d, %d) = %d%n", a, b, lcm(a, b));
-        System.out.println("LCM(0, 12) = " + lcm(0, 12));
-        System.out.println("LCM(4, 6) = " + lcm(4, 6));
-        System.out.println("LCM(21, 14) = " + lcm(21, 14));
-
-        System.out.println("\n=== Extended Euclidean Algorithm (Bézout Identity) ===");
-        long exA = 35, exB = 15;
-        ExtendedGCDResult ext = extendedGCD(exA, exB);
-        System.out.printf("%d*(%d) + %d*(%d) = %d (GCD)%n",
-            exA, ext.x(), exB, ext.y(), ext.gcd());
-
-        long exA2 = 240, exB2 = 46;
-        ExtendedGCDResult ext2 = extendedGCD(exA2, exB2);
-        System.out.printf("%d*(%d) + %d*(%d) = %d (GCD)%n",
-            exA2, ext2.x(), exB2, ext2.y(), ext2.gcd());
+        System.out.println("\n=== Multi-number GCD ===");
+        long[] arr = {144, 216, 360, 540};
+        System.out.println("GCD" + Arrays.toString(arr) + " = " + gcd(arr));
 
         System.out.println("\n=== Modular Multiplicative Inverse ===");
-        long val = 3, mod = 11;
-        long inv = modInverse(val, mod);
-        System.out.printf("Modular inverse of %d mod %d = %d (Check: (%d * %d) %% %d = %d)%n",
-            val, mod, inv, val, inv, mod, (val * inv) % mod);
-
-        long val2 = 10, mod2 = 17;
-        long inv2 = modInverse(val2, mod2);
-        System.out.printf("Modular inverse of %d mod %d = %d (Check: (%d * %d) %% %d = %d)%n",
-            val2, mod2, inv2, val2, inv2, mod2, (val2 * inv2) % mod2);
+        long num = 3, mod = 11;
+        OptionalLong inv = modInverse(num, mod);
+        System.out.printf("Modular inverse of %d mod %d: %s%n", num, mod, inv.isPresent() ? inv.getAsLong() : "None");
     }
 }
