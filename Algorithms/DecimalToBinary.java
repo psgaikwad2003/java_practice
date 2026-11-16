@@ -13,25 +13,26 @@ public class DecimalToBinary {
             temp /= 2;
         }
 
-        if (isNegative) {
-            sb.append("-");
-        }
+        if (isNegative) sb.append("-");
         return sb.reverse().toString();
     }
 
-    public static String toBinaryBitwise(int n) {
-        if (n == 0) return "0";
-        StringBuilder sb = new StringBuilder();
-        boolean foundFirstOne = false;
+    public static String fractionalDecimalToBinary(double num, int precision) {
+        if (Double.isNaN(num) || Double.isInfinite(num)) return String.valueOf(num);
+        long integerPart = (long) num;
+        double fractionalPart = Math.abs(num - integerPart);
 
-        for (int i = 31; i >= 0; i--) {
-            int bit = (n >>> i) & 1;
-            if (bit == 1) {
-                foundFirstOne = true;
-            }
-            if (foundFirstOne) {
-                sb.append(bit);
-            }
+        StringBuilder sb = new StringBuilder();
+        sb.append(toBinary(integerPart));
+        sb.append(".");
+
+        int count = 0;
+        while (fractionalPart > 0 && count < precision) {
+            fractionalPart *= 2;
+            int bit = (int) fractionalPart;
+            sb.append(bit);
+            fractionalPart -= bit;
+            count++;
         }
         return sb.toString();
     }
@@ -44,39 +45,31 @@ public class DecimalToBinary {
         return new String(bits);
     }
 
-    public static int[] toBinaryDigits(long n) {
-        String binaryStr = toBinary(Math.abs(n));
-        int[] digits = new int[binaryStr.length()];
-        for (int i = 0; i < binaryStr.length(); i++) {
-            digits[i] = binaryStr.charAt(i) - '0';
+    public static int hammingWeight(int n) {
+        int count = 0;
+        while (n != 0) {
+            n &= (n - 1); // Clears the lowest set bit
+            count++;
         }
-        return digits;
-    }
-
-    public static String toBinaryRecursive(long n) {
-        if (n < 0) return "-" + toBinaryRecursive(-n);
-        if (n == 0) return "0";
-        if (n == 1) return "1";
-        return toBinaryRecursive(n / 2) + (n % 2);
+        return count;
     }
 
     public static void main(String[] args) {
-        long[] testValues = {0, 1, 2, 7, 19, 42, 255, 1024, -19};
+        System.out.println("=== Decimal to Binary & Radix Representations ===");
 
-        System.out.println("=== Decimal to Binary Demonstrations ===\n");
-        for (long num : testValues) {
-            String bin = toBinary(num);
-            String rec = toBinaryRecursive(num);
-            int[] digits = toBinaryDigits(num);
-            System.out.printf("Decimal: %6d -> Binary: %12s | Recursive: %12s | Digits: %s%n",
-                    num, bin, rec, Arrays.toString(digits));
+        long[] testInts = {0, 5, 42, 255, 1024, -15};
+        for (long n : testInts) {
+            System.out.printf("Decimal: %-5d -> Binary: %-12s | Hex: 0x%X%n", n, toBinary(n), n);
         }
 
-        System.out.println("\n=== Bitwise and Two's Complement (32-bit) ===");
-        int[] bitwiseTests = {19, -19, 0, Integer.MAX_VALUE, Integer.MIN_VALUE};
-        for (int val : bitwiseTests) {
-            System.out.printf("Value: %11d | Unsigned: %32s | 32-bit: %s%n",
-                    val, toBinaryBitwise(val), to32BitBinary(val));
+        System.out.println("\n=== Fractional Floating-Point to Binary ===");
+        double[] testFloats = {0.625, 13.625, 3.14159};
+        for (double d : testFloats) {
+            System.out.printf("Decimal: %-8.5f -> Binary: %s%n", d, fractionalDecimalToBinary(d, 8));
         }
+
+        System.out.println("\n=== Hamming Weight (Set Bits Count) ===");
+        int val = 42; // 101010 in binary -> 3 set bits
+        System.out.printf("%d (%s) set bits: %d%n", val, toBinary(val), hammingWeight(val));
     }
 }
