@@ -1,99 +1,86 @@
-import java.util.Scanner;
+import java.util.ArrayDeque;
+import java.util.Deque;
 
-public class Calculator {
+public class calculator {
 
-    public static void main(String[] args) {
-
-        Scanner sc = new Scanner(System.in);
-
-        int choice;
-        double num1;
-        double num2;
-
-        do {
-
-            System.out.println("\n========== Calculator v2 ==========");
-            System.out.println("1. Addition");
-            System.out.println("2. Subtraction");
-            System.out.println("3. Multiplication");
-            System.out.println("4. Division");
-            System.out.println("5. Modulus");
-            System.out.println("6. Power (num1 ^ num2)");
-            System.out.println("7. Exit");
-            System.out.println("===================================");
-
-            System.out.print("Enter Your Choice : ");
-            choice = sc.nextInt();
-
-            if (choice >= 1 && choice <= 6) {
-
-                System.out.print("Enter First Number : ");
-                num1 = sc.nextDouble();
-
-                System.out.print("Enter Second Number : ");
-                num2 = sc.nextDouble();
-
-                switch (choice) {
-
-                    case 1:
-                        System.out.println("Addition = " + (num1 + num2));
-                        break;
-
-                    case 2:
-                        System.out.println("Subtraction = " + (num1 - num2));
-                        break;
-
-                    case 3:
-                        System.out.println("Multiplication = " + (num1 * num2));
-                        break;
-
-                    case 4:
-
-                        if (num2 == 0) {
-
-                            System.out.println("Division by Zero is not possible.");
-
-                        } else {
-
-                            System.out.println("Division = " + (num1 / num2));
-
-                        }
-
-                        break;
-
-                    case 5:
-
-                        if (num2 == 0) {
-
-                            System.out.println("Modulus by Zero is not possible.");
-
-                        } else {
-
-                            System.out.println("Modulus = " + (num1 % num2));
-
-                        }
-
-                        break;
-
-                    case 6:
-                        System.out.println("Power = " + Math.pow(num1, num2));
-                        break;
-                }
-
-            } else if (choice == 7) {
-
-                System.out.println("Thank You For Using Calculator v2.");
-
-            } else {
-
-                System.out.println("Invalid Choice.");
-
+    public static double basicOp(double a, double b, char op) {
+        return switch (op) {
+            case '+' -> a + b;
+            case '-' -> a - b;
+            case '*' -> a * b;
+            case '/' -> {
+                if (b == 0) throw new ArithmeticException("Division by zero");
+                yield a / b;
             }
-
-        } while (choice != 7);
-
-        sc.close();
-
+            case '^' -> Math.pow(a, b);
+            default -> throw new IllegalArgumentException("Unknown operator: " + op);
+        };
     }
 
+    private static int precedence(char op) {
+        return switch (op) {
+            case '+', '-' -> 1;
+            case '*', '/' -> 2;
+            case '^' -> 3;
+            default -> 0;
+        };
+    }
+
+    public static double evaluateExpression(String expression) {
+        if (expression == null || expression.isBlank()) return 0;
+        char[] tokens = expression.toCharArray();
+        Deque<Double> values = new ArrayDeque<>();
+        Deque<Character> ops = new ArrayDeque<>();
+
+        for (int i = 0; i < tokens.length; i++) {
+            if (Character.isWhitespace(tokens[i])) continue;
+
+            if (Character.isDigit(tokens[i]) || tokens[i] == '.') {
+                StringBuilder sb = new StringBuilder();
+                while (i < tokens.length && (Character.isDigit(tokens[i]) || tokens[i] == '.')) {
+                    sb.append(tokens[i++]);
+                }
+                i--;
+                values.push(Double.parseDouble(sb.toString()));
+            } else if (tokens[i] == '(') {
+                ops.push(tokens[i]);
+            } else if (tokens[i] == ')') {
+                while (!ops.isEmpty() && ops.peek() != '(') {
+                    values.push(applyOp(ops.pop(), values.pop(), values.pop()));
+                }
+                if (!ops.isEmpty()) ops.pop();
+            } else if (tokens[i] == '+' || tokens[i] == '-' || tokens[i] == '*' || tokens[i] == '/' || tokens[i] == '^') {
+                while (!ops.isEmpty() && precedence(ops.peek()) >= precedence(tokens[i])) {
+                    values.push(applyOp(ops.pop(), values.pop(), values.pop()));
+                }
+                ops.push(tokens[i]);
+            }
+        }
+
+        while (!ops.isEmpty()) {
+            values.push(applyOp(ops.pop(), values.pop(), values.pop()));
+        }
+
+        return values.isEmpty() ? 0 : values.pop();
+    }
+
+    private static double applyOp(char op, double b, double a) {
+        return basicOp(a, b, op);
+    }
+
+    public static void main(String[] args) {
+        System.out.println("=== Scientific Calculator & Shunting-Yard Parser ===");
+
+        String[] exprs = {
+            "3 + 5 * 2",
+            "(3 + 5) * 2",
+            "10 + 2 * 6",
+            "100 * ( 2 + 12 ) / 14",
+            "2 ^ 3 + 4 * 5"
+        };
+
+        for (String expr : exprs) {
+            System.out.printf("%-26s = %.2f%n", expr, evaluateExpression(expr));
+        }
+    }
 }
