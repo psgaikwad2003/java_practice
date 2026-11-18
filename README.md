@@ -19,113 +19,74 @@
   - [Concurrency & Advanced APIs](#-concurrency--advanced-apis)
   - [Data Structures & Algorithms](#-data-structures--algorithms)
   - [Application Workflows](#-application-workflows)
+- [Algorithm Complexity Index](#-algorithm-complexity-index)
 - [How to Run](#-how-to-run)
-- [Contributing](#-contributing)
+- [Recent Updates & Roadmap](#-recent-updates--roadmap)
 
 ---
 
 ## 🎯 About The Project
 
-This repository serves as a **knowledge base** and a **practice playground** for Java engineering. It encompasses a wide array of implementations ranging from foundational Object-Oriented Programming (OOP) to advanced asynchronous concurrency and architectural design patterns. It's built for continuous learning and technical interview preparation.
+This repository serves as a **knowledge base** and a **practice playground** for Java engineering. It encompasses a wide array of implementations ranging from foundational Object-Oriented Programming (OOP) to advanced asynchronous concurrency, architectural design patterns, and high-performance algorithms. Built for continuous daily engineering growth and technical interview excellence.
 
 ---
 
 ## 🏗 Architecture & Flow
 
-Here is a high-level representation of the repository's thematic domains:
-
 ```mermaid
 graph TD
-    A[Java Repository] --> B(Core OOP)
+    A[Java Practice Repository] --> B(Core OOP)
     A --> C(Design Patterns)
     A --> D(Concurrency & Async)
     A --> E(DSA & Algorithms)
+    A --> F(Mini Projects)
     
-    B --> B1(Encapsulation)
-    B --> B2(Enums & Interfaces)
-    B --> B3(Immutability & Cloning)
+    B --> B1(Encapsulation & Constructors)
+    B --> B2(Inheritance & Dynamic Dispatch)
+    B --> B3(Abstraction & Polymorphism)
     
-    C --> C1(Creational: Singleton/Factory)
-    C --> C2(Behavioral: Strategy)
+    C --> C1(Creational: Singleton, Factory, Builder)
+    C --> C2(Structural: Adapter, Decorator, Facade)
+    C --> C3(Behavioral: Observer, Strategy, Chain)
     
-    D --> D1(CompletableFuture)
-    D --> D2(ForkJoinPool & Phaser)
-    D --> D3(StampedLock & ThreadPools)
+    D --> D1(Virtual Threads & CompletableFuture)
+    D --> D2(StampedLock & AtomicInteger)
     
-    E --> E1(Custom LRU Cache)
-    E --> E2(Binary Search Trees)
-    E --> E3(Sorting Algorithms)
-    
-    style A fill:#ED8B00,stroke:#333,stroke-width:2px,color:#fff
-    style B fill:#2b7cff,color:#fff
-    style C fill:#00b894,color:#fff
-    style D fill:#d63031,color:#fff
-    style E fill:#6c5ce7,color:#fff
+    E --> E1(Sorting & Binary Search)
+    E --> E2(Dynamic Programming & Graphs)
+    E --> E3(Trees, Tries & Heaps)
 ```
 
 ---
 
-## 📂 Repository Structure
+## ⚡ Algorithm Complexity Index
 
-### 🧠 Core Java & OOP
-- **`Encapsulation.java`**: Custom `BankAccount` encapsulation, input validation, and custom exceptions.
-- **`immutable.java`**: Immutability principles, final fields, defensive copying, and Builder pattern.
-- **`enumDemo.java`**: Java Enums with constructors, custom methods, terminal state logic.
-- **`CloningDemo.java`**: Deep Copy vs Shallow Copy comparison using Copy Constructors and `Cloneable`.
-
-### 🧩 Design Patterns
-- **`SingletonDemo.java`**: Double-Checked Locking (DCL), Bill Pugh Holder pattern, and Enum Singleton.
-- **`DesignPatternsDemo.java`**: Factory Pattern (Notification channels) and Strategy Pattern (Payment processing).
-- **`ProducerConsumerDemo.java`**: Multi-threaded Producer-Consumer pattern using `ArrayBlockingQueue`.
-
-### ⚡ Concurrency & Advanced APIs *(New!)*
-- **`AdvancedCompletableFutureDemo.java`**: Asynchronous processing pipelines and chaining `CompletableFuture`.
-- **`ConcurrentSkipListMapDemo.java`**: Highly scalable concurrent navigation map.
-- **`ForkJoinPoolComplexDemo.java`**: Divide-and-conquer parallel computing using `RecursiveTask`.
-- **`StampedLockDemo.java`**: Advanced optimistic read locking mechanisms for performance tuning.
-- **`PhaserComplexDemo.java`**: Dynamic multi-phase synchronization barriers.
-- **`CustomThreadPoolExecutorDemo.java`**: Custom bounds, keep-alive properties, and `CallerRunsPolicy`.
-- **`NIO2WatchServiceDemo.java`**: File system monitoring using NIO.2.
-
-### 📐 Data Structures & Algorithms (DSA)
-- **`LRUCacheDemo.java`**: Custom generic `LRUCache<K, V>` using HashMap + Doubly Linked List with $O(1)$ operations.
-- **`BSTDemo.java`**: Binary Search Tree implementation with node insertion, searching, In-Order, Level-Order (BFS), and DFS.
-- **`CustomDataStructuresDemo.java`**: Generic `CustomStack<T>` and `CustomQueue<T>`.
-- **`binarySearch.java`**: Iterative and recursive Binary Search with integer overflow prevention.
-- **`SortingBenchmarkDemo.java`**: Empirical performance comparison of common sorting algorithms.
-
-### 💼 Application Workflows
-- **`supermarket.java`**: Supermarket Billing System with OOP encapsulation and tiered discount logic.
-- **`librarySystem.java`**: Library Management System featuring stream-based book search by title/author.
+| Algorithm | Category | Time Complexity (Best / Avg / Worst) | Space Complexity |
+| :--- | :--- | :--- | :--- |
+| **QuickSort** (3-Way / Median-of-3) | Sorting | `O(n log n)` / `O(n log n)` / `O(n log n)` | `O(log n)` |
+| **Binary Search** | Searching | `O(1)` / `O(log n)` / `O(log n)` | `O(1)` |
+| **Boyer-Moore String Search** | String Matching | `O(n/m)` / `O(n)` / `O(nm)` | `O(m + |Σ|)` |
+| **Kosaraju SCC** | Graph Theory | `O(V + E)` / `O(V + E)` / `O(V + E)` | `O(V)` |
+| **Red-Black BST** | Self-Balancing Tree | `O(log n)` / `O(log n)` / `O(log n)` | `O(n)` |
+| **Shunting-Yard Parser** | Parsing | `O(n)` / `O(n)` / `O(n)` | `O(n)` |
+| **Segmented Sieve** | Number Theory | `O((R - L + 1) log log R)` | `O(√R)` |
 
 ---
 
 ## 🚀 How to Run
 
-You can easily compile and run any of the standalone Java files using the standard JDK toolkit.
+Compile and execute any source file using modern Java (JDK 21+):
 
-**1. Clone the repository:**
 ```bash
-git clone https://github.com/psgaikwad2003/java_practice.git
-cd java_practice
+# Compile
+javac Algorithms/AnagramCheck.java
+
+# Execute
+java Algorithms.AnagramCheck
 ```
 
-**2. Compile a Java file:**
-```bash
-javac StreamsDemo.java
-```
+---
 
-**3. Run the compiled byte-code:**
-```bash
-java StreamsDemo
-```
+## 📈 Recent Updates & Roadmap
 
------
-
-## 🤝 Contributing
-
-Contributions, issues, and feature requests are welcome! Feel free to check the [issues page](https://github.com/psgaikwad2003/java_practice/issues).
-
-<div align="center">
-  <i>Developed with ❤️ for continuous learning in Java Engineering.</i>
-</div>
+- **Nov 2026**: Systematically refactored core OOP suites, enhanced mathematical algorithms (Stein's Binary GCD, Segmented Sieve, Aliquot Sums), and upgraded mini-projects with production patterns.
